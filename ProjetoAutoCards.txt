@@ -1,0 +1,23 @@
+PROJETO AUTO CARDS
+
+- OBJETIVO: Automatizar a tarefa de criar flash cards contendo frases em inglês e suas traduções na plataforma Anki.
+
+- ESCALAS DO PROJETO: O projeto será escalado aos poucos, à medida em que é desenvolvido. A cada versão concisa, esta terá sua escala aumentada à novas funcionalidades. Cada escala terá um diretório contendo seus arquivos de aplicações, testes e notas com suas especifícidades: Tarefas, Problemas, Propostas, Observações, etc.
+    
+    -> ESCALA 1:
+        - Consiste em apenas gerar as traduções em frases contidas em um arquivo .txt e devolver suas traduções para que seja manualmente submetidas à flash cards.
+
+    -> ESCALA 2:
+        - Nesta escala será modelado o objeto AutoCard que terá seus atributos e métodos capazes de atuar e se desenvolver nas próximas versões que irá suceder. Será incorporado também um outro nível de automação, em que o programa irá interagir na plataforma Anki para gerar os flash cards. [Aqui deverá ser criado email, conta e variáveis de persistência que guardará estes dados para tal finalidade]
+    
+    -> ESCALA 3:
+        - Esta escala terá a funcionalidade de obter a frase e sua tradução a partir de imagens com legendas e realizar o processo até então estabelecido.
+        [Aqui deverá ter um meio de repositório de imagens a serem inseridas e removidas ao fim do processo]
+
+    -> ESCALA 4:
+        - Aqui será buscado um nível de automação a nível de sistema operacional, em que a cada período será executada a aplicação até aqui estabelecida.
+
+
+- ESPECIFICAÇÕES:
+
+    - Versão do Python: 3.8.2 32-bit
