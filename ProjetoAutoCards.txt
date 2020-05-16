@@ -1,6 +1,14 @@
 PROJETO AUTO CARDS
 
-- OBJETIVO: Automatizar a tarefa de criar flash cards contendo frases em inglês e suas traduções na plataforma Anki.
+- OBJETIVO: Automatizar a tarefa de criar flash cards contendo frases em inglês e suas traduções, ou definições de determinadas palavras, na plataforma Anki. Através de scripts Python, com a utilização do Selenium, Google Translate API e outras tecnologias.
+
+- DEFINIÇÕES GLOBAIS: Válido para todas as escalas.
+
+    -> Cada escala poderá haver mais de uma versão, a qual será explorada alternativas às abordagens de eventuais versões anteriores;
+
+    -> Cada escala e suas eventuais versões trabalharão em branches distintas;
+
+    -> Os testes serão centralizados: ?como?
 
 - ESCALAS DO PROJETO: O projeto será escalado aos poucos, à medida em que é desenvolvido. A cada versão concisa, esta terá sua escala aumentada à novas funcionalidades. Cada escala terá um diretório contendo seus arquivos de aplicações, testes e notas com suas especifícidades: Tarefas, Problemas, Propostas, Observações, etc.
     
