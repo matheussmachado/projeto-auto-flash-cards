@@ -1,6 +1,6 @@
 from functions import *
 
-frases = get_from_file()    #falta verificar enviando um path que o arquivo nao é em ingles
+frases = get_from_file()    
 send_to_file(frases, translate_phrases(frases))
 
 #TODO: CRIAR teste para isso abaixo e determinar se essa será a melhor forma para chamar a função

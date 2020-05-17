@@ -37,7 +37,8 @@ def get_from_file(file='frases.txt'):
     while True:
         if os.path.isfile(file) and str(file).endswith('.txt'):
             #TESTAR COM OUTROS ARQUIVOS            
-            with open(file, 'r', encoding='UTF8') as f:                
+            #with open(file, 'r', encoding='UTF8') as f:                
+            with open(file, 'r') as f:                
                 phrases = [line.strip() for line in f.read().split('\n') if line.strip() != '']        
                 return phrases  
         else:

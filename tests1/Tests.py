@@ -15,5 +15,8 @@ class TestGetFromFile(unittest.TestCase):
         self.assertEqual(phrases, frases)        
     
 
+#TODO: TESTE utilizando as traduções do iguais a do Translator como sample para os testes de translate_phrases
+
+
 if __name__ == '__main__':
     unittest.main()
