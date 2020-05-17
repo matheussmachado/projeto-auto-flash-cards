@@ -10,6 +10,10 @@ PROJETO AUTO CARDS
 
     -> Os testes serão centralizados: ?como?
 
+- OBSERVAÇÕES GLOBAIS:
+
+    -> Está sendo utilizada a extensão padrão de testes do Python, portanto, não é possível realizar os testes executando no módulo ou por linha de comando. Deve-se utilizar a própria extensão.
+
 - ESCALAS DO PROJETO: O projeto será escalado aos poucos, à medida em que é desenvolvido. A cada versão concisa, esta terá sua escala aumentada à novas funcionalidades. Cada escala terá um diretório contendo seus arquivos de aplicações, testes e notas com suas especifícidades: Tarefas, Problemas, Propostas, Observações, etc.
     
     -> ESCALA 1:
