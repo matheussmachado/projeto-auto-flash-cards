@@ -1,5 +1,3 @@
-import sys
-print(sys.path)
 from src.classes import AutoDeck
 
 deck = AutoDeck()

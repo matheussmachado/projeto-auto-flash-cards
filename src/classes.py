@@ -4,6 +4,11 @@ from .funcs import get_from_file
 class AutoCard:
 
     def __init__(self, front):
+        """
+            Inicialização de um objeto AutoCard que será preenchido com frases em inglês na parte da frente posteriormente.
+
+            Arguments:
+                front {str} -- parte da frente que será preenchida."""
         self.front = front
         self.back = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
 
@@ -14,15 +19,18 @@ class AutoDeck:
         self.cards = []
     
     def get_cards(self, file='frases.txt'):
+        """
+            Gera cartões AutoCard a partir de frases em inglês obtida através de um arquivo .txt que guarda estas frases. Esse método utiliza uma outra função dedicada para o tratamento das frases.
+
+            Keyword Arguments:
+                file {str} -- string corerspondente ao nome do arquivo .txt (default: {'frases.txt'})
+
+            Returns:
+                list -- lista contendo os cartões gerados
+                None -- nada, caso não haja frases para gerar cartões"""
         phrases = get_from_file(file)
         if len(phrases) == 0:
             print('Sem frases para preencher cartões')
             return
         self.cards = [AutoCard(front) for front in phrases]
         return self.cards
-
-
-    
-
-#deck = [AutoCard(front) for front in get_from_file()]    
-#print(deck)

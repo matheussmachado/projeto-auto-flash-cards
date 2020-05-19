@@ -1,14 +1,21 @@
-OBJETIVO: Modelar o objeto AutoCard que possua:
+OBJETIVO: Modelar os objetos capazes de gerar os cards, compôr uma coleção de flash cards e ser inseridos na plataforma
+
+MODELAR O OBJETO AutoCard QUE POSSUA:
 
     > Atributos:
     
         - front = <conteúdo em inglês>
         - back = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
         
+MODELAR O OBJETO AutoDeck QUE POSSUA:    
+    
+    > Atributos: 
+
+        - cards: <lista contendo objetos AutoCard>
     
     > Métodos:
 
-        #- obter as frases dos arquivos já tratados
+        - obter as frases dos arquivos já tratados
         
         - enviar os conteúdos para o Anki:
 
