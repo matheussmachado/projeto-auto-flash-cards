@@ -32,12 +32,9 @@ def translate_phrases(phrases_list):
         print(f'"{phrases_list}" não é uma lista ou é uma uma lista vazia')
         return None
 
-def get_from_file(file='frases.txt'):
-    #TODO: TRATAR o possível erro abaixo e verificar se serve apenas passar o nome do arquivo
+def get_from_file(file='frases.txt'):    
     while True:
-        if os.path.isfile(file) and str(file).endswith('.txt'):
-            #TESTAR COM OUTROS ARQUIVOS            
-            #with open(file, 'r', encoding='UTF8') as f:                
+        if os.path.isfile(file) and str(file).endswith('.txt'):            
             with open(file, 'r') as f:                
                 phrases = [line.strip() for line in f.read().split('\n') if line.strip() != '']        
                 return phrases  

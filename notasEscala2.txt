@@ -1,0 +1,23 @@
+OBJETIVO: Modelar o objeto AutoCard que possua:
+
+    > Atributos:
+    
+        - front = <conteúdo em inglês>
+        - back = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
+        
+    
+    > Métodos:
+
+        #- obter as frases dos arquivos já tratados
+        
+        - enviar os conteúdos para o Anki:
+
+            - Verificar se há frases no arquivo, senão, abortar;            
+            - Obter os as frases;
+            - Gerar instâncias
+            - Conectar com o Anki; 
+            - Logar na conta;
+                - enviar a senha por input;
+            - Enquanto houver cards, preencher os inputs;
+    
+    
