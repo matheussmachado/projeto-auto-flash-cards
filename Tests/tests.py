@@ -1,5 +1,5 @@
 import unittest
-from src.classes import AutoDeck
+from src.classes import AutoCards
 from src.funcs import get_from_file
 
 #UMA CLASSE TESTE POR CLASSE E POR FUNÇÃO
@@ -22,10 +22,10 @@ class TestGetFromFile(unittest.TestCase):
     
 
 
-class TestAutoDeck(unittest.TestCase):
+class TestAutoCards(unittest.TestCase):
     
     def setUp(self):
-        self.deck = AutoDeck()
+        self.deck = AutoCards()
         self.frases = [
             "Take this time, Francis, to know your other attendees.",
             "Tell me you're not peddling influence with your wife?",
@@ -35,7 +35,7 @@ class TestAutoDeck(unittest.TestCase):
         
     def test_get_cards_1(self):
         """
-            TESTA SE É POSSÍVEL OBTER UMA LISTA DE OBJETOS AutoCard, SENDO ESTA LISTA O ATRIBUTO cards DO OBJETO AutoDeck. O PARÂMETRO front É O ATRIBUTO DE AutoCard QUE POSSUI A STRING CONTEÚDO DO ARQUIVO file. NO CASO, cards É A LISTA CONTENDO ASA STRINGS DE front."""
+            TESTA SE É POSSÍVEL OBTER UMA LISTA DE OBJETOS FlashCard, SENDO ESTA LISTA O ATRIBUTO cards DO OBJETO AutoCards. O PARÂMETRO front É O ATRIBUTO DE FlashCard QUE POSSUI A STRING CONTEÚDO DO ARQUIVO file. NO CASO, cards É A LISTA CONTENDO ASA STRINGS DE front."""
         file = 'frasesTestePreenchida.txt'
         cards = [card.front for card in self.deck.get_cards(file)]
         self.assertEqual(self.frases, cards)

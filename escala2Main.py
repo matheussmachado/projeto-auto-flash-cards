@@ -1,6 +1,6 @@
-from src.classes import AutoDeck
+from src.classes import AutoCards
 
-deck = AutoDeck()
+deck = AutoCards()
 #print(deck.get_cards())
 for card in deck.get_cards():
     print(card.front)

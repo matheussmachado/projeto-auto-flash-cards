@@ -8,7 +8,7 @@ PROJETO AUTO CARDS
 
     -> Cada escala e suas eventuais versões trabalharão em branches distintas;
 
-    -> Os testes serão centralizados: ?como?
+    -> Os testes serão centralizados: Em um mesmo módulo, dentro de um diretório próprio. 
 
 - OBSERVAÇÕES GLOBAIS:
 
@@ -20,10 +20,10 @@ PROJETO AUTO CARDS
         - Consiste em apenas gerar as traduções em frases contidas em um arquivo .txt e devolver suas traduções para que seja manualmente submetidas à flash cards.
 
     -> ESCALA 2:
-        - Nesta escala será modelado o objeto AutoCard que terá seus atributos e métodos. Será incorporado também um outro nível de automação, em que o programa irá interagir na plataforma Anki para gerar os flash cards. [Aqui deverá ser criado email, conta e variáveis de persistência que guardará estes dados para tal finalidade]
+        - Nesta escala será modelado o objeto AutoCards que terá seus atributos e métodos. Será incorporado também um outro nível de automação, em que o programa irá interagir na plataforma Anki para gerar os flash cards. [Aqui deverá ser criado email, conta e variáveis de persistência que guardará estes dados para tal finalidade]
     
     -> ESCALA 3:
-        - Esta escala terá a funcionalidade de obter a frase e sua tradução a partir de imagens com legendas e realizar o processo até então estabelecido.
+        - Esta escala terá a funcionalidade de obter a frase a partir de imagens com legendas e realizar o processo até então estabelecido.
         [Aqui deverá ter um meio de repositório de imagens a serem inseridas e removidas ao fim do processo]
 
     -> ESCALA 4:
