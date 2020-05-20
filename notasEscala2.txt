@@ -1,30 +1,27 @@
 OBJETIVO: Modelar os objetos capazes de gerar os cards, compôr uma coleção de flash cards e ser inseridos na plataforma
 
-MODELAR O OBJETO AutoCard QUE POSSUA:
+    - MODELAR O OBJETO FlashCard QUE POSSUA:
 
-    > Atributos:
-    
-        - front = <conteúdo em inglês>
-        - back = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
+        > Atributos:
         
-MODELAR O OBJETO AutoDeck QUE POSSUA:    
-    
-    > Atributos: 
-
-        - cards: <lista contendo objetos AutoCard>
-    
-    > Métodos:
-
-        - obter as frases dos arquivos já tratados
+            - front = <conteúdo em inglês>
+            - back = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
+            
+    - MODELAR O OBJETO AutoCards QUE POSSUA:    
         
-        - enviar os conteúdos para o Anki:
+        > Atributos: 
 
-            - Verificar se há frases no arquivo, senão, abortar;            
-            - Obter os as frases;
-            - Gerar instâncias
-            - Conectar com o Anki; 
-            - Logar na conta;
-                - enviar a senha por input;
-            - Enquanto houver cards, preencher os inputs;
+            - cards: <lista contendo objetos FlashCard>
+        
+        > Métodos:
+
+            - obter as frases dos arquivos já tratados
+            
+    - OBJETO ANKIBOT:
+        valida se há cards -> obtem o login -> acessa o site -> insere o login -> acessa página de adicionar -> insere os cards que possui nos inputs
+
+OBSERVAÇÕES:
+
+    - Não é possível testar diretamente o método start do objeto AnkiBot no quesito se é possível interagir com a plataforma com AutoCards sem cards. Porém, AutoCards já possui um teste para lidar com isso.
     
-    
+    - Até a escala 2, ficou em aberto os testes de interação do bot com a plataforma Anki. Estes deve ser desenvolvido posteriormente.

@@ -1,10 +1,6 @@
-from src.classes import AutoCards
+from src.classes import AnkiBot
 
-deck = AutoCards()
-#print(deck.get_cards())
-for card in deck.get_cards():
-    print(card.front)
-    print(card.back)
-    print()
+bot = AnkiBot()
+#bot.auto_cards.gen_cards_txt()
+bot.start()
 
-print([cards.front for cards in deck.get_cards('frasesTeste.txt')])
