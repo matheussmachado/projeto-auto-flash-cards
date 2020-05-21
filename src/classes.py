@@ -84,7 +84,8 @@ class AnkiBot:
 
             browser.find_element_by_id('f1').send_keys(card.back)
             
-            browser.find_element_by_css_selector('button[class$="primary"]').click()
+            #browser.find_element_by_css_selector('button[class$="primary"]').click()
             sleep(1)
+            break
 
     

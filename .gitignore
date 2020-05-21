@@ -1,2 +1,7 @@
 __pycache__
 *.log
+login.txt
+*.png
+*.jpg
+*.bat
+.vscode
