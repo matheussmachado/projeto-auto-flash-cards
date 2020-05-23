@@ -1,6 +1,7 @@
 from .funcs import get_from_txt
 from time import sleep
 from selenium.webdriver import Firefox
+from os import system
 
 
 class FlashCard:
@@ -65,27 +66,31 @@ class AnkiBot:
         em, pw = get_from_txt('..\\login.txt')        
         url = 'https://ankiweb.net/account/login'        
         browser = Firefox()
-        browser.get(url)
-        browser.implicitly_wait(30)
-        
-        #LOGIN
-        browser.find_element_by_css_selector('input[id="email"]').send_keys(em)
-        browser.find_element_by_css_selector('input[type="password"]').send_keys(pw)
-        browser.find_element_by_css_selector('input[type="submit"]').click()
-        sleep(1)
-
-        #ADD 
-        browser.find_elements_by_css_selector('a[class="nav-link"]')[1].click()
-        sleep(1)
-
-        #INPUT FLASHCARDS
-        for card in self.auto_cards.cards:
-            browser.find_element_by_id('f0').send_keys(card.front)
-
-            browser.find_element_by_id('f1').send_keys(card.back)
+        try:
+            browser.get(url)
+            browser.implicitly_wait(30)
+        except Exception as err:
+            print(err)
+        else:
             
-            #browser.find_element_by_css_selector('button[class$="primary"]').click()
+            #LOGIN
+            browser.find_element_by_css_selector('input[id="email"]').send_keys(em)
+            browser.find_element_by_css_selector('input[type="password"]').send_keys(pw)
+            browser.find_element_by_css_selector('input[type="submit"]').click()
             sleep(1)
-            break
 
-    
+            #ADD 
+            browser.find_elements_by_css_selector('a[class="nav-link"]')[1].click()
+            sleep(1)
+
+            #INPUT FLASHCARDS
+            for card in self.auto_cards.cards:
+                browser.find_element_by_id('f0').send_keys(card.front)
+
+                browser.find_element_by_id('f1').send_keys(card.back)
+            
+                browser.find_element_by_css_selector('button[class$="primary"]').click()
+                sleep(1)
+        finally:
+            browser.quit()
+            system(r'taskkill /f /im geckodriver.exe >nul')    
