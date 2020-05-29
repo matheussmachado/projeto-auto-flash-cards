@@ -40,13 +40,13 @@ class AutoCards:
         self.cards = [FlashCard(front) for front in phrases]
         return self.cards
 
-    def gen_cards_img(self, source=r'C:\Users\Matheus\Documents\Projetos\imgFolderTest'):
+    def gen_cards_img(self, source=r'C:\Users\Matheus\Documents\Projetos\LegendasLocal\Legendas'):
         file_names = []
         files = get_imgs_name(source)
         for file in files:            
             result = get_from_img(file)
             if result != None:                
-                self.cards.append(result[0])
+                self.cards.append(FlashCard(result[0]))
                 file_names.append(result[1])
         return file_names
 
