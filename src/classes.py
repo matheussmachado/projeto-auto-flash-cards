@@ -1,7 +1,7 @@
-from .funcs import get_from_txt
+from .funcs import os, get_from_txt, get_imgs_name, get_from_img, remove_imgs_list
 from time import sleep
 from selenium.webdriver import Firefox
-from os import system
+
 
 
 class FlashCard:
@@ -40,22 +40,42 @@ class AutoCards:
         self.cards = [FlashCard(front) for front in phrases]
         return self.cards
 
+    def gen_cards_img(self, source=r'C:\Users\Matheus\Documents\Projetos\imgFolderTest'):
+        file_names = []
+        files = get_imgs_name(source)
+        for file in files:            
+            result = get_from_img(file)
+            if result != None:                
+                self.cards.append(result[0])
+                file_names.append(result[1])
+        return file_names
+
 
 class AnkiBot:
     """
         Classe responsável pelo bot que insere os AutoCards na plataforma Anki"""
-
+#VAI DAR MERDA POR NÃO TER A POSSIBILIDADE DE PASSAR O NOME DO ARQUIVO OU O DIRETÓRIO
     def __init__(self):
         self.auto_cards = AutoCards()
 
-    def start(self, gen_type):                        
+    def start(self, gen_type, source='', login_path=''):                        
         """
             Método responsável pela interação com a plataforma Anki, desde o login até a inserção dos conteúdos que compõe o flash card.
 
             Arguments:
-                gen_type {str} -- Define o tipo de geração de FlashCards."""
+                gen_type {str} -- txt: Em texto;    img: Em imagem"""        
         if gen_type == 'txt':
-            self.auto_cards.gen_cards_txt()
+            if source != '':
+                self.auto_cards.gen_cards_txt(source)
+            else:
+                self.auto_cards.gen_cards_txt()                
+        
+        elif gen_type == 'img':
+            if source != '':
+                file_names = self.auto_cards.gen_cards_img(source)
+            else:
+                file_names = self.auto_cards.gen_cards_img()        
+            
         else:
             print('parâmetro gen_type inválido.')
             return
@@ -63,14 +83,20 @@ class AnkiBot:
             return
         
         #SETTINGS
-        em, pw = get_from_txt('..\\login.txt')        
-        url = 'https://ankiweb.net/account/login'        
-        browser = Firefox()
+        if login_path != '':
+            em, pw = get_from_txt(login_path)
+        else:
+            em, pw = get_from_txt('..\\login.txt')        
+        url = 'https://ankiweb.net/account/login'                
         try:
-            browser.get(url)
+            browser = Firefox()
             browser.implicitly_wait(30)
+            browser.get(url)            
         except Exception as err:
-            print(err)
+            browser.close()
+            print('NÃO FOI POSSÍVEL CONECTAR\n', err)
+            input('\n\nPressione a tecla enter.')
+            print('\nFINALIZANDO...')
         else:
             
             #LOGIN
@@ -90,7 +116,8 @@ class AnkiBot:
                 browser.find_element_by_id('f1').send_keys(card.back)
             
                 browser.find_element_by_css_selector('button[class$="primary"]').click()
-                sleep(1)
+                sleep(1)            
+            remove_imgs_list(file_names)            
         finally:
             browser.quit()
-            system(r'taskkill /f /im geckodriver.exe >nul')    
+            os.system(r'taskkill /f /im geckodriver.exe >nul')    

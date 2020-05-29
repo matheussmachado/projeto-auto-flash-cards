@@ -1,4 +1,4 @@
-import os
+import os, requests, json
 
 def get_from_txt(file='frases.txt'):    
     """
@@ -18,3 +18,50 @@ def get_from_txt(file='frases.txt'):
         else:
             print(f'\n\n"{file}" não é um arquivo ou um path de arquivo válido.')
             file = input('\nInsira um arquivo existente no mesmo path da VENV ou insira um path de arquivo válido: ')
+
+
+def get_imgs_name(folder_path):
+    if not os.path.isdir(folder_path):
+        print(f'"{folder_path}" não é um diretório.')
+    files = []
+    for file in os.listdir(folder_path):
+        if file.endswith('.png') or file.endswith('.jpg'):
+            files.append(os.path.join(folder_path, file))
+    return files
+
+#api_key = '22cd3eed8288957'
+
+def get_from_img(filename, overlay=False, api_key='22cd3eed8288957', language='eng'):        
+    payload = {'isOverlayRequired': overlay,
+               'apikey': api_key,
+               'language': language,
+               }
+    with open(filename, 'rb') as f:
+        try:
+            r = requests.post('https://api.ocr.space/parse/image',
+                            files={filename: f},
+                            data=payload,
+                            )
+        except Exception as err:
+            print(err)
+            return 
+        else:
+            results = json.loads(r.content.decode())
+            text = results.get('ParsedResults')[0]['ParsedText'].replace('\n', '').replace('\r', ' ').strip()
+            
+    return (text, filename)
+
+
+
+def remove_imgs(folder_path):
+    if not os.path.isdir(folder_path):
+        print(f'"{folder_path}" não é um diretório.')
+    for file in os.listdir(folder_path):
+        if file.endswith('.png') or file.endswith('.jpg'):
+            os.unlink(os.path.join(folder_path, file))
+
+
+def remove_imgs_list(imgs_list):
+    for img_path in imgs_list:          
+        if os.path.isfile(img_path) and (img_path.endswith('.png') or img_path.endswith('.jpg')): 
+            os.unlink(img_path)        

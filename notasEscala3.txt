@@ -1,0 +1,16 @@
+Fluxo:
+
+criar uma lista de remoção
+
+Enviar 'manualmente' as imagens para o diretório -> obter em uma lista o nome de todos os arquivos que terminem com .png ou .jpg desse diretório -> realizar um laço nessa lista com a função de obter as frases da imagem -> as imagens que retornarem as strings terão o nome de seus arquivos fontes removidos do diretório fonte
+
+
+Possiveis erros:
+
+- problema na requisição no meio da iteração, e por fim não retornando as frases
+
+- lentidão em ter que excluir os arquivos dentro da função que obtem as frases -> Excluir as imagens como ultimo processo
+
+
+Fluxo resumido: Obter os textos das imagens -> Enviar os textos como flash cards -> excluir os arquivos que foram processados com sucesso tanto na obtenção quanto no envio dos textos
+
