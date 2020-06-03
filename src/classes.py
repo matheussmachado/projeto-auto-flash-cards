@@ -86,7 +86,7 @@ class AnkiBot:
         if login_path != '':
             em, pw = get_from_txt(login_path)
         else:
-            em, pw = get_from_txt('..\\login.txt')        
+            em, pw = get_from_txt('login.txt')        
         url = 'https://ankiweb.net/account/login'                
         try:
             browser = Firefox()
@@ -120,4 +120,4 @@ class AnkiBot:
             remove_imgs_list(file_names)            
         finally:
             browser.quit()
-            os.system(r'taskkill /f /im geckodriver.exe >nul')    
+            #os.system(r'taskkill /f /im geckodriver.exe >nul')    
