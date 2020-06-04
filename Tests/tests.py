@@ -15,22 +15,23 @@ class TestGetFromTxt(unittest.TestCase):
             'The Russian research vessel.',
             "Let's reconvene when you know more."
         ]
-        file = 'frasesTestePreenchida.txt'
+        file = os.path.join('amostras', 'frasesTestePreenchida.txt')
+        #file = 'frasesTestePreenchida.txt'
         phrases = get_from_txt(file)
         self.assertEqual(phrases, frases)        
     
 
-class TestRemoveImgs(unittest.TestCase):
+"""class TestRemoveImgs(unittest.TestCase):
 
     def test_1(self):
-        path = r'..\imgFolderTest'
+        path = r'imgFolderTest'
         lista = [os.path.join(path, img) for img in os.listdir(path) 
                 if img.endswith('.png') or img.endswith('.jpg')
         ]
         remove_imgs_list(lista)
         imgs = [img for img in os.listdir(path) 
                 if (img.endswith('.png') or img.endswith('.jpg'))]
-        self.assertEqual(len(imgs), 0)
+        self.assertEqual(len(imgs), 0)"""
         
 
 class TestAutoCards(unittest.TestCase):
@@ -52,13 +53,15 @@ class TestAutoCards(unittest.TestCase):
     def test_gen_cards_txt_1(self):
         """
             TESTA SE É POSSÍVEL OBTER UMA LISTA DE OBJETOS FlashCard, SENDO ESTA LISTA O ATRIBUTO cards DO OBJETO AutoCards. O PARÂMETRO front É O ATRIBUTO DE FlashCard QUE POSSUI A STRING CONTEÚDO DO ARQUIVO file. NO CASO, cards É A LISTA CONTENDO ASA STRINGS DE front."""
-        file = 'frasesTestePreenchida.txt'
+        file = os.path.join('amostras', 'frasesTestePreenchida.txt')
+        #file = 'frasesTestePreenchida.txt'
         cards = [card.front for card in self.autoCard.gen_cards_txt(file)]
         self.assertEqual(self.frases_txt, cards)
 
     
     def test_gen_cards_txt_2(self):
-        file = 'frasesTesteVazia.txt'        
+        file = os.path.join('amostras', 'frasesTesteVazia.txt')
+        #file = 'frasesTesteVazia.txt'        
         self.autoCard.gen_cards_txt(file)
         self.assertEqual(len(self.autoCard.cards), 0)
 

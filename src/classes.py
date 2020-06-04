@@ -40,7 +40,8 @@ class AutoCards:
         self.cards = [FlashCard(front) for front in phrases]
         return self.cards
 
-    def gen_cards_img(self, source=r'C:\Users\Matheus\Documents\Projetos\LegendasLocal\Legendas'):
+    
+    """def gen_cards_img(self, source=r''):
         file_names = []
         files = get_imgs_name(source)
         for file in files:            
@@ -48,13 +49,13 @@ class AutoCards:
             if result != None:                
                 self.cards.append(FlashCard(result[0]))
                 file_names.append(result[1])
-        return file_names
+        return file_names"""
 
 
 class AnkiBot:
     """
         Classe responsável pelo bot que insere os AutoCards na plataforma Anki"""
-#VAI DAR MERDA POR NÃO TER A POSSIBILIDADE DE PASSAR O NOME DO ARQUIVO OU O DIRETÓRIO
+
     def __init__(self):
         self.auto_cards = AutoCards()
 
@@ -69,16 +70,17 @@ class AnkiBot:
                 self.auto_cards.gen_cards_txt(source)
             else:
                 self.auto_cards.gen_cards_txt()                
-        
-        elif gen_type == 'img':
-            if source != '':
-                file_names = self.auto_cards.gen_cards_img(source)
-            else:
-                file_names = self.auto_cards.gen_cards_img()        
-            
+        #DESCER ESSE else APÓS CONSERTAR O MÉTODO da img
         else:
             print('parâmetro gen_type inválido.')
             return
+        
+        """elif gen_type == 'img':
+            if source != '':
+                file_names = self.auto_cards.gen_cards_img(source)
+            else:
+                file_names = self.auto_cards.gen_cards_img()   """     
+            
         if len(self.auto_cards.cards) == 0:
             return
         
@@ -117,7 +119,7 @@ class AnkiBot:
             
                 browser.find_element_by_css_selector('button[class$="primary"]').click()
                 sleep(1)            
-            remove_imgs_list(file_names)            
+            #remove_imgs_list(file_names)            
         finally:
             browser.quit()
-            #os.system(r'taskkill /f /im geckodriver.exe >nul')    
+            #os.system(r'taskkill /f /im geckodriver.exe >nul')
