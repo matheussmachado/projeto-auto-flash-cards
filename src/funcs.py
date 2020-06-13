@@ -62,6 +62,6 @@ def remove_imgs(folder_path):
 
 
 def remove_imgs_list(imgs_list):
-    for img_path in imgs_list:          
-        if os.path.isfile(img_path) and (img_path.endswith('.png') or img_path.endswith('.jpg')): 
-            os.unlink(img_path)        
+    for img_path in imgs_list:
+        if os.path.isfile(img_path) and (img_path.endswith('.png') or img_path.endswith('.jpg')):
+            os.unlink(img_path)

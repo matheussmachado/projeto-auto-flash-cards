@@ -21,17 +21,17 @@ class TestGetFromTxt(unittest.TestCase):
         self.assertEqual(phrases, frases)        
     
 
-"""class TestRemoveImgs(unittest.TestCase):
+class TestRemoveImgs(unittest.TestCase):
 
     def test_1(self):
-        path = r'imgFolderTest'
+        path = os.path.join('.', 'imgFolderTest')
         lista = [os.path.join(path, img) for img in os.listdir(path) 
                 if img.endswith('.png') or img.endswith('.jpg')
         ]
         remove_imgs_list(lista)
         imgs = [img for img in os.listdir(path) 
                 if (img.endswith('.png') or img.endswith('.jpg'))]
-        self.assertEqual(len(imgs), 0)"""
+        self.assertEqual(len(imgs), 0)
         
 
 class TestAutoCards(unittest.TestCase):
@@ -71,7 +71,7 @@ class TestAnkiBot(unittest.TestCase):
         self.bot = AnkiBot()
         self.frases = os.path.join('amostras', 'frasesTesteVazia.txt')
 
-    #VERIFICA se retorna None caso o parâmetro errado for passado
+    #VERIFICA se retorna None caso o parâmetro errado for passado, abortando o início do bot.
     def test_start_1(self):
         self.assertIsNone(self.bot.start('txt', self.frases))
 
