@@ -1,4 +1,4 @@
-from .funcs import os, get_from_txt, get_imgs_name, get_from_img, remove_imgs_list
+from .funcs import os, get_from_txt, get_imgs_name, get_from_img, remove_imgs_list, verify_mnt
 from time import sleep
 from selenium.webdriver import Firefox
 
@@ -79,10 +79,12 @@ class AnkiBot:
             if source != '':
                 file_names = self.auto_cards.gen_cards_img(source)
             else:
+               #verificação do dir montado
+               verify_mnt()
                 file_names = self.auto_cards.gen_cards_img()   """     
             
         if len(self.auto_cards.cards) == 0:
-            return
+            return   
         
         #SETTINGS
         if login_path != '':
