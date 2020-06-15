@@ -1,4 +1,4 @@
-from .funcs import os, get_from_txt, get_imgs_name, get_from_img, remove_imgs_list, verify_mnt
+from .funcs import os, get_from_txt, get_imgs_name, remove_imgs_list, verify_mnt, img_to_txt
 from time import sleep
 from selenium.webdriver import Firefox
 
@@ -41,15 +41,18 @@ class AutoCards:
         return self.cards
 
     
-    """def gen_cards_img(self, source=r''):
+    def gen_cards_img(self, source):
         file_names = []
         files = get_imgs_name(source)
-        for file in files:            
-            result = get_from_img(file)
+        if len(files) == 0:
+            return
+            #check = False
+        for file in files:
+            result = img_to_txt(file)
             if result != None:                
-                self.cards.append(FlashCard(result[0]))
-                file_names.append(result[1])
-        return file_names"""
+                self.cards.append(FlashCard(result))
+                file_names.append(result)
+        return file_names
 
 
 class AnkiBot:
@@ -69,19 +72,17 @@ class AnkiBot:
             if source != '':
                 self.auto_cards.gen_cards_txt(source)
             else:
-                self.auto_cards.gen_cards_txt()                
-        #DESCER ESSE else APÓS CONSERTAR O MÉTODO da img
+                self.auto_cards.gen_cards_txt()                        
+        
+        elif gen_type == 'img':            
+             #verificação do dir montado
+             img_folder = get_from_txt('imgPath.txt')[0]
+             verify_mnt(img_folder)
+             file_names = self.auto_cards.gen_cards_img(img_folder)
+            
         else:
             print('parâmetro gen_type inválido.')
             return
-        
-        """elif gen_type == 'img':
-            if source != '':
-                file_names = self.auto_cards.gen_cards_img(source)
-            else:
-               #verificação do dir montado
-               verify_mnt()
-                file_names = self.auto_cards.gen_cards_img()   """     
             
         if len(self.auto_cards.cards) == 0:
             return   
@@ -121,7 +122,7 @@ class AnkiBot:
             
                 browser.find_element_by_css_selector('button[class$="primary"]').click()
                 sleep(1)            
-            #remove_imgs_list(file_names)            
+            remove_imgs_list(file_names)            
         finally:
             browser.quit()
-            #os.system(r'taskkill /f /im geckodriver.exe >nul')
+

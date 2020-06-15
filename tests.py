@@ -18,8 +18,9 @@ class TestGetFromTxt(unittest.TestCase):
         
         file = os.path.join('amostras', 'frasesTestePreenchida.txt')        
         phrases = get_from_txt(file)
-        self.assertEqual(phrases, frases)        
-    
+        self.assertEqual(phrases, frases)           
+   
+
 
 class TestRemoveImgs(unittest.TestCase):
 

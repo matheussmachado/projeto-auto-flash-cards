@@ -1,16 +1,34 @@
 Fluxo:
 
-criar uma lista de remoção
+criar uma lista de remoï¿½ï¿½o
 
-Enviar 'manualmente' as imagens para o diretório -> obter em uma lista o nome de todos os arquivos que terminem com .png ou .jpg desse diretório -> realizar um laço nessa lista com a função de obter as frases da imagem -> as imagens que retornarem as strings terão o nome de seus arquivos fontes removidos do diretório fonte
+Enviar 'manualmente' as imagens para o diretï¿½rio -> obter em uma lista o nome de todos os arquivos que terminem com .png ou .jpg desse diretï¿½rio -> realizar um laï¿½o nessa lista com a funï¿½ï¿½o de obter as frases da imagem -> as imagens que retornarem as strings terï¿½o o nome de seus arquivos fontes removidos do diretï¿½rio fonte
 
 
 Possiveis erros:
 
-- problema na requisição no meio da iteração, e por fim não retornando as frases
+- problema na requisiï¿½ï¿½o no meio da iteraï¿½ï¿½o, e por fim nï¿½o retornando as frases
 
-- lentidão em ter que excluir os arquivos dentro da função que obtem as frases -> Excluir as imagens como ultimo processo
+- lentidï¿½o em ter que excluir os arquivos dentro da funï¿½ï¿½o que obtem as frases -> Excluir as imagens como ultimo processo
 
 
-Fluxo resumido: Obter os textos das imagens -> Enviar os textos como flash cards -> excluir os arquivos que foram processados com sucesso tanto na obtenção quanto no envio dos textos
+Fluxo resumido: Obter os textos das imagens -> Enviar os textos como flash cards -> excluir os arquivos que foram processados com sucesso tanto na obtenï¿½ï¿½o quanto no envio dos textos
 
+
+-> Registro utilizando a API Vision e o esquema de excluir as imagens apÃ³s o processo:
+
+- atualmente, nÃ£o hÃ¡ um acompanhamento real das strings que foram com sucesso obtidas a partir do Vision e alinhado com o sucesso da inserÃ§Ã£o dos flash cards no Anki, para que no final, sejam excluidas todas as imagens envolvidas na extraÃ§Ã£o e no inserÃ§Ã£o.
+
+PossÃ­veis soluÃ§Ãµes:
+	
+	- ter um sistema de checagem, no estilo atomico, em que se haja erro em algum passo do processo, todo o restante seja abortado. 
+		- futuramente obter um sistema de 'checkpoint' para adiantar o processo e nÃ£o gastar recursos.
+		- contar o nÃºmero de arquivos hÃ¡ na pÃ¡gina -> realizar um contador nas tentativas para obter esse 'checkpoint'
+		- obter um retorno contendo uma tupla (uma lista com os nomes, as strings obtidas)
+		
+- Melhorar:
+	- o nÃºmero de arquivos por requisiÃ§Ã£o, tentar realizar atÃ© 15 arquivos por requisiÃ§Ã£o -> muda o formato do retorno
+	
+	
+	
+	

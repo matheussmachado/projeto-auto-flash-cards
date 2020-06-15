@@ -4,3 +4,5 @@ login.txt
 *.png
 *.jpg
 imagens/
+.json
+imgPath.txt

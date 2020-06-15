@@ -4,5 +4,4 @@ from src.classes import AnkiBot
 
 bot = AnkiBot()
 
-bot.start(gen_type='img', source=r'..\LegendasLocal\Legendas')
-
+bot.start(gen_type='img')

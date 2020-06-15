@@ -1,4 +1,6 @@
-import os, requests, json
+import os, requests, json, io
+from google.cloud import vision
+from google.cloud.vision import types
 
 def get_from_txt(file='frases.txt'):    
     """
@@ -11,10 +13,10 @@ def get_from_txt(file='frases.txt'):
         Returns:
             list -- lista contendo as frases obtidas do arquivo."""
     while True:
-        if os.path.isfile(file) and str(file).endswith('.txt'):            
-            with open(file, 'r') as f:                
-                phrases = [line.strip() for line in f.read().split('\n') if line.strip() != '']        
-                return phrases  
+        if os.path.isfile(file) and str(file).endswith('.txt'):
+            with open(file, 'r') as f:
+                phrases = [line.strip() for line in f.read().split('\n') if line.strip() != '']
+                return phrases
         else:
             print(f'\n\n"{file}" não é um arquivo ou um path de arquivo válido.')
             file = input('\nInsira um arquivo existente no mesmo path da VENV ou insira um path de arquivo válido: ')
@@ -23,34 +25,25 @@ def get_from_txt(file='frases.txt'):
 def get_imgs_name(folder_path):
     if not os.path.isdir(folder_path):
         print(f'"{folder_path}" não é um diretório.')
+        return
     files = []
     for file in os.listdir(folder_path):
         if file.endswith('.png') or file.endswith('.jpg'):
             files.append(os.path.join(folder_path, file))
     return files
 
-#api_key = '22cd3eed8288957'
 
-def get_from_img(filename, overlay=False, api_key='22cd3eed8288957', language='eng'):        
-    payload = {'isOverlayRequired': overlay,
-               'apikey': api_key,
-               'language': language,
-               }
-    with open(filename, 'rb') as f:
-        try:
-            r = requests.post('https://api.ocr.space/parse/image',
-                            files={filename: f},
-                            data=payload,
-                            )
-        except Exception as err:
-            print(err)
-            return 
-        else:
-            results = json.loads(r.content.decode())
-            text = results.get('ParsedResults')[0]['ParsedText'].replace('\n', '').replace('\r', ' ').strip()
-            
-    return (text, filename)
-
+def img_to_txt(file_path):
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'serviceAccountToken.json'
+    client = vision.ImageAnnotatorClient()
+    with io.open(file_path, 'rb') as image_file:
+        content = image_file.read()
+    image = vision.types.Image(content=content)
+    response = client.text_detection(image=image)
+    texts = response.text_annotations
+    text = texts[0].description
+    text = text.replace('\n', ' ').strip()
+    return text
 
 
 def remove_imgs(folder_path):
@@ -68,8 +61,8 @@ def remove_imgs_list(imgs_list):
         
 
 def verify_mnt(source):
-   if len(os.listdir(source)) == 0:
-      os.system(f'google-drive-ocamlfuse /{source}')
+    if len(os.listdir(source)) == 0:
+       os.system(f'google-drive-ocamlfuse /{source}')
 
 #FUNÇÃO PARA OBTER AS IMAGENS DO DIRETÓRIO MONTADO gdrive
 
