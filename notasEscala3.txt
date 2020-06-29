@@ -23,12 +23,10 @@ Possíveis soluções:
 	
 	- ter um sistema de checagem, no estilo atomico, em que se haja erro em algum passo do processo, todo o restante seja abortado. 
 		- futuramente obter um sistema de 'checkpoint' para adiantar o processo e não gastar recursos.
-		- contar o número de arquivos há na página -> realizar um contador nas tentativas para obter esse 'checkpoint'
+		- ter um sistema de chaves, no estilo de BD, para o caso de houver um erro no processo.
 		- obter um retorno contendo uma tupla (uma lista com os nomes, as strings obtidas)
 		
 - Melhorar:
 	- o número de arquivos por requisição, tentar realizar até 15 arquivos por requisição -> muda o formato do retorno
 	
-	
-	
-	
+

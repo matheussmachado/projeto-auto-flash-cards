@@ -1,13 +1,15 @@
 import unittest
 from src.classes import AutoCards, AnkiBot
 from src.funcs import os, get_from_txt, remove_imgs_list
+print()
+get_from_txt()
 
 #UMA CLASSE TESTE POR CLASSE E POR FUNÇÃO
 
 class TestGetFromTxt(unittest.TestCase):
     
     def test_get_from_txt_1(self):
-        """
+        """l
             TESTA SE É POSSÍVEL OBTER UMA LISTA CONTENDO STRINGS DE UM ARQUÍVO file DE EXTENSÃO .TXT. AS STRINGS DEVEM SER CONFORME AS FRASES CONTIDAS NA LISTA frases."""
         frases = [
             'Take this time, Francis, to know your other attendees.',
@@ -74,10 +76,12 @@ class TestAnkiBot(unittest.TestCase):
 
     #VERIFICA se retorna None caso o parâmetro errado for passado, abortando o início do bot.
     def test_start_1(self):
-        self.assertIsNone(self.bot.start('txt', self.frases))
+        self.assertIsNone(
+            self.bot.start(gen_type='txt', source=self.frases)
+            )
 
 
 #TODO: TESTE do AnkiBot e suas interações com a web
 
-if __name__== '__main__':
+if __name__ == '__main__':
     unittest.main()

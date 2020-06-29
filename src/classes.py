@@ -44,14 +44,29 @@ class AutoCards:
     def gen_cards_img(self, source):
         file_names = []
         files = get_imgs_name(source)
+        check = True
+        #ALGORITMO PARA VALIDAÇÃO DE EXTRAÇÃO E PERSISTÊNCIA DE FRASES EXTRAÍDAS
+        """
+        - Validação: uma variavel de validação irá obter o valor False
+        - Persistência: registrar em uma estrutura de persistência, ou em um arquivo de texto o nomearquivo e a string extraída
+        - Resguardo: No início do processo de geração de cards por imagem, verificar se há elementosjá obtidos na estrutura de persistência
+        - Coerência: sempre verificar se a quantidade arquivos na estrutura de persistência é o mesmo do número de arquivos no diretório das imagens. Portanto, nunca excluir as imagens até essa condição seja validada e sempre que for realizar o processo desta função, partir do len(arq_persistência) menos 1
+        
+        """
         if len(files) == 0:
+            print('Sem imagens para obter cartões.')
             return
             #check = False
         for file in files:
-            result = img_to_txt(file)
-            if result != None:                
+            try:
+                result = img_to_txt(file)
+            except Exception as err:
+                print(err)
+                check = False
+                #escrever file_names em um arquivo txt
+            else:                
                 self.cards.append(FlashCard(result))
-                file_names.append(result)
+                file_names.append(file)
         return file_names
 
 
@@ -76,9 +91,8 @@ class AnkiBot:
         
         elif gen_type == 'img':            
              #verificação do dir montado
-             img_folder = get_from_txt('imgPath.txt')[0]
-             verify_mnt(img_folder)
-             file_names = self.auto_cards.gen_cards_img(img_folder)
+             img_folder = get_from_txt('imgPath.txt')[0]             
+             file_names = self.auto_cards.gen_cards_img(verify_mnt(img_folder))
             
         else:
             print('parâmetro gen_type inválido.')
@@ -122,7 +136,9 @@ class AnkiBot:
             
                 browser.find_element_by_css_selector('button[class$="primary"]').click()
                 sleep(1)            
+            browser.close()
             remove_imgs_list(file_names)            
         finally:
             browser.quit()
+            os.system('fusermount -u ~/gdrive')
 

@@ -61,16 +61,6 @@ def remove_imgs_list(imgs_list):
         
 
 def verify_mnt(source):
-    if len(os.listdir(source)) == 0:
-       os.system(f'google-drive-ocamlfuse /{source}')
-
-#FUNÇÃO PARA OBTER AS IMAGENS DO DIRETÓRIO MONTADO gdrive
-
-"""
-- verificar se há o diretório Legendas
-   - se não, montar com o comando
-- obter o caminho de todas elas as imagens -> get_imgs_name
-- realizar o processo de extração do textos
-- excluir as imagens -> remove_imgs_list
-
-"""
+    if not 'Legendas' in os.listdir(source):
+        os.system(f'google-drive-ocamlfuse /{source}')
+    return os.path.join(source, 'Legendas')
