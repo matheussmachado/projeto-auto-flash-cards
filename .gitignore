@@ -4,5 +4,8 @@ login.txt
 *.png
 *.jpg
 imagens/
-.json
+*.json
 imgPath.txt
+venv
+.vscode
+

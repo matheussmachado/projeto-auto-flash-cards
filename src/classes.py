@@ -40,19 +40,21 @@ class AutoCards:
         self.cards = [FlashCard(front) for front in phrases]
         return self.cards
 
-    
     def gen_cards_img(self, source):
         file_names = []
         files = get_imgs_name(source)
-        check = True
+        #check = True
         #ALGORITMO PARA VALIDAÇÃO DE EXTRAÇÃO E PERSISTÊNCIA DE FRASES EXTRAÍDAS
         """
-        - Validação: uma variavel de validação irá obter o valor False
-        - Persistência: registrar em uma estrutura de persistência, ou em um arquivo de texto o nomearquivo e a string extraída
-        - Resguardo: No início do processo de geração de cards por imagem, verificar se há elementosjá obtidos na estrutura de persistência
-        - Coerência: sempre verificar se a quantidade arquivos na estrutura de persistência é o mesmo do número de arquivos no diretório das imagens. Portanto, nunca excluir as imagens até essa condição seja validada e sempre que for realizar o processo desta função, partir do len(arq_persistência) menos 1
-        
-        """
+            - Validação: uma variavel de validação irá obter o valor False
+            - Persistência: registrar em uma estrutura de persistência, ou em um arquivo de texto o nomearquivo e a string extraída
+            - Resguardo: No início do processo de geração de cards por imagem, verificar se há elementos já obtidos na estrutura de persistência
+            - Coerência: sempre verificar se a quantidade arquivos na estrutura de persistência é o mesmo do número de arquivos no diretório das imagens. Portanto, nunca excluir as imagens até essa condição seja validada e sempre que for realizar o processo desta função, partir do len(arq_persistência) menos 1
+            
+        > gen_cards:
+
+            -     
+            """
         if len(files) == 0:
             print('Sem imagens para obter cartões.')
             return
