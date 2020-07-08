@@ -58,14 +58,11 @@ class AutoCards:
         if len(files) == 0:
             print('Sem imagens para obter cartões.')
             return
-            #check = False
         for file in files:
             try:
                 result = img_to_txt(file)
             except Exception as err:
-                print(err)
-                check = False
-                #escrever file_names em um arquivo txt
+                print(err)                
             else:                
                 self.cards.append(FlashCard(result))
                 file_names.append(file)
@@ -137,7 +134,7 @@ class AnkiBot:
                 browser.find_element_by_id('f1').send_keys(card.back)
             
                 browser.find_element_by_css_selector('button[class$="primary"]').click()
-                sleep(1)            
+                sleep(1)
             browser.close()
             remove_imgs_list(file_names)            
         finally:
