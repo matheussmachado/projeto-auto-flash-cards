@@ -1,4 +1,4 @@
-import os, requests, json
+import os,json
 
 def get_from_txt(file='frases.txt'):    
     """
@@ -29,7 +29,6 @@ def get_imgs_name(folder_path):
             files.append(os.path.join(folder_path, file))
     return files
 
-#api_key = '22cd3eed8288957'
 
 def get_from_img(filename, overlay=False, api_key='22cd3eed8288957', language='eng'):        
     payload = {'isOverlayRequired': overlay,

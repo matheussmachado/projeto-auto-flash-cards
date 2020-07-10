@@ -1,27 +1,36 @@
-from .funcs import os, get_from_txt, get_imgs_name, get_from_img, remove_imgs_list
 from time import sleep
+from abc import ABC, abstractmethod
+
+from .funcs import os, get_from_txt, get_imgs_name, get_from_img, remove_imgs_list
 from selenium.webdriver import Firefox
 
 
 
-class FlashCard:
+class FlashCard(object):
     """
         Classe que representa um objeto Flash Card, que são cartões utilizados em revisões espaçadas e que possuem o conteúdo estudado na parte da frente e sua "resposta na parte de trás."""
-    def __init__(self, front):
+    
+    DEFAULT_BACK = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
+
+    '''def __init__(self, front, back=DEFAULT_BACK):
         """
             Inicialização de um objeto FlashCard que será preenchido com frases em inglês na parte da frente posteriormente.
 
             Arguments:
                 front {str} -- parte da frente que será preenchida."""
         self.front = front
-        self.back = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
+        self.back = back'''
+    
+    
+    def __init__(self, front):
+        self.front = front
+        self.back = self.DEFAULT_BACK
 
 
 class MyCard(FlashCard):
 
     def __init__(self, front, source):
-        super().__init__()
-        self.front = front
+        super().__init__(front)
         self.source = source
         self.inserted = False
 
