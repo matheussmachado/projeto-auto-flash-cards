@@ -17,6 +17,15 @@ class FlashCard:
         self.back = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
 
 
+class MyCard(FlashCard):
+
+    def __init__(self, front, source):
+        super().__init__()
+        self.front = front
+        self.source = source
+        self.inserted = False
+
+
 class AutoCards:
     """
         Classe responsável por gerar flash cards em massa a partir de algum meio de obtenção de conteúdos em texto. """

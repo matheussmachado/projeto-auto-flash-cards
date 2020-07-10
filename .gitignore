@@ -4,3 +4,6 @@ login.txt
 *.png
 *.jpg
 *.bat
+*.json
+venv/
+.vscode

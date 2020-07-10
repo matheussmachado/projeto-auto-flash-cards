@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/matheus/Documentos/projetos/Proj_AutoCards/venv"
+VIRTUAL_ENV="/home/mm/Documentos/projetos/Proj_AutoCards/venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
