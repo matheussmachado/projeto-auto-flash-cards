@@ -26,6 +26,23 @@ class MyCard(FlashCard):
         self.inserted = False
 
 
+
+class CardWriter(ABC):
+
+    def __init__(self, card_type, source):
+        self.card_type = card_type
+        self.source = source
+
+    @abstractmethod
+    def get_phrases(self):
+        ...
+
+    @abstractmethod
+    def write(self):
+        ...
+
+
+
 class AutoCards:
     """
         Classe responsável por gerar flash cards em massa a partir de algum meio de obtenção de conteúdos em texto. """
