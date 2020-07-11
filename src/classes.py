@@ -10,27 +10,18 @@ class FlashCard(object):
     """
         Classe que representa um objeto Flash Card, que são cartões utilizados em revisões espaçadas e que possuem o conteúdo estudado na parte da frente e sua "resposta na parte de trás."""
     
-    DEFAULT_BACK = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'
-
-    '''def __init__(self, front, back=DEFAULT_BACK):
-        """
-            Inicialização de um objeto FlashCard que será preenchido com frases em inglês na parte da frente posteriormente.
-
-            Arguments:
-                front {str} -- parte da frente que será preenchida."""
-        self.front = front
-        self.back = back'''
     
-    
-    def __init__(self, front):
+    def __init__(self, front, back):
         self.front = front
-        self.back = self.DEFAULT_BACK
+        self.back = back
 
 
 class MyCard(FlashCard):
+    
+    _DEFAULT_BACK = '*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*'    
 
     def __init__(self, front, source):
-        super().__init__(front)
+        super().__init__(front, back=self._DEFAULT_BACK)
         self.source = source
         self.inserted = False
 
