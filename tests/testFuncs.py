@@ -1,0 +1,41 @@
+import sys
+from myPaths import SOURCE_PATH, SAMPLE_FOLDER 
+sys.path.insert(0, SOURCE_PATH)
+
+import unittest
+from src.funcs import get_from_txt, remove_imgs_list, os
+
+
+
+class TestGetFromTxt(unittest.TestCase):
+    
+    def test_1(self):
+        """
+            TESTA SE É POSSÍVEL OBTER UMA LISTA CONTENDO STRINGS DE UM ARQUÍVO file DE EXTENSÃO .TXT. AS STRINGS DEVEM SER CONFORME AS FRASES CONTIDAS NA LISTA frases."""
+        frases = [
+            'Take this time, Francis, to know your other attendees.',
+            "Tell me you're not peddling influence with your wife?",
+            'The Russian research vessel.',
+            "Let's reconvene when you know more."
+        ]        
+        file = 'frasesTestePreenchida.txt'
+        path = os.path.join(SAMPLE_FOLDER, file)
+        phrases = get_from_txt(path)
+        self.assertEqual(phrases, frases)        
+    
+
+'''class TestRemoveImgs(unittest.TestCase):
+
+    def test_1(self):
+        path = 'imgFolderTest'
+        lista = [os.path.join('..', path, img) for img in os.listdir(path) 
+                if img.endswith('.png') or img.endswith('.jpg')
+        ]
+        remove_imgs_list(lista)
+        imgs = [img for img in os.listdir(path) 
+                if (img.endswith('.png') or img.endswith('.jpg'))]
+        self.assertEqual(len(imgs), 0)'''
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -29,8 +29,7 @@ class MyCard(FlashCard):
 
 class CardWriter(ABC):
 
-    def __init__(self, card_type, source):
-        self.card_type = card_type
+    def __init__(self, source):        
         self.source = source
 
     @abstractmethod
@@ -41,6 +40,26 @@ class CardWriter(ABC):
     def write(self):
         ...
 
+
+
+class TextCardWriter(CardWriter):
+
+    def __init__(self, source):
+        super().__init__(card_type, source)
+    
+
+    def get_phrases(self):
+        self.phrase = get_from_txt(self.source)
+
+
+    def write(self, phrase):
+        return MyCard(phrase, self.source)
+
+
+'''for phrase in TextCardWriter.get_phrases():
+    card = TextCardWriter.writer(phrase)
+    dBAdmin.guardar(card)
+    cards.append(card)'''
 
 
 class AutoCards:

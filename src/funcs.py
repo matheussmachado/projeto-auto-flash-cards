@@ -28,29 +28,7 @@ def get_imgs_name(folder_path):
         if file.endswith('.png') or file.endswith('.jpg'):
             files.append(os.path.join(folder_path, file))
     return files
-
-
-def get_from_img(filename, overlay=False, api_key='22cd3eed8288957', language='eng'):        
-    payload = {'isOverlayRequired': overlay,
-               'apikey': api_key,
-               'language': language,
-               }
-    with open(filename, 'rb') as f:
-        try:
-            r = requests.post('https://api.ocr.space/parse/image',
-                            files={filename: f},
-                            data=payload,
-                            )
-        except Exception as err:
-            print(err)
-            return 
-        else:
-            results = json.loads(r.content.decode())
-            text = results.get('ParsedResults')[0]['ParsedText'].replace('\n', '').replace('\r', ' ').strip()
-            
-    return (text, filename)
-
-
+    
 
 def remove_imgs(folder_path):
     if not os.path.isdir(folder_path):

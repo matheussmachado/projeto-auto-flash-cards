@@ -1,6 +1,8 @@
 __pycache__
 *.log
 login.txt
+myPaths.py
+imagePath.txt
 *.png
 *.jpg
 *.bat
