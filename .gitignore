@@ -7,5 +7,5 @@ imagePath.txt
 *.jpg
 *.bat
 *.json
-venv/
+
 .vscode
