@@ -13,9 +13,9 @@ class TestGetFromTxt(unittest.TestCase):
         """
             TESTA SE É POSSÍVEL OBTER UMA LISTA CONTENDO STRINGS DE UM ARQUÍVO file DE EXTENSÃO .TXT. AS STRINGS DEVEM SER CONFORME AS FRASES CONTIDAS NA LISTA frases."""
         frases = [
-            'Take this time, Francis, to know your other attendees.',
+            "Take this time, Francis, to know your other attendees.",
             "Tell me you're not peddling influence with your wife?",
-            'The Russian research vessel.',
+            "The Russian research vessel.",
             "Let's reconvene when you know more."
         ]        
         file = 'frasesTestePreenchida.txt'

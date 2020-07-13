@@ -1,19 +1,19 @@
 from time import sleep
 from abc import ABC, abstractmethod
-
-from .funcs import os, get_from_txt, get_imgs_name, get_from_img, remove_imgs_list
+import shelve
 from selenium.webdriver import Firefox
+from .funcs import os, get_from_txt, get_imgs_name, remove_imgs_list
 
 
 
 class FlashCard(object):
     """
         Classe que representa um objeto Flash Card, que são cartões utilizados em revisões espaçadas e que possuem o conteúdo estudado na parte da frente e sua "resposta na parte de trás."""
-    
-    
+        
     def __init__(self, front, back):
         self.front = front
         self.back = back
+
 
 
 class MyCard(FlashCard):
@@ -27,11 +27,20 @@ class MyCard(FlashCard):
 
 
 
-class CardWriter(ABC):
+class AbstraticSource(ABC):    
 
-    def __init__(self, source):        
-        self.source = source
+    @abstractmethod
+    def return_source(self):
+        ...
 
+    @abstractmethod
+    def update_source(self):
+        ...
+
+
+
+class AbstraticCardWriter(ABC):    
+    
     @abstractmethod
     def get_phrases(self):
         ...
@@ -42,24 +51,137 @@ class CardWriter(ABC):
 
 
 
-class TextCardWriter(CardWriter):
+class TextCardWriter(AbstraticCardWriter):
+    
+    def get_phrases(self, source):
+        phrases = get_from_txt(source)
+        return phrases
+
+
+    def write(self, phrase, source):
+        return MyCard(phrase, source)
+
+
+class ImageCardWriter(AbstraticCardWriter):
+
+    def get_phrases(self, source):
+        return print('obtendo frases...')
+
+
+    def write(self, phrase, source):
+        return print('escrevendo card...')
+
+
+
+class WriterAdmin(TextCardWriter, ImageCardWriter):
+    #TODO: realizar uma lógica para decidir de qual super classe irá herdar os métodos de acordo com o card_type
+
+    def __init__(self, card_type, source):
+        self.card_type = card_type
+        self.source = source
+        if card_type == 'text':            
+            TextCardWriter.write(self)
+            TextCardWriter.get_phrases(self)
+        elif card_type == 'image':
+            ImageCardWriter.write(self)
+            ImageCardWriter.get_phrases(self)
+        else:
+            raise NameError('card_type inválido! Deve ser "text" ou "image"')
+
+'''class WriterAdmin:
+
+    def __new__(cls, card_type, source):
+        if card_type == 'text':            
+            return TextCardWriter()
+        else:
+            raise NameError('card_type inválido! Deve ser "text" ou "image"')
+'''
+
+class TextSourceAdmin(AbstraticSource):
 
     def __init__(self, source):
-        super().__init__(card_type, source)
+        self.source = source
+        
     
-
-    def get_phrases(self):
-        self.phrase = get_from_txt(self.source)
-
-
-    def write(self, phrase):
-        return MyCard(phrase, self.source)
+    def return_source(self):
+        """
+            Retorna o caminho do arquivo de texto"""
+        return self.source
 
 
-'''for phrase in TextCardWriter.get_phrases():
-    card = TextCardWriter.writer(phrase)
-    dBAdmin.guardar(card)
-    cards.append(card)'''
+    def update_source(self):
+        ...
+
+
+
+class SourceAdmin(TextSourceAdmin):
+    """
+        Deve ter um card_type e um source
+
+        - Retorna uma fonte de extração
+        - Atualiza a fonte de extração
+    """
+    
+    def __init__(self, card_type, source):
+        if card_type == 'text':
+            TextSourceAdmin.__init__(source)
+
+'''class SourceAdmin:
+    """
+        Deve ter um card_type e um source
+
+        - Retorna uma fonte de extração
+        - Atualiza a fonte de extração
+    """
+    
+    def __new__(cls, card_type, source):
+        if card_type == 'text':
+            return TextSourceAdmin(source)
+'''
+
+
+class DataBaseAdmin(AbstraticSource):
+    ...
+
+
+
+class ContextManager(WriterAdmin, SourceAdmin):
+
+    #TODO: verificar se vai iniciar o determinado tip ode writer ao inciar com o card_type passado
+
+    def __init__(self, card_type, source):
+        self.card_type = card_type
+        self.source = source
+        self.cards = []
+    
+        
+    def create_card(self):        
+        card_src = self.return_source()
+        src = self.source
+        for phrase in self.get_phrases(card_src):        
+        #for phrase in self.source:
+            card = self.write(phrase, src)
+            self.cards.append(card)
+
+
+'''class ContextManager:
+
+    def __init__(self, card_type, source):        
+        self.card_type = card_type
+        self.source = source
+        self.cards = []
+        self.writer = WriterAdmin(card_type, source)
+        self.sourceAdmin = SourceAdmin(card_type, source)
+
+
+    def create_cards(self):
+        card_src = self.sourceAdmin.return_source()
+        for phrase in self.writer.get_phrases(card_src):
+            card = self.writer.write(phrase, card_src)
+            #dBAdmin.algumacoisa(card)
+            self.cards.append(card)
+'''
+
 
 
 class AutoCards:
