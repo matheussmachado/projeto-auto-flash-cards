@@ -1,8 +1,7 @@
 from time import sleep
 from abc import ABC, abstractmethod
-import shelve
 from selenium.webdriver import Firefox
-from .funcs import os, get_from_txt, get_imgs_name, remove_imgs_list
+from .funcs import os, get_from_txt, get_imgs_name, remove_imgs_list, shelve
 
 
 
@@ -141,9 +140,9 @@ class DataBaseAdmin(AbstraticSource):
         
 
     def verify_key(self):
-        with self.database.open(db_cards) as db:            
-            if not db_key in db.keys():
-                db[db_key] = []            
+        with self.database.open(self.db_cards) as db:            
+            if not self.db_key in db.keys():
+                db[self.db_key] = []            
 
 
     def update_sources(self, card):
@@ -168,25 +167,26 @@ class ContextManager(
     
     ):    
 
-    def __init__(self, card_type, card_source):    
+    def __init__(self, card_type, card_source, db_cards, db_key):    
         #CardWriterAdmin.__init__(self, card_type, card_source)
         #GeneralSourceAdmin.__init__(self, card_type, card_source)
         super().__init__(card_type, card_source)
-        self.cards_list = []
-        
+        DataBaseAdmin.__init__(self, db_cards, db_key)
+        self.cards_list = []        
     
         
     def create_card(self):        
         card_src = self.return_sources()
         src = self.card_source
-        for phrase in self.get_phrases(card_src):        
-        
+        for phrase in self.get_phrases(card_src):                    
             card = self.write(phrase, src)
+            DataBaseAdmin.update_sources(self, card)
             self.cards_list.append(card)
 
     
     def verify_cards(self):
-        ...
+        cards = DataBaseAdmin.return_sources(self)
+        self.cards_list = [card for card in cards]
 
 '''class ContextManager:
 

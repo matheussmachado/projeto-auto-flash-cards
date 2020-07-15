@@ -5,7 +5,7 @@ sys.path.insert(0, SOURCE_PATH)
 import unittest
 from src.classes import ContextManager, DataBaseAdmin, GeneralSourceAdmin, TextSourceAdmin, TextCardWriter
 
-from src.funcs import os, get_from_txt, text_source_back
+from src.funcs import os, get_from_txt, text_source_back, db_cards_back
 
 
 class TestTextSourceAdmin(unittest.TestCase):
@@ -88,25 +88,31 @@ class TestContextManager(unittest.TestCase):
             "Let's reconvene when you know more."
         ]
         self.text_source = os.path.join(SAMPLE_FOLDER, 'frasesTestePreenchida.txt')
-        self.manager = ContextManager('text', self.text_source)
-    
+        self.db_cards = os.path.join(SAMPLE_FOLDER, 'db_cards_test')
+        self.db_key = 'test_key'
+        self.source_before = []
+        
+        self.text_manager = ContextManager(
+            'text', self.text_source, self.db_cards, self.db_key
+        )
 
     def test_text_writer_1(self):
         #TODO: ACRESCENTAR OS ARGUMENTOS DO ContextManager
-        self.manager.create_card()
-        cards_front = [card.front for card in self.manager.cards_list]
+        self.text_manager.create_card()
+        cards_front = [card.front for card in self.text_manager.cards_list]
         self.assertEqual(cards_front, self.frases)
-
+        db_cards_back(self.db_cards, self.db_key, self.source_before)
     
     #TODO: testar as fontes para escrita em texto
     def test_text_writer_2(self):
-        self.manager.create_card()
+        self.text_manager.create_card()
         cards_source = [
-            card.source for card in self.manager.cards_list
+            card.source for card in self.text_manager.cards_list
         ]
         
         for src in cards_source:
             self.assertEqual(src, self.text_source)
+        db_cards_back(self.db_cards, self.db_key, self.source_before)
 
 #TODO: TESTE do AnkiBot e suas interações com a web
 

@@ -1,4 +1,4 @@
-import os,json
+import os, json, shelve
 
 def get_from_txt(file='frases.txt'):    
     """
@@ -48,3 +48,9 @@ def text_source_back(source, source_before):
         with open(source, 'w') as src:
             for phrse in source_before:
                 src.write(f'{phrse}\n')
+
+
+def db_cards_back(source, key, source_before):
+    with shelve.open(source) as db:
+        db[key] = source_before
+    
