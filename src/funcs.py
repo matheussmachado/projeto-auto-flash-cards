@@ -42,3 +42,9 @@ def remove_imgs_list(imgs_list):
     for img_path in imgs_list:          
         if os.path.isfile(img_path) and (img_path.endswith('.png') or img_path.endswith('.jpg')): 
             os.unlink(img_path)        
+
+
+def text_source_back(source, source_before):
+        with open(source, 'w') as src:
+            for phrse in source_before:
+                src.write(f'{phrse}\n')

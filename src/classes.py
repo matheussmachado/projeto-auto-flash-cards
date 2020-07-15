@@ -42,18 +42,18 @@ class AbstraticSource(ABC):
 
 class TextSourceAdmin(AbstraticSource):
 
-    def __init__(self, source):
-        self.source = source
+    def __init__(self, card_source):
+        self.card_source = card_source
         
     
     def return_sources(self):
         """
             Retorna o caminho do arquivo de texto"""
-        return self.source
+        return self.card_source
 
 
     def update_sources(self, list_phrases):
-        with open(self.source, 'w') as source:
+        with open(self.card_source, 'w') as source:
             for phrase in list_phrases:
                 source.write(f'{phrase}\n')
 
@@ -61,9 +61,9 @@ class TextSourceAdmin(AbstraticSource):
 
 class GeneralSourceAdmin(TextSourceAdmin): 
     
-    def __init__(self, card_type, source):        
+    def __init__(self, card_type, card_source):        
         self.card_type = card_type
-        self.source = source
+        self.card_source = card_source
 
     
     def return_sources(self):        
@@ -72,12 +72,12 @@ class GeneralSourceAdmin(TextSourceAdmin):
 
 
     def update_sources(self, cards):
-        lista = []
+        for_update = []
         if self.card_type == 'text':
             for card in cards:
                 if card.inserted == False:
-                    lista.append(card.front)    
-            return TextSourceAdmin.update_sources(self, lista)
+                    for_update.append(card.front)    
+            return TextSourceAdmin.update_sources(self, for_update)
 
 
 
@@ -119,9 +119,9 @@ class ImageCardWriter(AbstraticCardWriter):
 class CardWriterAdmin(TextCardWriter, ImageCardWriter):
     #TODO: realizar uma lógica para decidir de qual super classe irá herdar os métodos de acordo com o card_type
 
-    def __init__(self, card_type, source):
+    def __init__(self, card_type, card_source):
         self.card_type = card_type
-        self.source = source        
+        self.card_source = card_source        
 
 
     def write(self, phrase, source):
@@ -133,29 +133,60 @@ class CardWriterAdmin(TextCardWriter, ImageCardWriter):
 
 
 class DataBaseAdmin(AbstraticSource):
-    ...
+    
+    def __init__(self, db_cards, db_key):
+        self.db_cards = db_cards
+        self.db_key = db_key
+        self.database = shelve        
+        
+
+    def verify_key(self):
+        with self.database.open(db_cards) as db:            
+            if not db_key in db.keys():
+                db[db_key] = []            
+
+
+    def update_sources(self, card):
+        self.verify_key()
+        with self.database.open(self.db_cards) as db:
+            cards_temp = db[self.db_key]
+            cards_temp.append(card)
+            db[self.db_key] = cards_temp
+    
+
+    def return_sources(self):
+        self.verify_key()
+        with self.database.open(self.db_cards) as db:
+            cards_list = db[self.db_key]
+        return cards_list
 
 
 
-class ContextManager(CardWriterAdmin, GeneralSourceAdmin):
+class ContextManager(
+    
+    CardWriterAdmin, GeneralSourceAdmin, DataBaseAdmin
+    
+    ):    
 
-    #TODO: verificar se vai iniciar o determinado tip ode writer ao inciar com o card_type passado
-
-    def __init__(self, card_type, source):
-        self.card_type = card_type
-        self.source = source
-        self.cards = []
+    def __init__(self, card_type, card_source):    
+        #CardWriterAdmin.__init__(self, card_type, card_source)
+        #GeneralSourceAdmin.__init__(self, card_type, card_source)
+        super().__init__(card_type, card_source)
+        self.cards_list = []
+        
     
         
     def create_card(self):        
         card_src = self.return_sources()
-        src = self.source
+        src = self.card_source
         for phrase in self.get_phrases(card_src):        
-        #for phrase in self.source:
+        
             card = self.write(phrase, src)
-            self.cards.append(card)
+            self.cards_list.append(card)
 
-
+    
+    def verify_cards(self):
+        ...
 
 '''class ContextManager:
 

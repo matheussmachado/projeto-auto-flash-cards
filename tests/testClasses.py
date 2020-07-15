@@ -5,17 +5,25 @@ sys.path.insert(0, SOURCE_PATH)
 import unittest
 from src.classes import ContextManager, DataBaseAdmin, GeneralSourceAdmin, TextSourceAdmin, TextCardWriter
 
-from src.funcs import os, get_from_txt
+from src.funcs import os, get_from_txt, text_source_back
 
 
 class TestTextSourceAdmin(unittest.TestCase):
 
     def setUp(self):
-        self.file = os.path.join(SAMPLE_FOLDER, 'frasesTestePreenchidaWriter.txt')
+        self.source = os.path.join(SAMPLE_FOLDER, 'frasesTestePreenchidaWriter.txt')
+        self.textSourceAdmin = TextSourceAdmin(self.source)
 
 
-    def test_upadate_source(self):
-        ...
+    def test_update_sources(self):
+        source_before = get_from_txt(self.source)
+        phrase_selected = [ source_before[-1] ]
+        self.textSourceAdmin.update_sources(phrase_selected)
+        source_after = get_from_txt(self.source)
+        
+        self.assertEqual(source_after, phrase_selected)
+        text_source_back(self.source, source_before)
+        
 
 
 class TestGeneralSourceAdmin(unittest.TestCase):
@@ -24,13 +32,7 @@ class TestGeneralSourceAdmin(unittest.TestCase):
         self.text_source = os.path.join(SAMPLE_FOLDER, 'frasesTestePreenchidaWriter.txt')
         self.textAdmin = GeneralSourceAdmin('text', self.text_source)
         self.textWriter = TextCardWriter()
-        self.src_before = get_from_txt(self.text_source)
-        
-    
-    def text_source_back(self, source, source_before):
-        with open(source, 'w') as src:
-            for phrse in source_before:
-                src.write(f'{phrse}\n')
+        self.src_before = get_from_txt(self.text_source)                
 
 
     #SIMULANDO A ATUALIZAÇÃO APÓS TODOS OS CARDS INSERIDOS COM SUCESSO
@@ -56,7 +58,7 @@ class TestGeneralSourceAdmin(unittest.TestCase):
         src_after = get_from_txt(self.text_source)
         self.assertEqual(src_after, [])
 
-        self.text_source_back(self.text_source, self.src_before)
+        text_source_back(self.text_source, self.src_before)
         
     
     #SIMULANDO A ATUALIZAÇÃO APÓS A ULTIMA INSERÇÃO TER FALHADO: valido mesmo se não for o último
@@ -73,7 +75,7 @@ class TestGeneralSourceAdmin(unittest.TestCase):
         src_after = get_from_txt(self.text_source)
         self.assertEqual(src_after, ["Let's reconvene when you know more."])
 
-        self.text_source_back(self.text_source, self.src_before)
+        text_source_back(self.text_source, self.src_before)
                         
 
 class TestContextManager(unittest.TestCase):
@@ -85,16 +87,26 @@ class TestContextManager(unittest.TestCase):
             "The Russian research vessel.",
             "Let's reconvene when you know more."
         ]
-        self.source = os.path.join(SAMPLE_FOLDER, 'frasesTestePreenchida.txt')
+        self.text_source = os.path.join(SAMPLE_FOLDER, 'frasesTestePreenchida.txt')
+        self.manager = ContextManager('text', self.text_source)
     
-    def test_writer_1(self):
-        manager = ContextManager('text', self.source)
-        #manager.write()
-        manager.create_card()
-        cards_front = [card.front for card in manager.cards]
+
+    def test_text_writer_1(self):
+        #TODO: ACRESCENTAR OS ARGUMENTOS DO ContextManager
+        self.manager.create_card()
+        cards_front = [card.front for card in self.manager.cards_list]
         self.assertEqual(cards_front, self.frases)
 
-
+    
+    #TODO: testar as fontes para escrita em texto
+    def test_text_writer_2(self):
+        self.manager.create_card()
+        cards_source = [
+            card.source for card in self.manager.cards_list
+        ]
+        
+        for src in cards_source:
+            self.assertEqual(src, self.text_source)
 
 #TODO: TESTE do AnkiBot e suas interações com a web
 
