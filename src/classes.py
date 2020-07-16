@@ -24,6 +24,9 @@ class MyCard(FlashCard):
         self.source = source
         self.inserted = False
 
+    '''def __repr__(self):
+        return str({'front': self.front, 'back': self.back, 'source': 
+        self.source, 'inserted': self.inserted})'''
 
 
 class AbstraticSource(ABC):    
@@ -139,14 +142,14 @@ class DataBaseAdmin(AbstraticSource):
         self.database = shelve        
         
 
-    def verify_key(self):
+    def _verify_key(self):
         with self.database.open(self.db_cards) as db:            
             if not self.db_key in db.keys():
                 db[self.db_key] = []            
 
 
     def update_sources(self, card):
-        self.verify_key()
+        self._verify_key()
         with self.database.open(self.db_cards) as db:
             cards_temp = db[self.db_key]
             cards_temp.append(card)
@@ -154,7 +157,7 @@ class DataBaseAdmin(AbstraticSource):
     
 
     def return_sources(self):
-        self.verify_key()
+        self._verify_key()
         with self.database.open(self.db_cards) as db:
             cards_list = db[self.db_key]
         return cards_list
@@ -172,7 +175,17 @@ class ContextManager(
         DataBaseAdmin.__init__(self, db_cards, db_key)
         self.cards_list = []        
     
-        
+
+    '''@property
+    def cards_list(self):
+        return self._cards_list
+
+    
+    @cards_list.setter
+    def cards_list(self, card):
+        self._cards_list.append(card)'''
+
+
     def create_card(self):        
         card_src = self.return_sources()
         src = self.card_source
@@ -180,11 +193,12 @@ class ContextManager(
             card = self.write(phrase, src)
             DataBaseAdmin.update_sources(self, card)
             self.cards_list.append(card)
-
+                        
     
     def verify_cards(self):
         cards = DataBaseAdmin.return_sources(self)
-        self.cards_list = [card for card in cards]
+        self.cards_list += [card for card in cards]
+        
 
 '''class ContextManager:
 

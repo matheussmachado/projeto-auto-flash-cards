@@ -45,8 +45,7 @@ class TestGeneralSourceAdmin(unittest.TestCase):
             - comparar o arquivo após o método
             - reescrever o arquivo com as frases para poder refazer os testes"""
         
-        cards = []
-        
+        cards = []        
         for phrase in self.text_source:
             cards.append(self.textWriter.write(phrase, self.text_source))
         
@@ -62,7 +61,7 @@ class TestGeneralSourceAdmin(unittest.TestCase):
         
     
     #SIMULANDO A ATUALIZAÇÃO APÓS A ULTIMA INSERÇÃO TER FALHADO: valido mesmo se não for o último
-    def test_upadate_sources_text_2(self):
+    def test_update_sources_text_2(self):
         cards = []        
         for phrase in self.text_source_before:
             cards.append(self.textWriter.write(phrase, self.text_source))
@@ -107,7 +106,7 @@ class TestContextManager(unittest.TestCase):
     
     
     #TESTA AS FONTES DE ONDE FORAM CRIADO OS CARDS POR TEXTO
-    def test_text_writer_2(self):
+    def test_text_source_1(self):
         self.text_manager.create_card()
         cards_source = [
             card.source for card in self.text_manager.cards_list
@@ -139,10 +138,18 @@ class TestContextManager(unittest.TestCase):
     #TODO: TESTAR SE ContextManager REALIZA A BUSCA E ACUMULA POSSÍVEIS CARDS DO SEU DATABASE 
     def test_db_cards_2(self):
         self.text_manager.create_card()
-        cardsList_1 = self.text_manager.cards_list
+        cardsList_1 = self.text_manager.cards_list[:]
+        #RESETANDO O manager.cards_list
         self.text_manager.cards_list = []
+
         self.text_manager.verify_cards()
-        cardsList_2 = self.text_manager.cards_list
+        cardsList_2 = self.text_manager.cards_list[:]
+        '''cardsListTemp = self.text_manager.cards_list[:]
+        cardsList_2 = []
+        for card in cardsListTemp:
+            if card not in cardsList_1:
+                cardsList_2.append(card)'''
+
 
         front_1 = [card.front for card in cardsList_1]
         front_2 = [card.front for card in cardsList_2]
@@ -163,6 +170,7 @@ class TestContextManager(unittest.TestCase):
         
 
 #TODO: TESTE do AnkiBot e suas interações com a web
+
 
 
 if __name__== '__main__':
