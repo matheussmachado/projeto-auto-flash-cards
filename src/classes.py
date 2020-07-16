@@ -167,9 +167,7 @@ class ContextManager(
     
     ):    
 
-    def __init__(self, card_type, card_source, db_cards, db_key):    
-        #CardWriterAdmin.__init__(self, card_type, card_source)
-        #GeneralSourceAdmin.__init__(self, card_type, card_source)
+    def __init__(self, card_type, card_source, db_cards, db_key):            
         super().__init__(card_type, card_source)
         DataBaseAdmin.__init__(self, db_cards, db_key)
         self.cards_list = []        
