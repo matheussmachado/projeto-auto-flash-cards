@@ -176,22 +176,13 @@ class ContextManager(
         self.cards_list = []        
     
 
-    '''@property
-    def cards_list(self):
-        return self._cards_list
-
-    
-    @cards_list.setter
-    def cards_list(self, card):
-        self._cards_list.append(card)'''
-
-
     def create_card(self):        
         card_src = self.return_sources()
         src = self.card_source
         for phrase in self.get_phrases(card_src):                    
             card = self.write(phrase, src)
             DataBaseAdmin.update_sources(self, card)
+            #UMA LISTA DE AutoCards PODE ACUMULAR ESSE CARD
             self.cards_list.append(card)
                         
     
@@ -219,40 +210,23 @@ class ContextManager(
 '''
 
 
-
 class AutoCards:
     """
         Classe responsável por gerar flash cards em massa a partir de algum meio de obtenção de conteúdos em texto. """
-    def __init__(self):
-        self.cards = []
-    
-    def gen_cards_txt(self, file='frases.txt'):
-        """
-            Gera cartões FlashCard a partir de frases em inglês obtida através de um arquivo .txt que guarda estas frases. Esse método utiliza uma outra função dedicada para o tratamento das frases disponíveis no arquivo de extensão .txt.
-
-            Keyword Arguments:
-                file {str} -- string corerspondente ao nome do arquivo .txt (default: {'frases.txt'})
-
-            Returns:
-                list -- lista contendo os cartões gerados
-                None -- nada, caso não haja frases para gerar cartões"""
-        phrases = get_from_txt(file)
-        if len(phrases) == 0:
-            print('Sem frases para preencher cartões')
-            return
-        self.cards = [FlashCard(front) for front in phrases]
-        return self.cards
-
-    def gen_cards_img(self, source=r'C:\Users\Matheus\Documents\Projetos\LegendasLocal\Legendas'):
-        file_names = []
-        files = get_imgs_name(source)
-        for file in files:            
-            result = get_from_img(file)
-            if result != None:                
-                self.cards.append(FlashCard(result[0]))
-                file_names.append(result[1])
-        return file_names
-
+    def __init__(self, card_type, card_source, db_cards, db_key):            
+       self.card_type = card_type
+       self.card_source = card_source
+       self.db_cards = db_cards
+       self.db_key = db_key
+       self.cards_list = []
+       self.contextManager = ContextManager(
+            self.card_type,
+            self.card_source,
+            self.db_cards,
+            self.db_key
+       )       
+       
+       
 
 class AnkiBot:
     """
