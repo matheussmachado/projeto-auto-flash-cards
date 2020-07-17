@@ -24,9 +24,10 @@ class MyCard(FlashCard):
         self.source = source
         self.inserted = False
 
-    '''def __repr__(self):
+    @property
+    def representation(self):
         return str({'front': self.front, 'back': self.back, 'source': 
-        self.source, 'inserted': self.inserted})'''
+        self.source, 'inserted': self.inserted})
 
 
 class AbstraticSource(ABC):    
