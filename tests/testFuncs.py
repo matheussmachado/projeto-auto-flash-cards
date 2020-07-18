@@ -18,18 +18,7 @@ class TestGetFromTxt(unittest.TestCase):
         file = 'frasesTestePreenchida.txt'
         path = os.path.join(SAMPLE_FOLDER, file)
         phrases = get_from_txt(path)
-        self.assertEqual(phrases, frases)        
-    
-
-class TestCardRepresentation(unittest.TestCase):
-
-    def setUp(self):
-        self.file = 'frasesTestePreenchida.txt'
-        self.path = os.path.join(SAMPLE_FOLDER, self.file)
-        self.front = get_from_txt(self.path)[0]
-
-    def test_card_represent_equals_to_a_card_attributes(self):
-        myCard = MyCard(self.front, self.path)
+        self.assertEqual(phrases, frases)            
         
 
 

@@ -1,5 +1,5 @@
 import unittest
-from src.classes import ContextManager, DataBaseAdmin, GeneralSourceAdmin, TextSourceAdmin, TextCardWriter
+from src.classes import ContextManager, DataBaseAdmin, GeneralSourceAdmin,MyCard, TextSourceAdmin, TextCardWriter
 from src.funcs import os, get_from_txt, text_source_back, db_cards_back
 
 SAMPLE_FOLDER = 'amostras/'
@@ -87,6 +87,7 @@ class TestContextManager(unittest.TestCase):
             "Let's reconvene when you know more."
         ]
         self.text_source = os.path.join(SAMPLE_FOLDER, 'frasesTestePreenchidaWriter.txt')
+        self.empty_text_source = os.path.join(SAMPLE_FOLDER, 'frasesTesteVazia.txt')
         self.text_source_before = get_from_txt(self.text_source)
 
         self.db_source = os.path.join(SAMPLE_FOLDER, 'db_cards_test')
@@ -96,6 +97,10 @@ class TestContextManager(unittest.TestCase):
         self.text_manager = ContextManager(
             'text', self.text_source, self.db_source, self.db_key
         )
+        self.empty_text_manager = ContextManager(
+            'text', self.empty_text_source, self.db_source, self.db_key
+        )
+
 
 
     def tearDown(self):
@@ -134,13 +139,14 @@ class TestContextManager(unittest.TestCase):
 
     #TESTAR SE ContextManager REALIZA A BUSCA E ACUMULA POSSÍVEIS CARDS DO SEU DATABASE 
     def test_verify_and_append_cards_created_before(self):
-        self.text_manager.create_card()
-        cardsList_1 = self.text_manager.cards_list[:]
-        #RESETANDO O manager.cards_list
-        self.text_manager.cards_list = []
-
-        self.text_manager.verify_cards()
-        cardsList_2 = self.text_manager.cards_list[:]
+        cards = self.text_source_before
+        myCards = [MyCard(card, self.empty_text_source) for card in cards]
+        db = DataBaseAdmin(self.db_source, self.db_key)
+        db.update_sources(myCards)
+        cardsList_1 = myCards[:]        
+        self.empty_text_manager.create_card()        
+                        
+        cardsList_2 = self.empty_text_manager.cards_list[:]
         '''cardsListTemp = self.text_manager.cards_list[:]
         cardsList_2 = []
         for card in cardsListTemp:
@@ -154,11 +160,23 @@ class TestContextManager(unittest.TestCase):
     
 
     def test_verify_and_append_no_cards_created(self):
-        self.text_manager.verify_cards()
+        self.empty_text_manager.create_card()
 
         self.assertEqual(self.text_manager.cards_list, [])
         
         
+    def test_update_cards_inserted_status(self):
+        self.text_manager.create_card()
+        cards_list_before = self.text_manager.cards_list[:]
+        for card in cards_list_before:
+            self.text_manager.update_card(card)
+        cards_list_after = self.text_manager.cards_list[:]
+        inserted_status = [card.inserted or card in cards_list_after]
+        expected = [True for true in range(len(inserted_status))]
+
+        self.assertEqual(inserted_status, expected)
+
+
 
 class TestAutoCards(unittest.TestCase):
 
