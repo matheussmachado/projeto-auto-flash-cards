@@ -2,10 +2,10 @@ __pycache__
 *.log
 login.txt
 
-imagePath.txt
+imgPath.txt
 *.png
 *.jpg
 *.bat
 *.json
-
+venv
 .vscode
