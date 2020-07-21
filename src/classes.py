@@ -1,7 +1,7 @@
 from time import sleep
 from abc import ABC, abstractmethod
 from selenium.webdriver import Firefox
-from .funcs import os, get_from_txt, get_imgs_name, remove_imgs_list, shelve
+from funcs import os, get_from_txt, get_imgs_name, remove_imgs_list, shelve
 
 
 class FlashCard:
@@ -54,8 +54,10 @@ class TextSourceAdmin(AbstraticSource):
         return self.card_source
 
     def update_sources(self, phrases: list) -> None:
+        source = get_from_txt(self.card_source)
+        update = [phrase for phrase in source if phrase not in phrases]
         with open(self.card_source, "w") as source:
-            for phrase in phrases:
+            for phrase in update:
                 source.write(f"{phrase}\n")
 
 
@@ -72,8 +74,7 @@ class GeneralSourceAdmin(TextSourceAdmin):
         for_update = []
         if self.card_type == "text":
             for card in cards:
-                if card.inserted == False:
-                    for_update.append(card.front)
+                for_update.append(card.front)
             return TextSourceAdmin.update_sources(self, for_update)
 
 
@@ -155,7 +156,7 @@ class DataBaseAdmin(AbstraticSource):
         return cards_list
 
 
-class ContextManager(CardWriterAdmin, GeneralSourceAdmin, DataBaseAdmin):
+class CardManager(CardWriterAdmin, GeneralSourceAdmin, DataBaseAdmin):
     def __init__(
         self, card_type: str, card_source: str, 
         db_cards: str, db_key: str) -> None:
@@ -194,20 +195,20 @@ class ContextManager(CardWriterAdmin, GeneralSourceAdmin, DataBaseAdmin):
 
 class AnkiBot:
     """
-        Classe responsável pelo bot que insere os AutoCards na plataforma Anki"""
+        Classe responsável pelo bot que insere os AutoCards na plataforma Anki."""
 
     def __init__(self, card_type, card_source, db_cards, db_key):
-        self.contextManager = ContextManager(card_type, card_source, db_cards, db_key)
+        self.cardManager = CardManager(card_type, card_source, db_cards, db_key)
 
     def start(self, login_path: str = "") -> None:
         """
             Método responsável pela interação com a plataforma Anki, desde o login até a inserção dos conteúdos que compõe o flash card.
 
             Arguments:
-                gen_type {str} -- txt: Em texto;    img: Em imagem"""
+                login_path: path do arquivo que contém o login."""
 
-        self.contextManager.create_card()
-        created_cards = self.contextManager.cards_list[:]
+        self.cardManager.create_card()
+        created_cards = self.cardManager.cards_list[:]
         if len(created_cards) == 0:
             print("Sem cards para inserir")
             return
@@ -254,9 +255,9 @@ class AnkiBot:
                     print(err)
 
                 else:
-                    self.contextManager.update_card(card)
+                    self.cardManager.update_card(card)
 
         finally:
-            self.contextManager.update_sources()
+            self.cardManager.update_sources()
             browser.quit()
 

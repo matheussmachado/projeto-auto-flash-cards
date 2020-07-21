@@ -1,6 +1,6 @@
 import unittest
 from src.classes import (
-    ContextManager,
+    CardManager,
     DataBaseAdmin,
     GeneralSourceAdmin,
     MyCard,
@@ -24,11 +24,11 @@ class TestTextSourceAdmin(unittest.TestCase):
         text_source_back(self.text_source, self.text_source_before)
 
     def test_text_source_admin_update(self):
-        phrase_selected = [self.text_source_before[-1]]
-        self.textSourceAdmin.update_sources(phrase_selected)
-        source_after = get_from_txt(self.text_source)
-
-        self.assertEqual(source_after, phrase_selected)
+        phrase_list = [self.text_source_before[-1]]
+        self.textSourceAdmin.update_sources(phrase_list)
+        expected = get_from_txt(self.text_source)
+        self.assertNotIn(phrase_list, expected)
+        
 
 
 class TestGeneralSourceAdmin(unittest.TestCase):
@@ -45,43 +45,17 @@ class TestGeneralSourceAdmin(unittest.TestCase):
 
     # SIMULANDO A ATUALIZAÇÃO APÓS TODOS OS CARDS INSERIDOS COM SUCESSO
     def test_gen_src_adm_updt_src_after_successful_inserted_cards(self):
-
-        """SIMULANDO:
-            - Obter as frases de forma distinta, copiar elas
-            - Obter os cards de maneira distinta, por enquanto
-            - alterar o estado dos cards
-            - inserir os cards no método
-            - comparar o arquivo após o método
-            - reescrever o arquivo com as frases para poder refazer os testes"""
-
-        cards = []
-        for phrase in self.text_source:
-            cards.append(self.textWriter._write(phrase, self.text_source))
-
-        # SIMULANDO A ATUALIZAÇÃO DO STATUS DE CARDS DO ContextManager.cards EM TEMPO DE EXECUÇÃO
-        for card in cards:
-            card.inserted = True
-
-        self.genSrcAdmin.update_sources(cards)
-        src_after = get_from_txt(self.text_source)
-        self.assertEqual(src_after, [])
-
-    # SIMULANDO A ATUALIZAÇÃO APÓS A ULTIMA INSERÇÃO TER FALHADO: valido mesmo se não for o último
-    def test_gen_src_adm_updt_src_after_ultimate_insert_card_failed(self):
+                
         cards = []
         for phrase in self.text_source_before:
-            cards.append(self.textWriter._write(phrase, self.text_source))
-
-        # SIMULANDO A ATUALIZAÇÃO DO STATUS DE CARDS DO ContextManager.cards EM TEMPO DE EXECUÇÃO
-        for i in range(len(cards) - 1):
-            cards[i].inserted = True
-
+            cards.append(self.textWriter._write(phrase, self.text_source))        
+        
         self.genSrcAdmin.update_sources(cards)
-        src_after = get_from_txt(self.text_source)
-        self.assertEqual(src_after, ["Let's reconvene when you know more."])
+        expected = get_from_txt(self.text_source)
+        self.assertEqual(expected, [])    
 
 
-class TestContextManager(unittest.TestCase):
+class TestCardManager(unittest.TestCase):
     def setUp(self):
         self.frases = [
             "Take this time, Francis, to know your other attendees.",
@@ -99,10 +73,10 @@ class TestContextManager(unittest.TestCase):
         self.db_key = "test_key"
         self.db_source_before = []
 
-        self.text_manager = ContextManager(
+        self.text_manager = CardManager(
             "text", self.text_source, self.db_source, self.db_key
         )
-        self.empty_text_manager = ContextManager(
+        self.empty_text_manager = CardManager(
             "text", self.empty_text_source, self.db_source, self.db_key
         )
 
@@ -128,13 +102,13 @@ class TestContextManager(unittest.TestCase):
         self.text_manager.create_card()
         created_cards = self.text_manager.cards_list
         storage_cards = DataBaseAdmin(self.db_source, self.db_key)._return_sources()
-        # PELO JEITO, A REFERÊNCIA DAS DUAS INSTANCIAS, MESMO QUE TENHAM AS MESMAS CARACTERÍSTICAS, SÃO DIFERENTES NO DataBaseAdmin.database E NO ContextManager.cards_list
+        # PELO JEITO, A REFERÊNCIA DAS DUAS INSTANCIAS, MESMO QUE TENHAM AS MESMAS CARACTERÍSTICAS, SÃO DIFERENTES NO DataBaseAdmin.database E NO CardManager.cards_list
         cards_list = [card.representation for card in created_cards]
         cards_db = [card.representation for card in storage_cards]
 
         self.assertEqual(cards_list, cards_db)
 
-    # TESTAR SE ContextManager REALIZA A BUSCA E ACUMULA POSSÍVEIS CARDS DO SEU DATABASE
+    # TESTAR SE CardManager REALIZA A BUSCA E ACUMULA POSSÍVEIS CARDS DO SEU DATABASE
     def test_verify_and_append_cards_created_before(self):
         cards = self.text_source_before
         myCards = [MyCard(card, self.empty_text_source) for card in cards]
@@ -187,22 +161,12 @@ class TestContextManager(unittest.TestCase):
 
         self.assertEqual(inserted_status, expected)
 
+    def test_update_text_source_after_inserted_cards(self):
+        self.text_manager.create_card()
+        self.text_manager.update_sources()
 
-class TestAutoCards(unittest.TestCase):
-    def setUp(self):
-        self.text_source = os.path.join(
-            SAMPLE_FOLDER, "frasesTestePreenchidaWriter.txt"
-        )
-        self.text_source_before = get_from_txt(self.text_source)
-
-        self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
-        self.db_key = "test_key"
-        self.db_source_before = []
-
-        self.text_manager = ContextManager(
-            "text", self.text_source, self.db_source, self.db_key
-        )
-
+        expected = get_from_txt(self.text_source)
+        self.assertEqual(expected, [])
 
 # TODO: TESTE do AnkiBot e suas interações com a web
 
