@@ -5,12 +5,12 @@ def get_from_txt(file="frases.txt"):
     """
         Função que obtém frases de um arquivo .txt. Essa obtenção se dá orientada ao caractere de quebra de linha \\n. A função também realiza tratamento de espaços em branco a cada frase obtida e, se houver no arquivo apenas espaços em branco, o retorno será uma lista vazia.
 
-        Keyword Arguments:
-            file {str} -- nome do arquivo que contém as frases. 
-            (default: {'frases.txt'})
+        Args:
+            file (str) - nome do arquivo que contém as frases. 
+            (default: 'frases.txt')
 
         Returns:
-            list -- lista contendo as frases obtidas do arquivo."""
+            list - lista contendo as frases obtidas do arquivo."""
     while True:
         if os.path.isfile(file) and str(file).endswith(".txt"):
             with open(file, "r") as f:
@@ -51,13 +51,26 @@ def remove_imgs_list(imgs_list):
             os.unlink(img_path)
 
 
-def text_source_back(source, source_before):
+def text_source_reset(source: str, source_before: list) -> None:
+    """
+        Função que realiza o reset do arquivo de texto que serve para fonte de criação nos testes automatizados.
+
+        Args:
+            source (str): path do arquivo de texto.
+            source_before (list): lista contendo o conteúdo anterior do arquivo passado, antes de ser submetido aos testes."""
     with open(source, "w") as src:
         for phrse in source_before:
             src.write(f"{phrse}\n")
 
 
-def db_cards_back(source, key, source_before):
+def db_cards_reset(source: str, key: str, source_before: list) -> None:
+    """
+        Método que realiza o reset da estrutura de persistência após submetida aos testes automatizados.
+
+        Args:
+            source (str): path do arquivo da estrutura de db.
+            key (str): chave/coluna que aloca a lista dos objetos MyCard criados em produção.
+            source_before (list): lista da estrutura antes da submissão dos testes automatizados."""
     with shelve.open(source) as db:
         db[key] = source_before
 

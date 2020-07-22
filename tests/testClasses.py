@@ -8,7 +8,7 @@ from src.classes import (
     TextCardWriter,
 )
 
-from src.funcs import os, get_from_txt, text_source_back, db_cards_back
+from src.funcs import os, get_from_txt, text_source_reset, db_cards_reset
 
 SAMPLE_FOLDER = "amostras/"
 
@@ -22,7 +22,7 @@ class TestTextSourceAdmin(unittest.TestCase):
         self.text_source_before = get_from_txt(self.text_source)
 
     def tearDown(self):
-        text_source_back(self.text_source, self.text_source_before)
+        text_source_reset(self.text_source, self.text_source_before)
 
     def test_text_source_admin_update(self):
         phrase_list = [self.text_source_before[-1]]
@@ -42,7 +42,7 @@ class TestGeneralSourceAdmin(unittest.TestCase):
         self.text_source_before = get_from_txt(self.text_source)
 
     def tearDown(self):
-        text_source_back(self.text_source, self.text_source_before)
+        text_source_reset(self.text_source, self.text_source_before)
 
     # SIMULANDO A ATUALIZAÇÃO APÓS TODOS OS CARDS INSERIDOS COM SUCESSO
     def test_gen_src_adm_updt_src_after_successful_inserted_cards(self):
@@ -82,8 +82,8 @@ class TestCardManager(unittest.TestCase):
         )
 
     def tearDown(self):
-        db_cards_back(self.db_source, self.db_key, self.db_source_before)
-        text_source_back(self.text_source, self.text_source_before)
+        db_cards_reset(self.db_source, self.db_key, self.db_source_before)
+        text_source_reset(self.text_source, self.text_source_before)
 
     def test_context_manager_created_cards(self):
         self.text_manager.create_card()
