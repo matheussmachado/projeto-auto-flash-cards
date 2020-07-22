@@ -1,7 +1,7 @@
 from time import sleep
 from abc import ABC, abstractmethod
 from selenium.webdriver import Firefox
-from funcs import os, get_from_txt, get_imgs_name, remove_imgs_list, shelve
+from .funcs import os, get_from_txt, get_imgs_name, remove_imgs_list, shelve
 
 
 class FlashCard:
@@ -162,11 +162,15 @@ class CardManager(CardWriterAdmin, GeneralSourceAdmin, DataBaseAdmin):
         db_cards: str, db_key: str) -> None:
 
         if not (card_type == "text" or card_type == "image"):
-            raise Exception('card_type should be "text" or "image"')
+            raise Exception('card_type field should be "text" or "image"')
 
         super().__init__(card_type, card_source)
         DataBaseAdmin.__init__(self, db_cards, db_key)
-        self.cards_list = []    
+        self._cards_list = []    
+    
+    @property
+    def cards_list(self):
+        return self._cards_list.copy()
 
     def create_card(self) -> None:
         self._verify_cards()
@@ -174,12 +178,12 @@ class CardManager(CardWriterAdmin, GeneralSourceAdmin, DataBaseAdmin):
         src = self.card_source
         for phrase in self._get_phrases(card_src):
             card = self._write(phrase, src)
-            self.cards_list.append(card)
+            self._cards_list.append(card)
         DataBaseAdmin.update_sources(self, self.cards_list)
 
     def _verify_cards(self) -> None:
         cards = DataBaseAdmin._return_sources(self)
-        self.cards_list += [card for card in cards]
+        self._cards_list += [card for card in cards]
 
     def update_card(self, card: MyCard) -> None:
         for c in self.cards_list:
@@ -208,7 +212,7 @@ class AnkiBot:
                 login_path: path do arquivo que contém o login."""
 
         self.cardManager.create_card()
-        created_cards = self.cardManager.cards_list[:]
+        created_cards = self.cardManager.cards_list
         if len(created_cards) == 0:
             print("Sem cards para inserir")
             return

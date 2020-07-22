@@ -7,6 +7,7 @@ from src.classes import (
     TextSourceAdmin,
     TextCardWriter,
 )
+
 from src.funcs import os, get_from_txt, text_source_back, db_cards_back
 
 SAMPLE_FOLDER = "amostras/"
