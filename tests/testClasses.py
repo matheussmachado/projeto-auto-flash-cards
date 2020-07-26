@@ -6,7 +6,10 @@ from src.classes import (
     MyCard,
     TextSourceAdmin,
     TextCardWriter,
+    
 )
+#from src.clss.auto_cards import AutoCards
+#from src.clss.card_sources import DataBaseAdmin
 
 from src.funcs import os, get_from_txt, text_source_reset, db_cards_reset
 
@@ -168,6 +171,25 @@ class TestCardManager(unittest.TestCase):
 
         expected = get_from_txt(self.text_source)
         self.assertEqual(expected, [])
+
+class TestAutoCards(unittest.TestCase):
+    def setUp(self):
+        self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
+        self.db_key = "test_key"
+        self.db_source_before = []
+        self.db_admin = DataBaseAdmin(self.db_source, self.db_key)
+
+    def tearDown(self):
+        db_cards_reset(self.db_source, 
+                        self.db_key, 
+                        self.db_source_before)
+
+    #TODO: TESTAR SE AO CRIAR CARDS, VAI INSERIR NO cards_list
+    #TODO: TESTAR SE O update_card IRÁ ATUALIZAR O CARD ESPERADO
+    #TODO:
+    #TODO:
+
+
 
 # TODO: TESTE do AnkiBot e suas interações com a web
 
