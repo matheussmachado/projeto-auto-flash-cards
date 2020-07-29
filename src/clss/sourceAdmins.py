@@ -26,6 +26,8 @@ class DataBaseAdmin(AbstractSourceAdmin):
 
             Args:
                 cards (list): lista e objetos MyCard a serem submetido por avaliação e comparação com objetos MyCard eventualmente estocados na estrutura de db."""
+        if len(cards) == 0:
+            return
         self._verify_key()
         with self._database.open(self.db_cards) as db:
             cards_temp = db[self.db_key]
@@ -75,7 +77,7 @@ class DictBasedCardWriter:
         self._contents.append(
             {'phrase': phrase, 
             'path': source}
-        ) 
+        )
 
     def return_written_cards(self) -> list:        
         for c in self.contents:            
@@ -99,9 +101,10 @@ class TextSourceAdmin(AbstractSourceAdmin):
 
     def return_sources(self) -> str:
         """
-            Obtém o conteúdo, organiza e retorna os cards gerados."""
-        #CADA SOURCEADMIN TEM UMA FORMA DE ENTREGAR ESSES CONTEÚDOS
-        phrases = get_from_txt(self.source)        
+            Obtém o conteúdo, organiza e retorna os cards gerados."""        
+        phrases = get_from_txt(self.source)
+        if len(phrases) == 0:            
+            return phrases
         for phrase in phrases:
            self.writer.update_contents(phrase, self.source)        
         return self.writer.return_written_cards()
@@ -109,7 +112,10 @@ class TextSourceAdmin(AbstractSourceAdmin):
     def update_sources(self) -> None:
         """
             Atualiza a fonte de conteúdo após a escrita de objetos MyCard e posterior inserção no banco de dados."""
-        phrases = [card['phrase'] for card in self.writer.contents]        
+        contents = self.writer.contents
+        if len(contents) == 0:
+            return
+        phrases = [card['phrase'] for card in contents]
         source = get_from_txt(self.source)
         update = [phrase for phrase in source if phrase not in phrases]
         with open(self.source, "w") as source:

@@ -1,11 +1,11 @@
+import os
 from unittest import TestCase, mock, main
 
 from src.clss.autoCards import AutoCards
 from src.clss.sourceAdmins import DataBaseAdmin, TextSourceAdmin, DictBasedCardWriter
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.cards import MyCard
-
-from src.funcs import os, get_from_txt, text_source_reset, db_cards_reset
+from src.funcs import get_from_txt, text_source_reset, db_cards_reset
 
 SAMPLE_FOLDER = "amostras/"
 
@@ -53,10 +53,10 @@ class TestDictBasedCardWriter(TestCase):
 class TestTextSourceAdmin(TestCase):
     def setUp(self):
         file = 'frasesTestePreenchidaWriter.txt'
-        self.source = os.path.join(SAMPLE_FOLDER, file)
+        self.source = os.path.join(SAMPLE_FOLDER, file)        
         self.src_before = get_from_txt(self.source)
-        writer = DictBasedCardWriter()
-        self.sourceAdmin = TextSourceAdmin(self.source, writer)
+        self.writer = DictBasedCardWriter()
+        self.sourceAdmin = TextSourceAdmin(self.source, self. writer)
 
     def tearDown(self):
         text_source_reset(self.source, self.src_before)        
@@ -71,6 +71,22 @@ class TestTextSourceAdmin(TestCase):
         card_list = self.sourceAdmin.return_sources()
         expected = len(card_list)        
         self.assertEqual(expected, len(self.src_before))
+
+    def test__return_sources_returns_empty_list_if_empty_texts_src(self):
+        file = 'frasesTesteVazia.txt'
+        source = os.path.join(SAMPLE_FOLDER, file)        
+        sourceAdmin = TextSourceAdmin(source, self.writer)
+        expected = sourceAdmin.return_sources()
+        text_source_reset(source, [])
+        self.assertEqual(expected, [])
+        
+    def test__update_sources_returns_None_if_empty_text_src(self):
+        file = 'frasesTesteVazia.txt'
+        source = os.path.join(SAMPLE_FOLDER, file)        
+        sourceAdmin = TextSourceAdmin(source, self.writer)
+        expected = sourceAdmin.update_sources()
+        text_source_reset(source, [])
+        self.assertEqual(expected, None)
 
 
 
@@ -125,6 +141,11 @@ class TestDataBaseAdmin(TestCase):
         expected = db_return[0].representation
         self.assertEqual(expected, last_card)
 
+    def test__update_source_returns_None_when_no_cards(self):
+        db = DataBaseAdmin(self.db_source, self.db_key)
+        expected = db.update_sources([])
+        self.assertEqual(expected, None)
+
 
 
 class TestSeleniumAnkiBot(TestCase):
@@ -134,10 +155,10 @@ class TestSeleniumAnkiBot(TestCase):
         self.text_src_before = get_from_txt(self.text_src)
         writer = DictBasedCardWriter()
         self.sourceAdmin = TextSourceAdmin(self.text_src, writer)
-        #self.deliverer = SeleniumAnkiBot()
 
     def tearDown(self):
         text_source_reset(self.text_src, self.text_src_before)
+        
         
     def test__update_card_update_card_inserted_status(self):
         card = MyCard('_', '_')
@@ -173,7 +194,7 @@ class TestAutoCards(TestCase):
         ac = AutoCards('_', '_', self.db_admin)
         ac._verify_cards()
         expected = ac.card_list
-        self.assertEqual(expected, [])    
+        self.assertEqual(expected, [])
 
     def test__card_list_append_created_cards_from_db(self):     
         card_list = self.textAdmin.return_sources()
@@ -193,14 +214,21 @@ class TestAutoCards(TestCase):
         self.assertEqual(expected, len(self.text_src_before))    
 
     @mock.patch('src.clss.cardDeliverers.SeleniumAnkiBot.deliver')
-    def test__deliver_method_is_called_in_run_task_method(self, mocked):
-        file = 'login.txt'
-        login_path = os.path.join(SAMPLE_FOLDER, file)
+    def test__deliver_method_is_called_in_run_task_method(self, mocked):        
         deliver = SeleniumAnkiBot('_', '_')        
         ac = AutoCards(deliver, self.textAdmin, self.db_admin)
         ac.run_task()
         mocked.assert_called_once_with(ac._card_list)        
-
+        
+    @mock.patch('src.clss.cardDeliverers.SeleniumAnkiBot.deliver')
+    def test__run_task_returns_None_if_no_text_phrases(self, mocked):
+        file = 'frasesTesteVazia.txt'
+        src = os.path.join(SAMPLE_FOLDER, file)
+        writer = DictBasedCardWriter()
+        textAdm = TextSourceAdmin(src, writer)
+        ac = AutoCards('_', textAdm, self.db_admin)
+        expected = ac.run_task()        
+        mocked.assert_not_called()
 
 if __name__ == "__main__":
     main()
