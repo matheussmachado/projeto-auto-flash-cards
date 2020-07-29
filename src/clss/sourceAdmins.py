@@ -59,28 +59,28 @@ class DataBaseAdmin(AbstractSourceAdmin):
 class DictBasedCardWriter:
     """
         Classe auxiliar que recebe conteúdos(frase, path) de um SourceAdmin e os organiza em uma estrutura de dicionários, e escreve-os em objetos MyCard e retorna uma lista com esses objetos."""
-    def __init__(self):
+    def __init__(self):        
         self._contents = []
         self._card_list = []
 
     @property
-    def contents(self):
+    def contents(self):        
         return self._contents.copy()
     
     @property
     def card_list(self):
         return self._card_list.copy()
 
-    def update_contents(self, phrase, source):
+    def update_contents(self, phrase: str, source: str) -> None:
         self._contents.append(
             {'phrase': phrase, 
             'path': source}
         ) 
 
-    def return_written_cards(self):
-        for c in self.contents:
+    def return_written_cards(self) -> list:        
+        for c in self.contents:            
             self._card_list.append(
-                MyCard(c['phrase'], c['path']))
+                MyCard(c['phrase'], c['path']))        
         return self.card_list
 
 
@@ -88,24 +88,28 @@ class DictBasedCardWriter:
 class TextSourceAdmin(AbstractSourceAdmin):
     """
         Classe que herda de AbstractSourceAdmin e implementa os contratos de retorno e atualização de fontes de conteúdo para a criação de cartões, no contexto de criação através de um arquivo de texto."""
-    def __init__(self, source: str, writer=DictBasedCardWriter()) -> None:
+    def __init__(self, source: str, writer: DictBasedCardWriter) -> None:
         self.source = source
         self.writer = writer
+        self._card_list = []
+        
+    @property
+    def card_list(self):
+        return self._card_list.copy()
 
     def return_sources(self) -> str:
         """
             Obtém o conteúdo, organiza e retorna os cards gerados."""
         #CADA SOURCEADMIN TEM UMA FORMA DE ENTREGAR ESSES CONTEÚDOS
-        phrases = get_from_txt(self.source)
-        #return phrases        
+        phrases = get_from_txt(self.source)        
         for phrase in phrases:
-            self.writer.update_contents(phrase, self.source)
+           self.writer.update_contents(phrase, self.source)        
         return self.writer.return_written_cards()
 
-    def update_sources(self, cards_list: list) -> None:
+    def update_sources(self) -> None:
         """
             Atualiza a fonte de conteúdo após a escrita de objetos MyCard e posterior inserção no banco de dados."""
-        phrases = [card['phrase'] for card in self.writer.contents]
+        phrases = [card['phrase'] for card in self.writer.contents]        
         source = get_from_txt(self.source)
         update = [phrase for phrase in source if phrase not in phrases]
         with open(self.source, "w") as source:

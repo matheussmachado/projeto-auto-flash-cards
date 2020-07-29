@@ -3,6 +3,7 @@ __pycache__
 login.txt
 imgTeste*
 imgPath.txt
+imgFolder
 *.png
 *.jpg
 *.bat

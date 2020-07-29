@@ -1,43 +1,35 @@
-from src.clss.cards import MyCard
+from .cards import MyCard
+from .sourceAdmins import DataBaseAdmin
 
+#TODO: realizar verificação de existencia de frases
 class AutoCards:
-    def __init__(self, writer, source_manager, data_base_admin):
-        self.writer = writer
-        self.source_manager = source_manager
-        self.data_base_admin = data_base_admin
-        self._cards_list = []    
-    #TODO: update_sources será 
+    def __init__(self, card_deliverer, 
+                    source_admin,
+                    db_admin=DataBaseAdmin('db_cards', 'cards')):
+        self.card_deliverer = card_deliverer
+        self.source_admin = source_admin
+        self.db_admin = db_admin
+        self._card_list = []  
     @property
-    def cards_list(self) -> list:
-        return self._cards_list.copy()
+    def card_list(self) -> list:
+        return self._card_list.copy()
     
     def _verify_cards(self) -> None:
         """
             Método que realiza a verificação de possiveis cards estocados na estrutura de persistência."""
-        cards = self.data_base_admin.return_sources()
-        self._cards_list += [card for card in cards]
-    def write(self, phrase, path):
-            return MyCard(phrase, path)        
+        cards = self.db_admin.return_sources()
+        self._card_list.extend(cards)
 
-    def create_cards(self):
-        ...
-        """
-            - obtem os cards existentes no db            
-            - obter os conteúdos:
-                - para cada path e frase, deve-se criar um card
-            - getphrase deve retornar a frase junto com o source?: {phrase: frase, source: fonte}
-                
-                - delegar getphrase para um AbstractSource: não vai rolar
-        """
-
-        
-        #TODO: GET_PHRASES E O RESTANTE SERÁ COMPETENCIA DE CADA SOURCEADMIN
+    def create_cards(self) -> None:                
         self._verify_cards()
-        #sources = self.source_manager.get_phrases()
-        sources = self.writer.get_phrases()
-
-        
-        for source in sources:
-            card = self.writer.write(source['phrase'], source['path'])
-            self._cards_list.append(card)
-        self.data_base_admin.update_sources(self, self.cards_list)
+        sources = self.source_admin.return_sources()
+        self.db_admin.update_sources(sources)
+        self._card_list.extend(sources)
+    
+    def run_task(self) -> None:
+        self.create_cards()
+        self.card_deliverer.deliver(self.card_list)
+        cards = self.card_deliverer.card_list
+        self.source_admin.update_sources()
+        self.db_admin.update_sources(cards)
+    

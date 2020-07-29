@@ -30,3 +30,26 @@ class AbstractCardWriter(ABC):
         """
             Assinatura de um contrato que implementa a escrita de frases em objetos MyCard pelas classes posteriores."""
         ...
+
+
+
+class AbstractCardDeliverer(ABC):
+    
+    def __init__(self):
+        self._card_list = []
+
+    @property
+    def card_list(self):
+        return self._card_list.copy()
+
+    @abstractmethod
+    def deliver(self):
+        ...
+    
+    @abstractmethod
+    def _insert_card(self):
+        ...
+
+    @abstractmethod
+    def _update_card(self):
+        ...

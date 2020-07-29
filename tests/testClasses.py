@@ -102,7 +102,7 @@ class TestCardManager(unittest.TestCase):
             self.assertEqual(src, self.text_source)
 
     # TESTAR SE AO CRIAR OS CARDS E ENVIAR PARA O DATABASE, OS CARDS ESTARÃO LÁ
-    def test_dump_cards_after_created(self):
+    def test_dump_cards_after_created(self): #(x)
         self.text_manager.create_card()
         created_cards = self.text_manager.cards_list
         storage_cards = DataBaseAdmin(self.db_source, self.db_key)._return_sources()
@@ -147,11 +147,9 @@ class TestCardManager(unittest.TestCase):
         for x in range(len(cards) - 1):
             self.text_manager.update_card(cards[x])
         self.text_manager.update_sources()
-
         db_test = DataBaseAdmin(self.db_source, self.db_key)._return_sources()[:]
         card_repr = cards[-1].representation
         expected = db_test[0].representation
-
         self.assertEqual(expected, card_repr)
 
     def test_update_cards_inserted_status(self):
@@ -184,15 +182,8 @@ class TestAutoCards(unittest.TestCase):
                         self.db_key, 
                         self.db_source_before)
 
-    #TODO: TESTAR SE AO CRIAR CARDS, VAI INSERIR NO cards_list
-    #TODO: TESTAR SE O update_card IRÁ ATUALIZAR O CARD ESPERADO
-    #TODO:
-    #TODO:
-
-
-
-# TODO: TESTE do AnkiBot e suas interações com a web
 
 
 if __name__ == "__main__":
     unittest.main()
+    
