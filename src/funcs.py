@@ -1,4 +1,9 @@
-import os, json, shelve
+import os
+import shelve
+import io
+
+from google.cloud import vision
+from google.cloud.vision import types
 
 
 def get_from_txt(file="frases.txt"):
@@ -74,3 +79,27 @@ def db_cards_reset(source: str, key: str, source_before: list) -> None:
     with shelve.open(source) as db:
         db[key] = source_before
 
+
+def vision_api_call(img):
+    client = vision.ImageAnnotatorClient()
+    return client.text_detection(image=img)
+
+
+def img_to_txt(file_path):
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = r'serviceAccountToken.json'
+    #client = vision.ImageAnnotatorClient()
+    with io.open(file_path, 'rb') as image_file:
+        content = image_file.read()
+    image = vision.types.Image(content=content)
+    response = vision_api_call(image)
+    #response = client.text_detection(image=image)
+    texts = response.text_annotations
+    text = texts[0].description
+    text = text.replace('\n', ' ').strip()
+    return text
+        
+
+def verify_mnt(source):
+    if not 'Legendas' in os.listdir(source):
+        os.system(f'google-drive-ocamlfuse /{source}')
+    return os.path.join(source, 'Legendas')

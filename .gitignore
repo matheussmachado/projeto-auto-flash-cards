@@ -1,8 +1,10 @@
 __pycache__
 *.log
 login.txt
-
+imgTeste*
 imgPath.txt
+*Path*
+imgFolder
 *.png
 *.jpg
 *.bat
