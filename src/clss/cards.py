@@ -9,12 +9,12 @@ class FlashCard:
 
 class MyCard(FlashCard):
     """
-        Classe que insere os flash cards no contexto de criação."""
+        Classe que herda de flash cards, e os implementam contexto da solução."""
 
     _DEFAULT_BACK = "*CONFIRA NO DICIONÁRIO CONFIGURADO OU NA FERRAMENTA DE TRADUÇÃO*"
 
-    def __init__(self, front: str, source: str) -> None:
-        super().__init__(front, back=self._DEFAULT_BACK)
+    def __init__(self, front: str, source: str, back: str=_DEFAULT_BACK) -> None:        
+        super().__init__(front, back)
         self.source = source
         self.inserted = False
 

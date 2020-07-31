@@ -1,8 +1,9 @@
 import os
 from unittest import TestCase, mock, main
 
-from src.clss.autoCards import AutoCards
-from src.clss.sourceAdmins import DataBaseAdmin, TextSourceAdmin, DictBasedCardWriter
+from src.clss.autoFlashCards import AutoFlashCards
+from src.clss.cardWriter import DictBasedCardWriter
+from src.clss.sourceAdmins import ShelveAdmin, TextSourceAdmin
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.cards import MyCard
 from src.funcs import get_from_txt, text_source_reset, db_cards_reset
@@ -90,7 +91,7 @@ class TestTextSourceAdmin(TestCase):
 
 
 
-class TestDataBaseAdmin(TestCase):
+class TestShelveAdmin(TestCase):
     #TODO: VERIFICAR TESTES CRIADOS A SEREM REPLICADOS
     def setUp(self):
         self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
@@ -111,7 +112,7 @@ class TestDataBaseAdmin(TestCase):
             self.text_src_before)
 
     def test__storage_card_works_for_created_cards(self):        
-        db = DataBaseAdmin(self.db_source, self.db_key)
+        db = ShelveAdmin(self.db_source, self.db_key)
         cardsList_1 = self.textAdmin.return_sources()
         db.update_sources(cardsList_1)
         cardsList_2 = db.return_sources()
@@ -120,17 +121,17 @@ class TestDataBaseAdmin(TestCase):
         self.assertEqual(expected, cards)
 
     def test__update_source_when_all_cards_was_inserted(self):
-        db = DataBaseAdmin(self.db_source, self.db_key)
+        db = ShelveAdmin(self.db_source, self.db_key)
         card_list = self.textAdmin.return_sources()
         db.update_sources(card_list)
         for card in card_list:
             card.inserted = True
         db.update_sources(card_list)
         expected = db.return_sources()
-        self.assertEqual(expected, [])        
+        self.assertEqual(expected, [])
     
     def test__update_source_when_last_card_was_not_inserted(self):
-        db = DataBaseAdmin(self.db_source, self.db_key)
+        db = ShelveAdmin(self.db_source, self.db_key)
         card_list = self.textAdmin.return_sources()
         db.update_sources(card_list)
         for i in range(len(card_list) - 1):
@@ -142,7 +143,7 @@ class TestDataBaseAdmin(TestCase):
         self.assertEqual(expected, last_card)
 
     def test__update_source_returns_None_when_no_cards(self):
-        db = DataBaseAdmin(self.db_source, self.db_key)
+        db = ShelveAdmin(self.db_source, self.db_key)
         expected = db.update_sources([])
         self.assertEqual(expected, None)
 
@@ -170,7 +171,7 @@ class TestSeleniumAnkiBot(TestCase):
 
 
 
-class TestAutoCards(TestCase):
+class TestAutoFlashCards(TestCase):
     def setUp(self):
         file = 'frasesTestePreenchidaWriter.txt'
         self.text_src = os.path.join(SAMPLE_FOLDER, file)
@@ -181,7 +182,7 @@ class TestAutoCards(TestCase):
         self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
         self.db_key = "test_key"
         self.db_source_before = []
-        self.db_admin = DataBaseAdmin(self.db_source, self.db_key)
+        self.db_admin = ShelveAdmin(self.db_source, self.db_key)
 
     def tearDown(self):
         db_cards_reset(self.db_source, 
@@ -191,7 +192,7 @@ class TestAutoCards(TestCase):
         text_source_reset(self.text_src, self.text_src_before)    
 
     def test__verify_cards_returns_empty_cards_list(self):        
-        ac = AutoCards('_', '_', self.db_admin)
+        ac = AutoFlashCards('_', '_', self.db_admin)
         ac._verify_cards()
         expected = ac.card_list
         self.assertEqual(expected, [])
@@ -201,14 +202,14 @@ class TestAutoCards(TestCase):
         card_repr = [card.representation for card in card_list]
         db = self.db_admin
         db.update_sources(card_list)
-        ac = AutoCards('_', '_', self.db_admin)
+        ac = AutoFlashCards('_', '_', self.db_admin)
         ac._verify_cards()        
         expected = [card.representation for card in ac.card_list]
         self.assertEqual(expected, card_repr)
     
     @mock.patch('src.clss.sourceAdmins.DictBasedCardWriter.update_contents')
     def test__cards_list_append_written_cards(self, mocked):    
-        ac = AutoCards('_', self.textAdmin, self.db_admin)
+        ac = AutoFlashCards('_', self.textAdmin, self.db_admin)
         ac.create_cards()
         expected = mocked.call_count
         self.assertEqual(expected, len(self.text_src_before))    
@@ -216,7 +217,7 @@ class TestAutoCards(TestCase):
     @mock.patch('src.clss.cardDeliverers.SeleniumAnkiBot.deliver')
     def test__deliver_method_is_called_in_run_task_method(self, mocked):        
         deliver = SeleniumAnkiBot('_', '_')        
-        ac = AutoCards(deliver, self.textAdmin, self.db_admin)
+        ac = AutoFlashCards(deliver, self.textAdmin, self.db_admin)
         ac.run_task()
         mocked.assert_called_once_with(ac._card_list)        
         
@@ -226,8 +227,8 @@ class TestAutoCards(TestCase):
         src = os.path.join(SAMPLE_FOLDER, file)
         writer = DictBasedCardWriter()
         textAdm = TextSourceAdmin(src, writer)
-        ac = AutoCards('_', textAdm, self.db_admin)
-        expected = ac.run_task()        
+        ac = AutoFlashCards('_', textAdm, self.db_admin)
+        ac.run_task()
         mocked.assert_not_called()
 
 if __name__ == "__main__":

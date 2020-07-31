@@ -1,12 +1,13 @@
 from time import sleep
-
+from typing import List, TypeVar
 from .abstractClasses import AbstractCardDeliverer
 from .cards import MyCard
 from src.funcs import get_from_txt
 
+WebDriver = TypeVar('WebDriver')
 
 class SeleniumAnkiBot(AbstractCardDeliverer):
-    def __init__(self, browser, login_path: str) -> None:
+    def __init__(self, browser: WebDriver, login_path: str) -> None:
         super().__init__()
         self.browser = browser
         self.login_path = login_path

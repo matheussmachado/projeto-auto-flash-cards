@@ -1,14 +1,19 @@
+from typing import List, TypeVar
 from .cards import MyCard
-from .sourceAdmins import DataBaseAdmin
+from .sourceAdmins import ShelveAdmin
+from .abstractClasses import AbstractCardDeliverer
+from .interfaces import SourceAdminInterface
 
-#TODO: realizar verificação de existencia de frases
-class AutoCards:
-    def __init__(self, card_deliverer, 
-                    source_admin, db_admin):
+
+class AutoFlashCards:
+    def __init__(self, card_deliverer: AbstractCardDeliverer,
+                    source_admin: SourceAdminInterface,
+                    db_admin: ShelveAdmin):
         self.card_deliverer = card_deliverer
         self.source_admin = source_admin
         self.db_admin = db_admin
-        self._card_list = []  
+        self._card_list: List[MyCard] = []
+
     @property
     def card_list(self) -> list:
         return self._card_list.copy()

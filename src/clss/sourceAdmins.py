@@ -1,14 +1,17 @@
 import shelve
-from .abstractClasses import AbstractSourceAdmin
+from typing import List, Dict
+from .interfaces import SourceAdminInterface
 from .cards import MyCard
+from .cardWriter import DictBasedCardWriter
 from src.funcs import get_from_txt
 
 
 
-class DataBaseAdmin(AbstractSourceAdmin):
+class ShelveAdmin(SourceAdminInterface):
     """
-        Classe que herda de AbstraticSourceAdmin e que implementa seus contratos, tornando-a responsável por gerenciar a estrutura de persistência que estoca objetos MyCard gerados em produção."""
+        Classe que herda de AbstraticSourceAdmin e que implementa seus contratos, tornando-a responsável por gerenciar a estrutura de persistência shelve, que estoca objetos MyCard gerados durante a tarefa principal."""
     def __init__(self, db_cards: str, db_key: str) -> None:
+        super().__init__()
         self.db_cards = db_cards
         self.db_key = db_key
         self._database = shelve
@@ -30,8 +33,8 @@ class DataBaseAdmin(AbstractSourceAdmin):
             return
         self._verify_key()
         with self._database.open(self.db_cards) as db:
-            cards_temp = db[self.db_key]
-            c_temp_repr = [card.representation for card in cards_temp]
+            cards_temp = db[self.db_key]            
+            c_temp_repr = [card.representation for card in cards_temp]            
 
             for card in cards:
                 if card.inserted == False:
@@ -41,11 +44,10 @@ class DataBaseAdmin(AbstractSourceAdmin):
                 if card.inserted == True:
                     c_temp = card
                     c_temp.inserted = False
-                    for i, c in enumerate(cards_temp):
+                    for i, c in enumerate(cards_temp):                    
                         if c.representation == c_temp.representation:
                             cards_temp.pop(i)
                             break
-
             db[self.db_key] = cards_temp
 
     def return_sources(self) -> list:
@@ -54,40 +56,11 @@ class DataBaseAdmin(AbstractSourceAdmin):
         self._verify_key()
         with self._database.open(self.db_cards) as db:
             cards_list = db[self.db_key]
-        return cards_list
+        return cards_list        
 
 
 
-class DictBasedCardWriter:
-    """
-        Classe auxiliar que recebe conteúdos(frase, path) de um SourceAdmin e os organiza em uma estrutura de dicionários, e escreve-os em objetos MyCard e retorna uma lista com esses objetos."""
-    def __init__(self):        
-        self._contents = []
-        self._card_list = []
-
-    @property
-    def contents(self):        
-        return self._contents.copy()
-    
-    @property
-    def card_list(self):
-        return self._card_list.copy()
-
-    def update_contents(self, phrase: str, source: str) -> None:
-        self._contents.append(
-            {'phrase': phrase, 
-            'path': source}
-        )
-
-    def return_written_cards(self) -> list:        
-        for c in self.contents:            
-            self._card_list.append(
-                MyCard(c['phrase'], c['path']))        
-        return self.card_list
-
-
-
-class TextSourceAdmin(AbstractSourceAdmin):
+class TextSourceAdmin(SourceAdminInterface):
     """
         Classe que herda de AbstractSourceAdmin e implementa os contratos de retorno e atualização de fontes de conteúdo para a criação de cartões, no contexto de criação através de um arquivo de texto."""
     def __init__(self, source: str, writer: DictBasedCardWriter) -> None:

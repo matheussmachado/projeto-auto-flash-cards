@@ -2,9 +2,9 @@ import os
 
 from selenium.webdriver import Firefox, Chrome
 
-from src.clss.autoCards import AutoCards
+from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.sourceAdmins import (
-    DataBaseAdmin, TextSourceAdmin, DataBaseAdmin, DictBasedCardWriter
+    ShelveAdmin, TextSourceAdmin, ShelveAdmin, DictBasedCardWriter
     )
 from src.clss.cardDeliverers import SeleniumAnkiBot
 
@@ -15,7 +15,7 @@ file_path = os.path.join(os.getcwd(), file)
 deliver = SeleniumAnkiBot(Chrome, 'login.txt')
 writer = DictBasedCardWriter()
 sourceAdmin = TextSourceAdmin(file_path, writer)
-dbAdmin = DataBaseAdmin('db_cards', 'cards')
+dbAdmin = ShelveAdmin('db_cards', 'cards')
 
 ac = AutoCards(deliver, sourceAdmin, dbAdmin)
 
