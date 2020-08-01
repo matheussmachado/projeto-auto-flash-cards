@@ -4,10 +4,12 @@ login.txt
 imgTeste*
 imgPath.txt
 *Path*
-imgFolder
 *.png
 *.jpg
 *.bat
 *.json
 venv
 .vscode
+db_cards
+!img1.jpg
+!img2.jpg

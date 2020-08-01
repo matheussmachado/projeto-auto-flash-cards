@@ -1,12 +1,15 @@
-import unittest
-from unittest.mock import patch
-from src.funcs import get_from_txt, img_to_txt, os, testando, vision_api_call
-from src.classes import MyCard
+import os
+from unittest import TestCase, main, mock
+
+from src.funcs.textFunc import get_from_txt
+from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
+
 
 SAMPLE_FOLDER = "amostras/"
+IMG_FOLDER = 'imgFolder'
+imgs_path = os.path.join(SAMPLE_FOLDER, IMG_FOLDER)
 
-
-class TestGetFromTxt(unittest.TestCase):
+class TestGetFromTxt(TestCase):
     def test_obtained_phrases(self):
         """
             TESTA SE É POSSÍVEL OBTER UMA LISTA CONTENDO STRINGS DE UM ARQUÍVO file DE EXTENSÃO .TXT. AS STRINGS DEVEM SER CONFORME AS FRASES CONTIDAS NA LISTA frases."""
@@ -22,33 +25,30 @@ class TestGetFromTxt(unittest.TestCase):
         self.assertEqual(phrases, frases)
 
 
-'''class TestRemoveImgs(unittest.TestCase):
-    def setUp(self):
-        self.path = SAMPLE_FOLDER
+class TestGetImgsName(TestCase):
+    def test__returns_all_two_imgs_path(self):
+        
+        imgs_name = get_imgs_path(imgs_path)
+        expected = len(imgs_name)
+        self.assertEqual(expected, 2)
 
-    def test_remove_all_imgs_of_folder(self):
-        path = 'imgFolderTest'
-        lista = [os.path.join('..', path, img) for img in os.listdir(path) 
-                if img.endswith('.png') or img.endswith('.jpg')
-        ]
-        remove_imgs_list(lista)
-        imgs = [img for img in os.listdir(path) 
-                if (img.endswith('.png') or img.endswith('.jpg'))]
-        self.assertEqual(len(imgs), 0)'''
+        expected_names = [
+            os.path.join(imgs_path, 'img1.jpg'), 
+            os.path.join(imgs_path, 'img2.jpg')
+            ]
+        self.assertEqual(expected_names, imgs_name)
 
 
-class TestImgtoTxt(unittest.TestCase):
-    ...
-#TODO: TESTAR SE O MÉTODO .text_detection FOI CHAMADA
 
-    def setUp(self):
-        self.image = os.path.join(SAMPLE_FOLDER, 'imgTeste.jpg')
+class TestRemoveImgs(TestCase):
+    @mock.patch('src.funcs.imgFuncs.os.unlink')
+    def test__remove_all_two_imgs(self, mocked):        
+        imgs_list = get_imgs_path(imgs_path)
+        remove_imgs_list(imgs_list)
+        expected = mocked.call_count
+        self.assertEqual(expected, 2)
 
-    @patch('src.funcs.vision_api_call')
-    def test_text_detection_of_vision_api_was_called(self, mocked):
-        r = img_to_txt(self.image)
-        mocked.assert_called_once()     
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()

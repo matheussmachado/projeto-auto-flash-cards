@@ -23,3 +23,13 @@ class AbstractCardDeliverer(ABC):
     @abstractmethod
     def _update_card(self):
         ...
+
+
+'''class AbstractImageSource(ABC):    
+    @abstractmethod
+    def get_images(self):
+        ...
+    
+    def remove_images(self):
+        ...'''
+

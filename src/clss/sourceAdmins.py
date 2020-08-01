@@ -1,10 +1,13 @@
 import shelve
 from typing import List, Dict
-from .interfaces import SourceAdminInterface
+
 from .cards import MyCard
 from .cardWriter import DictBasedCardWriter
-from src.funcs import get_from_txt
+from .interfaces import (SourceAdminInterface,
+                            ImageSourceInterface, 
+                            TextExtractorInterface)
 
+from src.funcs.textFunc import get_from_txt
 
 
 class ShelveAdmin(SourceAdminInterface):
@@ -63,8 +66,8 @@ class ShelveAdmin(SourceAdminInterface):
 class TextSourceAdmin(SourceAdminInterface):
     """
         Classe que herda de AbstractSourceAdmin e implementa os contratos de retorno e atualização de fontes de conteúdo para a criação de cartões, no contexto de criação através de um arquivo de texto."""
-    def __init__(self, source: str, writer: DictBasedCardWriter) -> None:
-        self.source = source
+    def __init__(self, text_source: str, writer: DictBasedCardWriter) -> None:
+        self.source = text_source
         self.writer = writer
         self._card_list = []
         
@@ -95,3 +98,27 @@ class TextSourceAdmin(SourceAdminInterface):
             for phrase in update:
                 source.write(f"{phrase}\n")
     
+
+
+class ImageSourceAdmin(SourceAdminInterface):    
+    def __init__(self, image_source: ImageSourceInterface, 
+                    writer: DictBasedCardWriter,
+                    text_extractor: TextExtractorInterface) -> None:
+        self.source = image_source
+        self.writer = writer
+        self.extractor = text_extractor
+
+    def return_sources(self):
+        imgs_path = self.source.get_images()
+        for path in imgs_path:
+            try:
+               phrase = self.extractor.img_to_str(path)
+            except Exception as err:
+                print(err)
+            else:
+                self.writer.update_contents(phrase, path)
+        return self.writer.return_written_cards()
+    
+    def update_sources(self):
+        paths = [path['path'] for path in self.writer.contents]
+        self.source.remove_images(paths)

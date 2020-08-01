@@ -1,4 +1,4 @@
-import os
+'''import os
 import shelve
 import io
 
@@ -103,3 +103,4 @@ def verify_mnt(source):
     if not 'Legendas' in os.listdir(source):
         os.system(f'google-drive-ocamlfuse /{source}')
     return os.path.join(source, 'Legendas')
+'''

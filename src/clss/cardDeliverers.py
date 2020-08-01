@@ -2,7 +2,7 @@ from time import sleep
 from typing import List, TypeVar
 from .abstractClasses import AbstractCardDeliverer
 from .cards import MyCard
-from src.funcs import get_from_txt
+from src.funcs.textFunc import get_from_json
 
 WebDriver = TypeVar('WebDriver')
 
@@ -15,7 +15,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
 
     def deliver(self, card_list: list) -> list:
         self._card_list.extend(card_list)
-        em, pw = get_from_txt(self.login_path)
+        em, pw = get_from_json(self.login_path, 'login').values()
         try:
             self.browser = self.browser.__call__()
             self.browser.implicitly_wait(30)

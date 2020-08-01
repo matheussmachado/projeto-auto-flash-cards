@@ -15,3 +15,20 @@ class SourceAdminInterface(ABC):
         """
             Assinatura para estabelecer o contrato de implementação desse método que deverá atualizar as fontes."""
         ...
+
+
+
+class ImageSourceInterface(ABC):
+    @abstractmethod
+    def get_images(self):
+        ...
+    
+    def remove_images(self):
+        ...
+
+
+
+class TextExtractorInterface(ABC):
+    @abstractmethod
+    def img_to_str(self):
+        ...

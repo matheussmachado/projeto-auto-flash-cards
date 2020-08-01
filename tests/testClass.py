@@ -1,14 +1,24 @@
 import os
 from unittest import TestCase, mock, main
 
+from src.clss.cards import MyCard
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.cardWriter import DictBasedCardWriter
-from src.clss.sourceAdmins import ShelveAdmin, TextSourceAdmin
 from src.clss.cardDeliverers import SeleniumAnkiBot
-from src.clss.cards import MyCard
-from src.funcs import get_from_txt, text_source_reset, db_cards_reset
+from src.clss.TextExtractors import GoogleVision
+from src.clss.imageSources import OcamlfuseSource
+from src.clss.mocks import MockImageSource
+from src.clss.sourceAdmins import (ShelveAdmin, 
+                                    TextSourceAdmin, 
+                                    ImageSourceAdmin)
+
+from src.funcs.textFunc import get_from_txt
+from src.funcs.resetSamplesFuncs import text_source_reset, db_cards_reset
 
 SAMPLE_FOLDER = "amostras/"
+IMG_FOLDER = 'imgFolder'
+imgs_path = os.path.join(SAMPLE_FOLDER, IMG_FOLDER)
+
 
 class TestDictBasedCardWriter(TestCase):
     def setUp(self):
@@ -41,7 +51,6 @@ class TestDictBasedCardWriter(TestCase):
         self.assertEqual(expected, len(self.src_before))
 
     def test_return_written_cards_returns_MyCard_instances(self):        
-        #VERIFICAR A PRECISÃO DESSE MÉTODO EM FUNÇÃO DO MÉTODO _update_contents
         phrases = self.src_before
         for phrase in phrases:
             self.writer.update_contents(phrase, self.source)
@@ -230,6 +239,43 @@ class TestAutoFlashCards(TestCase):
         ac = AutoFlashCards('_', textAdm, self.db_admin)
         ac.run_task()
         mocked.assert_not_called()
+
+
+
+class TestGoogleVision(TestCase):
+    @mock.patch('src.clss.TextExtractors.vision.ImageAnnotatorClient.text_detection')
+    def test_text_detection_of_vision_api_was_called(self, mocked):
+        img = os.path.join(imgs_path, 'img1.jpg')
+        extractor = GoogleVision()
+        extractor.img_to_str(img)
+        mocked.assert_called_once()
+
+
+class TestImageSourceAdmin(TestCase):
+    def setUp(self):
+        path = os.path.join(SAMPLE_FOLDER, 'data.json')
+        self.mockImgSource = MockImageSource(path)
+        self.writer = DictBasedCardWriter()
+
+
+    @mock.patch('src.clss.TextExtractors.vision.ImageAnnotatorClient.text_detection')    
+    def test__return_source_call_img_to_str(self, mocked):
+        extractor = GoogleVision()
+        imgAdmin = ImageSourceAdmin(self.mockImgSource, self.writer, extractor)
+        imgAdmin.return_sources()
+        expected = mocked.call_count
+        self.assertEqual(expected, 2)
+
+    @mock.patch('src.clss.mocks.MockImageSource.remove_images')
+    def test__remove_imgs_was_called_with_imgs_list(self, mocked):
+        imgs_list = self.mockImgSource.get_images()
+        imgAdmin = ImageSourceAdmin(self.mockImgSource, self.writer, '_')
+        for path in imgs_list:
+            imgAdmin.writer.update_contents('', path)
+        imgAdmin.update_sources()
+        mocked.assert_called_once_with(imgs_list)
+
+
 
 if __name__ == "__main__":
     main()
