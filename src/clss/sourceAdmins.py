@@ -116,7 +116,8 @@ class ImageSourceAdmin(SourceAdminInterface):
             except Exception as err:
                 print(err)
             else:
-                self.writer.update_contents(phrase, path)
+                if phrase:
+                    self.writer.update_contents(phrase, path)
         return self.writer.return_written_cards()
     
     def update_sources(self):
