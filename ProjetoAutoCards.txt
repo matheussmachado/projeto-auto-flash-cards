@@ -1,20 +1,9 @@
 PROJETO AUTO CARDS
 
-- OBJETIVO: Automatizar a tarefa de criar flash cards contendo frases em inglês na plataforma Anki. Através de scripts Python, com a utilização do Selenium, Anki API, aplicação do Google Translate, dicionários, sendo estes dois últimos aplicações já existentes para smartphone, além e outras tecnologias.
+- OBJETIVO: Automatizar a tarefa de criar flash cards contendo frases em inglês na plataforma Anki.
 
-- DEFINIÇÕES GLOBAIS: Válido para todas as escalas.
 
-    -> Cada escala poderá haver mais de uma versão, a qual será explorada alternativas às abordagens de eventuais versões anteriores;
-
-    -> Cada escala e suas eventuais versões trabalharão em branches distintas;
-
-    -> Os testes serão centralizados: Em um mesmo módulo, dentro de um diretório próprio. 
-
-- OBSERVAÇÕES GLOBAIS:
-
-    -> Está sendo utilizada a extensão padrão de testes do Python, portanto, não é possível realizar os testes executando no módulo ou por linha de comando. Deve-se utilizar a própria extensão.
-
-- ESCALAS DO PROJETO: O projeto será escalado aos poucos, à medida em que é desenvolvido. A cada versão concisa, esta terá sua escala aumentada à novas funcionalidades. Cada escala terá um diretório contendo seus arquivos de aplicações, testes e notas com suas especifícidades: Tarefas, Problemas, Propostas, Observações, etc.
+- ESCALAS DO PROJETO: O projeto será escalado aos poucos, à medida em que é desenvolvido. A cada versão concisa, esta terá sua escala aumentada à novas funcionalidades.
     
     -> ESCALA 1:    [DESCONTINUADO]
         - Consiste em apenas gerar as traduções em frases contidas em um arquivo .txt e devolver suas traduções para que seja manualmente submetidas à flash cards.
@@ -27,12 +16,10 @@ PROJETO AUTO CARDS
         [Aqui deverá ter um meio de repositório de imagens a serem inseridas e removidas ao fim do processo]
 
     -> ESCALA 4:
-        - Nesta escala será utilizado por fim a Anki API, a fim de otimizar o processo de criação dos flash cards.
+        - Nesta escala será utilizado por fim uma API para se comunicar com a plataforma Anki, a fim de otimizar o processo de criação dos flash cards.
 
     -> ESCALA 5:
         - Aqui será buscado um nível de automação a nível de sistema operacional, em que a cada período será executada a aplicação até aqui estabelecida.
 
-
-- ESPECIFICAÇÕES:
-
-    - Versão do Python: 3.8.2 32-bit
+    -> ESCALA 6:
+        - A esse ponto é buscado uma solução independente de uma máquina local.

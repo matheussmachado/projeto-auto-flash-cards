@@ -1,3 +1,5 @@
+#!venv/bin/python3
+
 import os
 
 from selenium.webdriver import Firefox
@@ -23,9 +25,9 @@ deliver = SeleniumAnkiBot(Firefox, login_path)
 img_admin = ImageSourceAdmin(img_source, writer, text_extractor)
 db = ShelveAdmin('db_cards', 'cards')
 
-ac = AutoFlashCards(deliver, img_admin, db)
+automaton = AutoFlashCards(deliver, img_admin, db)
 
 if __name__ == "__main__":
-    ac.run_task()
-    if len(ac.card_list) == 0:
+    automaton.run_task()
+    if len(automaton.card_list) == 0:
         print('No cards to create.')
