@@ -13,8 +13,8 @@ def verify_settings() -> None:
     files = os.listdir(current_dir)
     IMG_FOLDER = 'imgFolder'
     DATA_SETTINGS_FILE = 'data.json'
-    if not IMG_FOLDER in files:
-        os.mkdir(os.path.join(current_dir, IMG_FOLDER))
+    '''if not IMG_FOLDER in files:
+        os.mkdir(os.path.join(current_dir, IMG_FOLDER))'''
     if not DATA_SETTINGS_FILE in files:
         valid = False
         set_json_file(DATA_SETTINGS_FILE,

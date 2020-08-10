@@ -1,3 +1,4 @@
+import shutil
 import os
 import io
 from typing import List
@@ -9,21 +10,26 @@ from .interfaces import ImageSourceInterface
 from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
 from src.funcs.textFunc import get_from_json
 
-class OcamlfuseSource(ImageSourceInterface):
-    _FOLDER_TARGET = 'Legendas'
+class OcamlfuseSource(ImageSourceInterface):    
+    _LOCAL_PATH = 'imgPath'
 
-    def __init__(self, data_path: str):        
-        self._path = get_from_json(data_path, 'imgPath')
+    def __init__(self, drive_folder_name: str):
+        self.folder_target = drive_folder_name
+    
         
     @property
     def _total_path(self) -> str:
         return self._return_mount_folder()
 
     def _return_mount_folder(self) -> str:
-        folder_files = os.listdir(self._path)
-        if not self._FOLDER_TARGET in folder_files:
-            os.system(f'google-drive-ocamlfuse {self._path}')
-        return os.path.join(self._path, self._FOLDER_TARGET)
+        if not self._LOCAL_PATH in os.listdir(os.getcwd()):
+            try:
+                os.mkdir(self._LOCAL_PATH)
+            except Exception as err:
+                print(err)
+            else:
+                os.system(f'google-drive-ocamlfuse {self._LOCAL_PATH}')
+        return os.path.join(self._LOCAL_PATH, self.folder_target)
     
     def get_images(self) -> List[str]:
         imgs_data = []
@@ -36,9 +42,14 @@ class OcamlfuseSource(ImageSourceInterface):
             )
         return imgs_data
 
-    def remove_images(self, imgs_path: List[str]) -> None:
-        remove_imgs_list(imgs_path)    
-        os.system(f'fusermount -u {self._path}')
+    def remove_images(self, imgs_path: List[str]) -> None: 
+        remove_imgs_list(imgs_path)
+        os.system(f'fusermount -u {self._LOCAL_PATH}')
+        if not self.folder_target in os.listdir(self._LOCAL_PATH):
+            try:
+                os.rmdir(self._LOCAL_PATH)
+            except Exception as err:
+                print(err)
 
 
 

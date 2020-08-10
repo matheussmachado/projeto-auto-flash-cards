@@ -18,7 +18,8 @@ path = os.path.join(os.getcwd(), 'data.json')
 folder_path = login_path = path
 
 writer = DictBasedCardWriter()
-img_source = OcamlfuseSource(folder_path)
+#img_source = OcamlfuseSource(folder_path)
+img_source = OcamlfuseSource('Legendas')
 text_extractor = GoogleVision()
 
 deliver = SeleniumAnkiBot(Firefox, login_path)
