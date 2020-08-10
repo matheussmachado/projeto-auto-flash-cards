@@ -20,13 +20,13 @@ class DictBasedCardWriter:
     def update_contents(self, phrase: str, source: str) -> None:
         self._contents.append(
             {'phrase': phrase, 
-            'path': source}
+            'source': source}
         )
 
     def return_written_cards(self) -> list:
         if len(self.contents) > 0:
             for c in self.contents:
                 self._card_list.append(
-                    MyCard(c['phrase'], c['path'])
+                    MyCard(c['phrase'], c['source'])
                     )
         return self.card_list

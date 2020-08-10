@@ -121,5 +121,6 @@ class ImageSourceAdmin(SourceAdminInterface):
         return self.writer.return_written_cards()
     
     def update_sources(self):
-        paths = [path['path'] for path in self.writer.contents]
+        paths = [path['source'] for path in self.writer.contents]
         self.source.remove_images(paths)
+        

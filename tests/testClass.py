@@ -6,7 +6,6 @@ from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.cardWriter import DictBasedCardWriter
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.TextExtractors import GoogleVision
-from src.clss.imageSources import OcamlfuseSource
 from src.clss.mocks import MockImageSource
 from src.clss.sourceAdmins import (ShelveAdmin, 
                                     TextSourceAdmin, 
@@ -37,7 +36,7 @@ class TestDictBasedCardWriter(TestCase):
                 phrase, self.source
             )
         expected = [
-            {'phrase': phrase, 'path': self.source} for phrase in phrases
+            {'phrase': phrase, 'source': self.source} for phrase in phrases
         ]
         
         self.assertEqual(expected, self.writer.contents)
