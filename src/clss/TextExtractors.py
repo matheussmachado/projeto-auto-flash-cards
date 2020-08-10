@@ -15,10 +15,12 @@ class GoogleVision(TextExtractorInterface):
     def __init__(self):
         self._client = vision.ImageAnnotatorClient()        
 
-    def img_to_str(self, img_path: str) -> List[str]:
-        with io.open(img_path, 'rb') as image_file:
-            content = image_file.read()
-        image = vision.types.Image(content=content)
+    #def img_to_str(self, img_path: str) -> List[str]:
+    def img_to_str(self, image: bytes) -> List[str]:
+        '''with io.open(img_path, 'rb') as image_file:
+            content = image_file.read()'''
+        #image = vision.types.Image(content=content)
+        image = vision.types.Image(content=image)
         response = self._client.text_detection(image=image)
         texts = response.text_annotations
         text = texts[0].description

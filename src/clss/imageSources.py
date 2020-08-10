@@ -1,4 +1,5 @@
 import os
+import io
 from typing import List
 from googleapiclient import discovery
 from httplib2 import Http
@@ -19,14 +20,22 @@ class OcamlfuseSource(ImageSourceInterface):
         return self._return_mount_folder()
 
     def _return_mount_folder(self) -> str:
-        
-        if not self._FOLDER_TARGET in os.listdir(self._path):
+        folder_files = os.listdir(self._path)
+        if not self._FOLDER_TARGET in folder_files:
             os.system(f'google-drive-ocamlfuse {self._path}')
         return os.path.join(self._path, self._FOLDER_TARGET)
     
     def get_images(self) -> List[str]:
-        return get_imgs_path(self._total_path)
-        
+        imgs_data = []
+        paths = get_imgs_path(self._total_path)
+        for path in paths:
+            with io.open(path, 'rb') as image_file:
+                _bytes = image_file.read()
+            imgs_data.append(
+                {'bytes': _bytes, 'source': path}
+            )
+        return imgs_data
+
     def remove_images(self, imgs_path: List[str]) -> None:
         remove_imgs_list(imgs_path)    
         os.system(f'fusermount -u {self._path}')

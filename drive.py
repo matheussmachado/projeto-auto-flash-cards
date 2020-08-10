@@ -25,7 +25,6 @@ service = Create_Service(KEY, API_NAME, API_VERSION, SCOPES)
 
 #DOWNLOAD DAS IMAGENS
 def download_files(local_folder, data_files):
-    
     for file in data_files:
         try:
             request = service.files().get_media(fileId=file['id'])
@@ -48,7 +47,8 @@ def download_files(local_folder, data_files):
             print(text)'''
             '''with open(os.path.join(local_folder, file['name']), 'wb') as f:
                 f.write(fh.read())'''
-
+            img_bytes = fh.read()
+            return img_bytes
 
 
 #REMOVER id EM UM DIRETÓRIO

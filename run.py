@@ -2,8 +2,8 @@
 
 import os
 
-#from src.scales.scale3 import automaton
-from src.scales.scale2 import automaton
+from src.scales.scale3 import automaton
+#from src.scales.scale2 import automaton
 from src.funcs.textFunc import create_json_data_settings, set_json_file
 
 

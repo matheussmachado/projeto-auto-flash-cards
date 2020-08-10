@@ -1,4 +1,5 @@
 import os
+import io
 from unittest import TestCase, mock, main
 
 from src.clss.cards import MyCard
@@ -246,8 +247,11 @@ class TestGoogleVision(TestCase):
     def test_text_detection_of_vision_api_was_called(self, mocked):
         img = os.path.join(imgs_path, 'img1.jpg')
         extractor = GoogleVision()
-        extractor.img_to_str(img)
+        with io.open(img, 'rb') as f:
+            content = f.read()
+        extractor.img_to_str(content)
         mocked.assert_called_once()
+        
 
 
 class TestImageSourceAdmin(TestCase):
@@ -258,7 +262,7 @@ class TestImageSourceAdmin(TestCase):
 
 
     @mock.patch('src.clss.TextExtractors.vision.ImageAnnotatorClient.text_detection')    
-    def test__return_source_call_img_to_str(self, mocked):
+    def test__return_source_method_call_img_to_str_method(self, mocked):
         extractor = GoogleVision()
         imgAdmin = ImageSourceAdmin(self.mockImgSource, self.writer, extractor)
         imgAdmin.return_sources()

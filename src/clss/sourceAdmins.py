@@ -108,19 +108,20 @@ class ImageSourceAdmin(SourceAdminInterface):
         self.writer = writer
         self.extractor = text_extractor
 
-    def return_sources(self):
-        imgs_path = self.source.get_images()
-        for path in imgs_path:
-            try:
-               phrase = self.extractor.img_to_str(path)
-            except Exception as err:
-                print(err)
-            else:
-                if phrase:
-                    self.writer.update_contents(phrase, path)
+    def return_sources(self):    
+        imgs_data = self.source.get_images()
+        if imgs_data:
+            for data in imgs_data:
+                try:
+                    phrase = self.extractor.img_to_str(data['bytes'])
+                except Exception as err:
+                    print(err)
+                else:
+                    if phrase:
+                        self.writer.update_contents(phrase, data['source'])
         return self.writer.return_written_cards()
     
     def update_sources(self):
-        paths = [path['source'] for path in self.writer.contents]
-        self.source.remove_images(paths)
+        imgs_src = [src['source'] for src in self.writer.contents]
+        self.source.remove_images(imgs_src)
         
