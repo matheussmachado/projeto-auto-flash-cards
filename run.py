@@ -2,7 +2,8 @@
 
 import os
 
-from src.scales.scale3 import automaton
+from src.scales.scale4 import automaton
+#from src.scales.scale3 import automaton
 #from src.scales.scale2 import automaton
 from src.funcs.textFunc import create_json_data_settings, set_json_file
 
@@ -10,17 +11,13 @@ from src.funcs.textFunc import create_json_data_settings, set_json_file
 def verify_settings() -> None:
     valid = True
     current_dir = os.getcwd()
-    files = os.listdir(current_dir)
-    IMG_FOLDER = 'imgFolder'
-    DATA_SETTINGS_FILE = 'data.json'
-    '''if not IMG_FOLDER in files:
-        os.mkdir(os.path.join(current_dir, IMG_FOLDER))'''
+    files = os.listdir(current_dir)    
+    DATA_SETTINGS_FILE = 'data.json'    
     if not DATA_SETTINGS_FILE in files:
         valid = False
         set_json_file(DATA_SETTINGS_FILE,
             {
-                'login': {'email': '', 'password': ''}, 
-                'folder_name': IMG_FOLDER
+                'login': {'email': '', 'password': ''}
             })
     return valid
 

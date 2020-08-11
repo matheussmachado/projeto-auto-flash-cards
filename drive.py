@@ -1,7 +1,6 @@
 import os
 import io
 from typing import Union, Dict, List
-#from Google import Create_Service
 from google.cloud import vision
 from google.cloud.vision import types
 
@@ -24,31 +23,21 @@ service = Create_Service(KEY, API_NAME, API_VERSION, SCOPES)
 
 
 #DOWNLOAD DAS IMAGENS
-def download_files(local_folder, data_files):
-    for file in data_files:
-        try:
-            request = service.files().get_media(fileId=file['id'])
-        except HttpError as err:
-            print(err)
-        else:
-            fh = io.BytesIO()
-            downloader = MediaIoBaseDownload(fd=fh, request=request)
-            done = False
-            while not done:
-                status, done = downloader.next_chunk()
-                print(f'download progress {status.progress() * 100}')
-            fh.seek(0)
-            '''content = fh.read()
-            image = vision.types.Image(content=content)
-            response = client.text_detection(image=image)
-            texts = response.text_annotations
-            text = texts[0].description
-            text = text.replace('\n', ' ').strip()
-            print(text)'''
-            '''with open(os.path.join(local_folder, file['name']), 'wb') as f:
-                f.write(fh.read())'''
-            img_bytes = fh.read()
-            return img_bytes
+def get_images_byte(file_id):
+    #for file in data_files:
+    try:
+        request = service.files().get_media(fileId=file_id)
+    except HttpError as err:
+        print(err)
+    else:
+        fh = io.BytesIO()
+        downloader = MediaIoBaseDownload(fd=fh, request=request)
+        done = False
+        while not done:
+            status, done = downloader.next_chunk()            
+        fh.seek(0)            
+        img_bytes = fh.read()
+        return img_bytes
 
 
 #REMOVER id EM UM DIRETÓRIO
@@ -66,15 +55,15 @@ def get_data_files_from_folder(folder_id):
         response = service.files().list(
             q=f"'{folder_id}' in parents and trashed=false",            
             spaces='drive',
-            fields='nextPageToken, files(id, name)',
+            fields='nextPageToken, files(id)',
             pageToken=page_token
             ).execute()        
-        result = response.get('files', [])        
-        print(result)
+        result = response.get('files', [])
+        data_ids = [d['id'] for d in result]
         page_token = response.get('nextPageToken', None)
         if page_token is None:
             break
-    return result
+    return data_ids
 
 
 
@@ -117,7 +106,7 @@ if __name__ == "__main__":
     #create_drive_folder('Teste')
     img = get_data_files_from_folder(get_id_by_folder_name('Legendas'))
     print(img)
-    download_files('./imgFolder', img)
+    
     #delete_file_by_id(get_id_by_folder_name('Teste'))
 
 '''

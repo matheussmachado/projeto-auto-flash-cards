@@ -2,13 +2,15 @@ import shutil
 import os
 import io
 from typing import List
-from googleapiclient import discovery
-from httplib2 import Http
-from oauth2client import file, client, tools
-from .interfaces import ImageSourceInterface
 
+from .interfaces import ImageSourceInterface
 from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
 from src.funcs.textFunc import get_from_json
+from drive import (
+    create_drive_folder, delete_file_by_id, get_data_files_from_folder, get_id_by_folder_name, get_images_byte
+    )
+
+
 
 class OcamlfuseSource(ImageSourceInterface):    
     _LOCAL_PATH = 'imgPath'
@@ -53,12 +55,27 @@ class OcamlfuseSource(ImageSourceInterface):
 
 
 
+class GoogleDriveSource(ImageSourceInterface):
+    def __init__(self, drive_folder_name):
+        self.folder = drive_folder_name
 
-class GoogleDrive(ImageSourceInterface):
-    SCOPE = 'https://www.googleapis.com/auth/drive'
-    KEY = 'client_drive_key.json'
-    API_NAME = 'drive'
-    API_VERSION = 'v3'
+    def get_images(self):
+        imgs_data = []
+        _id = get_id_by_folder_name(self.folder)
+        if not _id:
+            raise Exception(f'{self.folder} folders not exists.')
+        imgs_id = get_data_files_from_folder(_id)
+        for data_id in imgs_id:
+            _bytes = get_images_byte(data_id)
+            if _bytes:
+                imgs_data.append(
+                {'bytes': _bytes, 'source': data_id}
+            )
+        return imgs_data
+    
+    def remove_images(self, data_list: list) -> None:
+        for _id in data_list:
+            delete_file_by_id(_id)
 
 
 """class GoogleDrive(ImageSourceInterface):    
