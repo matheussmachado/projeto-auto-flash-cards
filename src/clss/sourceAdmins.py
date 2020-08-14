@@ -11,8 +11,6 @@ from src.funcs.textFunc import get_from_txt
 
 
 class ShelveAdmin(SourceAdminInterface):
-    """
-        Classe que herda de AbstraticSourceAdmin e que implementa seus contratos, tornando-a responsável por gerenciar a estrutura de persistência shelve, que estoca objetos MyCard gerados durante a tarefa principal."""
     def __init__(self, db_cards: str, db_key: str) -> None:
         super().__init__()
         self.db_cards = db_cards
@@ -25,7 +23,29 @@ class ShelveAdmin(SourceAdminInterface):
         with self._database.open(self.db_cards) as db:
             if not self.db_key in db.keys():
                 db[self.db_key] = []
+    
+    def update_sources(self): 
+        raise NotImplementedError
 
+    def return_sources(self) -> list:
+        """
+            Método que retorna uma lista de objetos MyCard estocados na estrutura de persistencia."""
+        self._verify_key()
+        with self._database.open(self.db_cards) as db:
+            cards_list = db[self.db_key]
+        return cards_list
+
+    def _insert(self, this):
+        with self._database.open(self.db_cards) as db:
+            db[self.db_key] = this
+
+
+class ShelveCardAdmin(ShelveAdmin):
+    """
+        Classe que herda de AbstraticSourceAdmin e que implementa seus contratos, tornando-a responsável por gerenciar a estrutura de persistência shelve, que estoca objetos MyCard gerados durante a tarefa principal."""
+    def __init__(self, db_cards: str, db_key: str) -> None:
+        super().__init__(db_cards, db_key)
+        
     def update_sources(self, cards: list) -> None:
         """
             Método resposável pela atualização da estrutura de persistência, de acordo com o status de inserido do objeto MyCard.
@@ -34,33 +54,33 @@ class ShelveAdmin(SourceAdminInterface):
                 cards (list): lista e objetos MyCard a serem submetido por avaliação e comparação com objetos MyCard eventualmente estocados na estrutura de db."""
         if len(cards) == 0:
             return
-        self._verify_key()
-        with self._database.open(self.db_cards) as db:
-            cards_temp = db[self.db_key]            
-            c_temp_repr = [card.representation for card in cards_temp]            
+        self._verify_key()        
+        cards_temp = self.return_sources()
+        c_temp_repr = [card.representation for card in cards_temp]            
 
-            for card in cards:
-                if card.inserted == False:
-                    if not card.representation in c_temp_repr:
-                        cards_temp.append(card)
+        for card in cards:
+            if card.inserted == False:
+                if not card.representation in c_temp_repr:
+                    cards_temp.append(card)
 
-                if card.inserted == True:
-                    c_temp = card
-                    c_temp.inserted = False
-                    for i, c in enumerate(cards_temp):                    
-                        if c.representation == c_temp.representation:
-                            cards_temp.pop(i)
-                            break
-            db[self.db_key] = cards_temp
+            if card.inserted == True:
+                c_temp = card
+                c_temp.inserted = False
+                for i, c in enumerate(cards_temp): 
+                    if c.representation == c_temp.representation:
+                        cards_temp.pop(i)
+                        break
+        self._insert(cards_temp)
+        '''with self._database.open(self.db_cards) as db:
+            db[self.db_key] = cards_temp    '''
 
-    def return_sources(self) -> list:
-        """
-            Método que retorna uma lista de objetos MyCard estocados na estrutura de persistencia."""
-        self._verify_key()
-        with self._database.open(self.db_cards) as db:
-            cards_list = db[self.db_key]
-        return cards_list        
 
+class ShelveIdAdmin(ShelveAdmin): 
+    def __init__(self, db_cards, db_key):
+        super().__init__(db_cards, db_key)
+    
+    def update_sources(self, _id_list: list) -> None:
+        self._insert(_id_list)
 
 
 class TextSourceAdmin(SourceAdminInterface):

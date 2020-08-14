@@ -8,7 +8,7 @@ from src.clss.cardWriter import DictBasedCardWriter
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.TextExtractors import GoogleVision
 from src.clss.mocks import MockImageSource
-from src.clss.sourceAdmins import (ShelveAdmin, 
+from src.clss.sourceAdmins import (ShelveCardAdmin, 
                                     TextSourceAdmin, 
                                     ImageSourceAdmin)
 
@@ -100,7 +100,7 @@ class TestTextSourceAdmin(TestCase):
 
 
 
-class TestShelveAdmin(TestCase):
+class TestShelveCardAdmin(TestCase):
     #TODO: VERIFICAR TESTES CRIADOS A SEREM REPLICADOS
     def setUp(self):
         self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
@@ -121,7 +121,7 @@ class TestShelveAdmin(TestCase):
             self.text_src_before)
 
     def test__storage_card_works_for_created_cards(self):        
-        db = ShelveAdmin(self.db_source, self.db_key)
+        db = ShelveCardAdmin(self.db_source, self.db_key)
         cardsList_1 = self.textAdmin.return_sources()
         db.update_sources(cardsList_1)
         cardsList_2 = db.return_sources()
@@ -130,7 +130,7 @@ class TestShelveAdmin(TestCase):
         self.assertEqual(expected, cards)
 
     def test__update_source_when_all_cards_was_inserted(self):
-        db = ShelveAdmin(self.db_source, self.db_key)
+        db = ShelveCardAdmin(self.db_source, self.db_key)
         card_list = self.textAdmin.return_sources()
         db.update_sources(card_list)
         for card in card_list:
@@ -140,7 +140,7 @@ class TestShelveAdmin(TestCase):
         self.assertEqual(expected, [])
     
     def test__update_source_when_last_card_was_not_inserted(self):
-        db = ShelveAdmin(self.db_source, self.db_key)
+        db = ShelveCardAdmin(self.db_source, self.db_key)
         card_list = self.textAdmin.return_sources()
         db.update_sources(card_list)
         for i in range(len(card_list) - 1):
@@ -152,7 +152,7 @@ class TestShelveAdmin(TestCase):
         self.assertEqual(expected, last_card)
 
     def test__update_source_returns_None_when_no_cards(self):
-        db = ShelveAdmin(self.db_source, self.db_key)
+        db = ShelveCardAdmin(self.db_source, self.db_key)
         expected = db.update_sources([])
         self.assertEqual(expected, None)
 
@@ -191,7 +191,7 @@ class TestAutoFlashCards(TestCase):
         self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
         self.db_key = "test_key"
         self.db_source_before = []
-        self.db_admin = ShelveAdmin(self.db_source, self.db_key)
+        self.db_admin = ShelveCardAdmin(self.db_source, self.db_key)
 
     def tearDown(self):
         db_cards_reset(self.db_source, 

@@ -6,8 +6,8 @@ from selenium.webdriver import Firefox, Chrome
 
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.sourceAdmins import (
-                ShelveAdmin, TextSourceAdmin, 
-                ShelveAdmin, DictBasedCardWriter
+                ShelveCardAdmin, TextSourceAdmin, 
+                DictBasedCardWriter
     )
 from src.clss.cardDeliverers import SeleniumAnkiBot
 
@@ -22,7 +22,7 @@ login_path = os.path.join(os.getcwd(), login_file)
 deliver = SeleniumAnkiBot(Chrome, login_path)
 writer = DictBasedCardWriter()
 sourceAdmin = TextSourceAdmin(file_path, writer)
-dbAdmin = ShelveAdmin('db_cards', 'cards')
+dbAdmin = ShelveCardAdmin('db', 'cards')
 
 automaton = AutoFlashCards(deliver, sourceAdmin, dbAdmin)
 

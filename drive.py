@@ -23,8 +23,7 @@ service = Create_Service(KEY, API_NAME, API_VERSION, SCOPES)
 
 
 #DOWNLOAD DAS IMAGENS
-def get_images_byte(file_id):
-    #for file in data_files:
+def get_images_byte(file_id):    
     try:
         request = service.files().get_media(fileId=file_id)
     except HttpError as err:
@@ -42,10 +41,12 @@ def get_images_byte(file_id):
 
 #REMOVER id EM UM DIRETÓRIO
 def delete_file_by_id(file_id):
-  try:
-    service.files().delete(fileId=file_id).execute()
-  except HttpError as error:
-    print('An error occurred: %s' % error)
+    try:
+        service.files().delete(fileId=file_id).execute()
+    except HttpError as error:
+        print('An error occurred: %s' % error)
+    else:
+        return True
 
 
 #TODO: OBTER TODOS OS id's DAS IMAGENS DE UM DIRETÓRIO

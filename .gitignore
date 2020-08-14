@@ -11,6 +11,7 @@ imgPath.txt
 venv
 .vscode
 db_cards
+db
 *.pickle
 !img1.jpg
 !img2.jpg
