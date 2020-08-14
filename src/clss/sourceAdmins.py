@@ -1,5 +1,5 @@
 import shelve
-from typing import List, Dict
+from typing import List, Dict, Any
 
 from .cards import MyCard
 from .cardWriter import DictBasedCardWriter
@@ -25,7 +25,7 @@ class ShelveAdmin(SourceAdminInterface):
                 db[self.db_key] = []
     
     def update_sources(self): 
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def return_sources(self) -> list:
         """
@@ -35,14 +35,12 @@ class ShelveAdmin(SourceAdminInterface):
             cards_list = db[self.db_key]
         return cards_list
 
-    def _insert(self, this):
+    def _insert(self, this: Any) -> None:
         with self._database.open(self.db_cards) as db:
             db[self.db_key] = this
 
 
-class ShelveCardAdmin(ShelveAdmin):
-    """
-        Classe que herda de AbstraticSourceAdmin e que implementa seus contratos, tornando-a responsável por gerenciar a estrutura de persistência shelve, que estoca objetos MyCard gerados durante a tarefa principal."""
+class ShelveCardAdmin(ShelveAdmin):    
     def __init__(self, db_cards: str, db_key: str) -> None:
         super().__init__(db_cards, db_key)
         
@@ -70,9 +68,8 @@ class ShelveCardAdmin(ShelveAdmin):
                     if c.representation == c_temp.representation:
                         cards_temp.pop(i)
                         break
-        self._insert(cards_temp)
-        '''with self._database.open(self.db_cards) as db:
-            db[self.db_key] = cards_temp    '''
+        self._insert(cards_temp)    
+
 
 
 class ShelveIdAdmin(ShelveAdmin): 

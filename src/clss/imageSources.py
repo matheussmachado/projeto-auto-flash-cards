@@ -7,7 +7,7 @@ from .interfaces import ImageSourceInterface
 from .sourceAdmins import ShelveIdAdmin
 from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
 from src.funcs.textFunc import get_from_json
-from drive import (
+from src.funcs.google_drive_interface import (
     create_drive_folder, delete_file_by_id, get_data_files_from_folder, get_id_by_folder_name, get_images_byte
     )
 
@@ -68,7 +68,6 @@ class GoogleDriveSource(ImageSourceInterface):
         if self._failed_rm_id == None:
             self._failed_rm_id = self.id_admin.return_sources()
         return self._failed_rm_id
-
 
     def get_images(self):
         imgs_data = []

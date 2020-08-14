@@ -1,26 +1,22 @@
 import os
 import io
 from typing import Union, Dict, List
-from google.cloud import vision
-from google.cloud.vision import types
+import pickle
 
-from googleapiclient.http import MediaIoBaseDownload
+from google_auth_oauthlib.flow import Flow, InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
+from google.auth.transport.requests import Request
 from googleapiclient.errors import HttpError
-from src.funcs.imgFuncs import Create_Service
 
-_AUTH_FILE = 'serviceAccountToken.json'
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = _AUTH_FILE
-
-client = vision.ImageAnnotatorClient()
+#from src.funcs.imgFuncs import Create_Service
 
 
+#---------------------- GOOGLE DRIVE ----------------------
 SCOPES = ['https://www.googleapis.com/auth/drive']
 KEY = 'client_drive_key.json'
 API_NAME = 'drive'
 API_VERSION = 'v3'
-
-service = Create_Service(KEY, API_NAME, API_VERSION, SCOPES)
-
 
 #DOWNLOAD DAS IMAGENS
 def get_images_byte(file_id):    
@@ -102,43 +98,38 @@ def get_id_by_folder_name(folder_name: str) -> str:
 
 
 
+def create_service(client_secret_file, api_name, api_version, *scopes):    
+    CLIENT_SECRET_FILE = client_secret_file
+    API_SERVICE_NAME = api_name
+    API_VERSION = api_version
+    SCOPES = [scope for scope in scopes[0]]
+    cred = None
+    pickle_file = f'token_{API_SERVICE_NAME}_{API_VERSION}.pickle'
+    if os.path.exists(pickle_file):
+        with open(pickle_file, 'rb') as token:
+            cred = pickle.load(token)
+    if not cred or not cred.valid:
+        if cred and cred.expired and cred.refresh_token:
+            cred.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
+            cred = flow.run_local_server()
+        with open(pickle_file, 'wb') as token:
+            pickle.dump(cred, token)
+    try:
+        service = build(API_SERVICE_NAME, API_VERSION, credentials=cred)        
+        return service
+    except Exception as e:
+        print('Unable to connect.')
+        print(e)
+        return None
+
+
+service = create_service(KEY, API_NAME, API_VERSION, SCOPES)
+
 if __name__ == "__main__":
     #get_drive_folder_id('Legendas')
     #create_drive_folder('Teste')
     img = get_data_files_from_folder(get_id_by_folder_name('Legendas'))
     print(img)
     
-    #delete_file_by_id(get_id_by_folder_name('Teste'))
-
-'''
-
-#FLUXO DO IMAGESOURCE
-
-- verificar se há o id
-- verificar se há 
-
-
-
-- verificar se há o campo id no arquivo data.json
-    - se houver:
-    Validar se há o diretório
-        - se houver
-            - obter o id; fim
-        - se não,
-            - criar o diretório
-            - obter o id e gravar em data.json
-            - finaliza
-    - se não houver;
-            - criar o diretório
-            - obter o id e gravar em data.json na key id
-
-
-- verificar se há o id da pasta em data.json:
-    - se não houver;        
-        - Validar se há o diretório
-        - se houver
-            - obter o id
-        - se não,
-            - criar o diretório
-            - obter o id e gravar em data.json
-'''
