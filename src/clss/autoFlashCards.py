@@ -1,6 +1,6 @@
 from typing import List, TypeVar
 from .cards import MyCard
-from .sourceAdmins import ShelveCardAdmin
+from .sourceAdmins import MyCardShelveAdmin
 from .abstractClasses import AbstractCardDeliverer
 from .interfaces import SourceAdminInterface
 
@@ -8,7 +8,7 @@ from .interfaces import SourceAdminInterface
 class AutoFlashCards:
     def __init__(self, card_deliverer: AbstractCardDeliverer,
                     source_admin: SourceAdminInterface,
-                    db_admin: ShelveCardAdmin):
+                    db_admin: MyCardShelveAdmin):
         self.card_deliverer = card_deliverer
         self.source_admin = source_admin
         self.db_admin = db_admin

@@ -1,8 +1,9 @@
 import shelve
-from typing import List, Dict, Any
+from typing import List, Dict
 
 from .cards import MyCard
 from .cardWriter import DictBasedCardWriter
+from . abstractClasses import AbstractShelveKeyAdmin
 from .interfaces import (SourceAdminInterface,
                             ImageSourceInterface, 
                             TextExtractorInterface)
@@ -10,37 +11,10 @@ from .interfaces import (SourceAdminInterface,
 from src.funcs.textFunc import get_from_txt
 
 
-class ShelveAdmin(SourceAdminInterface):
-    def __init__(self, db_cards: str, db_key: str) -> None:
-        super().__init__()
-        self.db_cards = db_cards
-        self.db_key = db_key
-        self._database = shelve
-
-    def _verify_key(self) -> None:
-        """
-            Método que realiza a verificação de existencia da key/coluna que eventualmente está estocado objetos MyCard."""
-        with self._database.open(self.db_cards) as db:
-            if not self.db_key in db.keys():
-                db[self.db_key] = []
-    
-    def update_sources(self): 
-        raise NotImplementedError()
-
-    def return_sources(self) -> list:
-        """
-            Método que retorna uma lista de objetos MyCard estocados na estrutura de persistencia."""
-        self._verify_key()
-        with self._database.open(self.db_cards) as db:
-            cards_list = db[self.db_key]
-        return cards_list
-
-    def _insert(self, this: Any) -> None:
-        with self._database.open(self.db_cards) as db:
-            db[self.db_key] = this
 
 
-class ShelveCardAdmin(ShelveAdmin):    
+
+class MyCardShelveAdmin(AbstractShelveKeyAdmin):
     def __init__(self, db_cards: str, db_key: str) -> None:
         super().__init__(db_cards, db_key)
         
@@ -72,7 +46,7 @@ class ShelveCardAdmin(ShelveAdmin):
 
 
 
-class ShelveIdAdmin(ShelveAdmin): 
+class DriveFileIdShelveAdmin(AbstractShelveKeyAdmin): 
     def __init__(self, db_cards, db_key):
         super().__init__(db_cards, db_key)
     

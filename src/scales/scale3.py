@@ -10,9 +10,8 @@ from src.clss.cardWriter import DictBasedCardWriter
 from src.clss.imageSources import OcamlfuseSource
 from src.clss.TextExtractors import GoogleVision
 from src.clss.sourceAdmins import ImageSourceAdmin
-from src.clss.sourceAdmins import ShelveCardAdmin
+from src.clss.sourceAdmins import MyCardShelveAdmin
 
-from src.funcs.textFunc import get_from_txt
 
 path = os.path.join(os.getcwd(), 'data.json')
 folder_path = login_path = path
@@ -23,7 +22,7 @@ text_extractor = GoogleVision()
 
 deliver = SeleniumAnkiBot(Firefox, login_path)
 img_admin = ImageSourceAdmin(img_source, writer, text_extractor)
-db = ShelveCardAdmin('db', 'cards')
+db = MyCardShelveAdmin('db', 'cards')
 
 automaton = AutoFlashCards(deliver, img_admin, db)
 
