@@ -58,7 +58,7 @@ class OcamlfuseSource(ImageSourceInterface):
 
 class GoogleDriveSource(ImageSourceInterface):
     def __init__(self, drive_folder_name, 
-    id_admin: ShelveIdAdmin):
+    id_admin: DriveFileIdShelveAdmin):
         self.folder = drive_folder_name
         self.id_admin = id_admin
         self._failed_rm_id = None
