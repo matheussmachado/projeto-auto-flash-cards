@@ -2,9 +2,9 @@
 
 import os
 
-from src.scales.scale4 import automaton
+#from src.scales.scale4 import automaton
 #from src.scales.scale3 import automaton
-#from src.scales.scale2 import automaton
+from src.scales.scale2 import automaton
 from src.funcs.textFunc import create_json_data_settings, set_json_file
 
 
@@ -29,8 +29,11 @@ def main() -> None:
         print('Insert the data into the created "data.json" file. Then, run this again!')
         return
     automaton.run_task()
+    print(f"""
+Total cards created: {len(automaton.card_list)}
+Total cards inserted: {automaton.card_deliverer.total_inserted}""")
     if len(automaton.card_list) == 0:
-        print('No cards to create.')
+        print('No cards to create.')    
     
 
 if __name__ == "__main__":

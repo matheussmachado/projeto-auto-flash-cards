@@ -9,6 +9,7 @@ class AbstractCardDeliverer(ABC):
     
     def __init__(self):
         self._card_list: List[MyCard] = []
+        self.total_inserted = 0
 
     @property
     def card_list(self):

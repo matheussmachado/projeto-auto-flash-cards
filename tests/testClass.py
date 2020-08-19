@@ -240,7 +240,7 @@ class TestAutoFlashCards(TestCase):
         ac.run_task()
         mocked.assert_not_called()
 
-
+    #TODO: testar se o deliver será chamado com a lista de cards passado
 
 class TestGoogleVision(TestCase):
     @mock.patch('src.clss.TextExtractors.vision.ImageAnnotatorClient.text_detection')

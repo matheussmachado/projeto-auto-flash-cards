@@ -1,15 +1,15 @@
-#!venv/bin/python3
+
 
 import os
 
 from selenium.webdriver import Firefox, Chrome
 
 from src.clss.autoFlashCards import AutoFlashCards
+from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.sourceAdmins import (
                 MyCardShelveAdmin, TextSourceAdmin, 
                 DictBasedCardWriter
     )
-from src.clss.cardDeliverers import SeleniumAnkiBot
 
 phrases_file = 'frases.txt'
 file_path = os.path.join(os.getcwd(), phrases_file)

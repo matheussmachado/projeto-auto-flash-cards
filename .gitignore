@@ -12,6 +12,7 @@ venv
 .vscode
 db_cards
 db
+frases
 *.pickle
 !img1.jpg
 !img2.jpg
