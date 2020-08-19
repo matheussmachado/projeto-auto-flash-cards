@@ -5,6 +5,27 @@ from abc import ABC, abstractmethod
 from .cards import MyCard
 
 
+class AbstractWebPageContentHandler(ABC):
+    """
+        Filtrar conteúdos de páginas web para fornecer os recursos necessários à uma outra classe que o necessita para realizar seus objetivos."""
+    def __init__(self, *agents):
+        self.agents = agents
+        self.sources = None
+    
+    @property
+    def return_resources(self):
+        return self.sources
+    
+    @abstractmethod
+    def _get_contents(self):
+        ...
+
+    @abstractmethod
+    def _filter_contents(self):
+        ...
+
+
+
 class AbstractCardDeliverer(ABC):
     
     def __init__(self):
