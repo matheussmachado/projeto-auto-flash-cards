@@ -13,6 +13,7 @@ venv
 db_cards
 db
 frases
+*.html
 *.pickle
 !img1.jpg
 !img2.jpg

@@ -4,7 +4,7 @@ import io
 from typing import List
 
 from .interfaces import ImageSourceInterface
-from .sourceAdmins import ShelveIdAdmin
+from .sourceAdmins import DriveFileIdShelveAdmin
 from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
 from src.funcs.textFunc import get_from_json
 from src.funcs.google_drive_interface import (
@@ -58,7 +58,7 @@ class OcamlfuseSource(ImageSourceInterface):
 
 class GoogleDriveSource(ImageSourceInterface):
     def __init__(self, drive_folder_name, 
-    id_admin: ShelveIdAdmin):
+    id_admin: DriveFileIdShelveAdmin):
         self.folder = drive_folder_name
         self.id_admin = id_admin
         self._failed_rm_id = None

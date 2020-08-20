@@ -1,6 +1,9 @@
 import os
 import io
+import re
 from unittest import TestCase, mock, main
+
+from bs4 import BeautifulSoup
 
 from src.clss.cards import MyCard
 from src.clss.autoFlashCards import AutoFlashCards
@@ -8,6 +11,7 @@ from src.clss.cardWriter import DictBasedCardWriter
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.TextExtractors import GoogleVision
 from src.clss.mocks import MockImageSource
+from src.clss.assistants import AnkiEditPageHandler
 from src.clss.sourceAdmins import (MyCardShelveAdmin, 
                                     TextSourceAdmin, 
                                     ImageSourceAdmin)
@@ -17,6 +21,7 @@ from src.funcs.resetSamplesFuncs import text_source_reset, db_cards_reset
 
 SAMPLE_FOLDER = "amostras/"
 IMG_FOLDER = 'imgFolder'
+PG_SOURCE = 'page_source.html'
 imgs_path = os.path.join(SAMPLE_FOLDER, IMG_FOLDER)
 
 
@@ -42,7 +47,7 @@ class TestDictBasedCardWriter(TestCase):
         
         self.assertEqual(expected, self.writer.contents)
     
-    def test__return_written_cards_returns_equal_amount_src(self):                
+    def test__return_written_cards_returns_equal_amount_src(self):
         phrases = self.src_before
         for phrase in phrases:
             self.writer.update_contents(phrase, self.source)
@@ -50,7 +55,7 @@ class TestDictBasedCardWriter(TestCase):
         expected = len(card_list)
         self.assertEqual(expected, len(self.src_before))
 
-    def test_return_written_cards_returns_MyCard_instances(self):        
+    def test_return_written_cards_returns_MyCard_instances(self):
         phrases = self.src_before
         for phrase in phrases:
             self.writer.update_contents(phrase, self.source)
@@ -100,8 +105,7 @@ class TestTextSourceAdmin(TestCase):
 
 
 
-class TestMyCardShelveAdmin(TestCase):
-    #TODO: VERIFICAR TESTES CRIADOS A SEREM REPLICADOS
+class TestMyCardShelveAdmin(TestCase):    
     def setUp(self):
         self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
         self.db_key = "test_key"
@@ -242,6 +246,7 @@ class TestAutoFlashCards(TestCase):
 
     #TODO: testar se o deliver será chamado com a lista de cards passado
 
+
 class TestGoogleVision(TestCase):
     @mock.patch('src.clss.TextExtractors.vision.ImageAnnotatorClient.text_detection')
     def test_text_detection_of_vision_api_was_called(self, mocked):
@@ -278,6 +283,36 @@ class TestImageSourceAdmin(TestCase):
         imgAdmin.update_sources()
         mocked.assert_called_once_with(imgs_list)
 
+
+class TestAnkiEditPageHandler(TestCase):
+    file = os.path.join(SAMPLE_FOLDER, PG_SOURCE)
+    with open(file, 'r') as f:
+        CONTENT = f.read()
+
+    def setUp(self):
+        #soup = BeautifulSoup(self.CONTENT, 'lxml')
+        #self.handler = AnkiEditPageHandler(re, BeautifulSoup)
+        ...
+
+    def test__key_value_filter_method(self):
+        handler = AnkiEditPageHandler('_', '_')
+        filth_name = '"name": "Default"'
+        expected = handler._key_value_filter(filth_name, ':')
+        self.assertEqual(expected, 'Default')
+
+    
+    def test__return_deck_names(self):
+        handler = AnkiEditPageHandler(re, BeautifulSoup)
+        handler.get_content(self.CONTENT)
+        return_names = handler.return_deck_names()
+        print(return_names)
+        expected = ['Default', 'my deck']
+        
+        for name in expected:
+            self.assertIn(name, return_names)
+    
+
+        
 
 
 if __name__ == "__main__":
