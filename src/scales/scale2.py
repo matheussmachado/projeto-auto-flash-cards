@@ -1,9 +1,9 @@
-
-
 import os
+import re
 
 from selenium.webdriver import Firefox, Chrome
 
+from src.clss.assistants import AnkiEditPageHandler
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.sourceAdmins import (
@@ -19,7 +19,8 @@ login_path = os.path.join(os.getcwd(), login_file)
 
 
 #deliver = SeleniumAnkiBot(Firefox, 'login.txt')
-deliver = SeleniumAnkiBot(Chrome, login_path)
+page_handler = AnkiEditPageHandler(re)
+deliver = SeleniumAnkiBot(Chrome, login_path, deck_name='my deck')
 writer = DictBasedCardWriter()
 sourceAdmin = TextSourceAdmin(file_path, writer)
 dbAdmin = MyCardShelveAdmin('db', 'cards')

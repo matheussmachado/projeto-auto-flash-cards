@@ -180,7 +180,7 @@ class TestSeleniumAnkiBot(TestCase):
         deliverer._card_list.append(card)
         deliverer._update_card(card)
         expected = deliverer.card_list[0].inserted
-        self.assertEqual(expected, True)    
+        self.assertEqual(expected, True)   
 
 
 
