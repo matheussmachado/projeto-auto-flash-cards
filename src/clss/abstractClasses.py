@@ -8,18 +8,13 @@ from .cards import MyCard
 class AbstractWebPageContentHandler(ABC):
     """
         Filtrar conteúdos de páginas web para fornecer os recursos necessários à uma outra classe que o necessita para realizar seus objetivos."""    
-    
-    '''@property
-    def return_resources(self):
-        return self.sources'''
-    
-    @abstractmethod
-    def get_content(self):
-        ...
+    def __init__(self):
+        self.page_source = None
 
     @abstractmethod
-    def _filter_content(self):
+    def return_resources(self):
         ...
+        
 
 
 

@@ -289,27 +289,25 @@ class TestAnkiEditPageHandler(TestCase):
     with open(file, 'r') as f:
         CONTENT = f.read()
 
-    def setUp(self):
-        #soup = BeautifulSoup(self.CONTENT, 'lxml')
-        #self.handler = AnkiEditPageHandler(re, BeautifulSoup)
+    def setUp(self):        
         ...
 
     def test__key_value_filter_method(self):
-        handler = AnkiEditPageHandler('_', '_')
+        handler = AnkiEditPageHandler('_')
         filth_name = '"name": "Default"'
         expected = handler._key_value_filter(filth_name, ':')
         self.assertEqual(expected, 'Default')
 
     
     def test__return_deck_names(self):
-        handler = AnkiEditPageHandler(re, BeautifulSoup)
-        handler.get_content(self.CONTENT)
-        return_names = handler.return_deck_names()
-        print(return_names)
-        expected = ['Default', 'my deck']
+        handler = AnkiEditPageHandler(re)
+        handler.page_source = self.CONTENT
+        return_names = handler.return_deck_names()        
+        expected = ['Default', 'my deck', 'deck teste testando', 'teste TESTE', 'dEcK 4.2']
         
         for name in expected:
             self.assertIn(name, return_names)
+    
     
 
         

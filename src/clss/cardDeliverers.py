@@ -4,19 +4,23 @@ from typing import List, TypeVar
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
-from .abstractClasses import AbstractCardDeliverer
+from .abstractClasses import AbstractCardDeliverer, AbstractWebPageContentHandler
 from .cards import MyCard
 from src.funcs.textFunc import get_from_json
 
 WebDriver = TypeVar('WebDriver')
 
 class SeleniumAnkiBot(AbstractCardDeliverer):
-    def __init__(self, web_driver: WebDriver, login_path: str) -> None:
+    def __init__(self, web_driver: WebDriver, 
+                    login_path: str,
+                    deck_name=None,
+                    web_edit_page_handler=None):
         super().__init__()
         self.driver = web_driver
         self.login_path = login_path
-        #self._called_driver = False
-        self._url = 'https://ankiweb.net/account/login'    
+        self.page_handler = web_edit_page_handler
+        self.deck_name = deck_name
+        self._URL = 'https://ankiweb.net/account/login'
         self._bot = None
 
     def deliver(self, card_list: list) -> list:
@@ -25,7 +29,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
         try:
             self._bot = self.driver.__call__()
             self._bot.implicitly_wait(30)
-            self._bot.get(self._url)
+            self._bot.get(self._URL)
         except Exception as err:
             self._bot.close()
             print("NÃO FOI POSSÍVEL CONECTAR\n", err)
@@ -45,15 +49,20 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             self._bot.find_elements_by_css_selector(
                 'a[class="nav-link"]')[1].click()
             sleep(1)
-
+            # EDIT SCOPE            
             deck = self._bot.find_element_by_css_selector('input[id="deck"]')
-            '''ac = ActionChains(self._bot)
-            ac.move_to_element(deck).click()
-            for x in range(100):
-                ac.key_down(Keys.BACK_SPACE)
-                ac.key_up(Keys.BACK_SPACE)
-            ac.perform()
-            deck.send_keys('Default')'''
+            if self.deck_name and self.page_handler:            
+                self.page_handler.page_source = self._bot.page_source
+                deck_names = self.page_handler.return_resources()
+                #TODO: resolver a questão caso não houver a afirmação abaixo
+                if self.deck_name in deck_names:                   
+                    ac = ActionChains(self._bot)
+                    ac.move_to_element(deck).click()
+                    for x in range(100):
+                        ac.key_down(Keys.BACK_SPACE)
+                        ac.key_up(Keys.BACK_SPACE)
+                    ac.perform()
+                    deck.send_keys(self.deck_name)
             '''
 
             - obter o nome dos decks existentes para comparar com o deck alvo passado:
@@ -78,22 +87,22 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             for card in card_list:
                 self._insert_card(card)
         finally:
-            #self._bot.quit()
-            ...
+            self._bot.quit()
+            #...
     
     def _insert_card(self, card: MyCard) -> None:
         if self._bot:
             try:
                 self._bot.find_element_by_id("f0").send_keys(card.front)
                 self._bot.find_element_by_id("f1").send_keys(card.back)
-                '''self._bot.find_element_by_css_selector(
-                    'button[class$="primary"]').click()'''
+                self._bot.find_element_by_css_selector(
+                    'button[class$="primary"]').click()
                 sleep(1)
             except Exception as err:
                 print(err)
             else:
                 self.total_inserted += 1
-                #self._update_card(card)
+                self._update_card(card)
     
     def _update_card(self, card: MyCard) -> None:
         for i, c in enumerate(self.card_list):
