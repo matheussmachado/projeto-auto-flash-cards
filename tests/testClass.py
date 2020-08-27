@@ -3,8 +3,6 @@ import io
 import re
 from unittest import TestCase, mock, main
 
-from bs4 import BeautifulSoup
-
 from src.clss.cards import MyCard
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.cardWriter import DictBasedCardWriter
@@ -19,9 +17,9 @@ from src.clss.sourceAdmins import (MyCardShelveAdmin,
 from src.funcs.textFunc import get_from_txt
 from src.funcs.resetSamplesFuncs import text_source_reset, db_cards_reset
 
-SAMPLE_FOLDER = "amostras/"
-IMG_FOLDER = 'imgFolder'
-PG_SOURCE = 'page_source.html'
+from . import SAMPLE_FOLDER, IMG_FOLDER
+
+
 imgs_path = os.path.join(SAMPLE_FOLDER, IMG_FOLDER)
 
 
@@ -283,34 +281,6 @@ class TestImageSourceAdmin(TestCase):
         imgAdmin.update_sources()
         mocked.assert_called_once_with(imgs_list)
 
-
-class TestAnkiEditPageHandler(TestCase):
-    file = os.path.join(SAMPLE_FOLDER, PG_SOURCE)
-    with open(file, 'r') as f:
-        CONTENT = f.read()
-
-    def setUp(self):        
-        ...
-
-    def test__key_value_filter_method(self):
-        handler = AnkiEditPageHandler('_')
-        filth_name = '"name": "Default"'
-        expected = handler._key_value_filter(filth_name, ':')
-        self.assertEqual(expected, 'Default')
-
-    
-    def test__return_deck_names(self):
-        handler = AnkiEditPageHandler(re)
-        handler.page_source = self.CONTENT
-        return_names = handler.return_deck_names()        
-        expected = ['Default', 'my deck', 'deck teste testando', 'teste TESTE', 'dEcK 4.2']
-        
-        for name in expected:
-            self.assertIn(name, return_names)
-    
-    
-
-        
 
 
 if __name__ == "__main__":

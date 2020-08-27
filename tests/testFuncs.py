@@ -4,9 +4,8 @@ from unittest import TestCase, main, mock
 from src.funcs.textFunc import get_from_txt
 from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
 
+from . import SAMPLE_FOLDER, IMG_FOLDER
 
-SAMPLE_FOLDER = "amostras/"
-IMG_FOLDER = 'imgFolder'
 imgs_path = os.path.join(SAMPLE_FOLDER, IMG_FOLDER)
 
 class TestGetFromTxt(TestCase):

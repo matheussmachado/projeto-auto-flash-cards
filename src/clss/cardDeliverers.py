@@ -1,23 +1,3 @@
-'''
-            - obter o nome dos decks existentes para comparar com o deck alvo passado:
-                - injetar um agente que realize o filtro regex para obter esses nomes
-                - se o nome corresponder:
-
-                - o agente de regex fornece se há o nome correspondente ao passado e o maior nome
-                - se houver o nome correspondente:
-                    = apagar o nome pre setado em função do maior nome de deck obtido pela regex
-                    continuar o processo
-                - se não:
-                    - subir uma exceção
-
-            - por um script secundário:
-                - flag = scraping do name do card no script
-            - deck = flag
-            - obter o web element
-            - enquanto o len(deck) for maior que zero:
-                - action chain de apagar
-            '''
-
 from time import sleep
 from typing import List, TypeVar
 
@@ -51,10 +31,11 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             self._bot.implicitly_wait(30)
             self._bot.get(self._URL)
         except Exception as err:
-            self._bot.close()
+            if self._bot:
+                self._bot.close()
             print("UNABLE TO CONNECT.\n", err)            
         else:
-            # LOGIN            
+            # LOGIN PAGE
             self._bot.find_element_by_css_selector(
                 'input[id="email"]').send_keys(em)
             self._bot.find_element_by_css_selector(
@@ -62,7 +43,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             self._bot.find_element_by_css_selector(
                 'input[type="submit"]').click()
             sleep(1)
-            # ADD BUTTON
+            # DECKS PAGE
             self._bot.find_elements_by_css_selector(
                 'a[class="nav-link"]')[1].click()
             sleep(1)
@@ -72,46 +53,43 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
                     print('Was not given the web page content handler.')
                     return
                 self.page_handler.page_source = self._bot.page_source
-                deck_names = self.page_handler.return_resources()
-                if self.deck_name in deck_names:
-                    deck_field = self._bot.find_element_by_css_selector('input[id="deck"]')
-                    #-------------------------------------
-                    ##deleting the deck name field based on the longest deck name obtained and writing the given deck name.
-                    longest_name = len(deck_names[0])
-                    for name in deck_names:
-                        if len(name) > longest:
-                            longest = len(name)
-                    ac = ActionChains(self._bot)
-                    ac.move_to_element(deck_field).click()
-                    for _ in range(longest_name):
-                        ac.key_down(Keys.BACK_SPACE)
-                        ac.key_up(Keys.BACK_SPACE)
-                    ac.perform()
-                    deck_field.send_keys(self.deck_name)
-                    #-------------------------------------
+                r = self.page_handler.return_resources()
+                if self.deck_name in r["deck_names"]:
+                    self._insert_given_deck_name(
+                        r["backspace_times"])
                 else:
                     print('The given deck name does not exist.')
                     return
-            # INPUT FLASHCARDS
+            # INSERTTING FLASHCARDS
             for card in card_list:
                 self._insert_card(card)
         finally:
-            #self._bot.quit()
-            print('foi')
-            
+            if self._bot:
+                self._bot.quit()            
+
+    def _insert_given_deck_name(self, 
+                                backspace_times: int) -> None:
+        deck_field = self._bot.find_element_by_css_selector('input[id="deck"]')
+        ac = ActionChains(self._bot)
+        ac.move_to_element(deck_field).click()
+        for _ in range(backspace_times):
+            ac.key_down(Keys.BACK_SPACE)
+            ac.key_up(Keys.BACK_SPACE)
+        ac.perform()
+        deck_field.send_keys(self.deck_name)
+
     def _insert_card(self, card: MyCard) -> None:
-        if self._bot:
-            try:
-                self._bot.find_element_by_id("f0").send_keys(card.front)
-                self._bot.find_element_by_id("f1").send_keys(card.back)
-                '''self._bot.find_element_by_css_selector(
-                    'button[class$="primary"]').click()'''
-                sleep(1)
-            except Exception as err:
-                print(err)
-            else:
-                self.total_inserted += 1
-                #self._update_card(card)
+        try:
+            self._bot.find_element_by_id("f0").send_keys(card.front)
+            self._bot.find_element_by_id("f1").send_keys(card.back)
+            self._bot.find_element_by_css_selector(
+                'button[class$="primary"]').click()
+            sleep(1)
+        except Exception as err:
+            print(err)
+        else:
+            self.total_inserted += 1
+            self._update_card(card)
     
     def _update_card(self, card: MyCard) -> None:
         for i, c in enumerate(self.card_list):

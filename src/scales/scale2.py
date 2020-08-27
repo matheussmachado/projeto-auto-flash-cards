@@ -18,9 +18,9 @@ login_file = 'data.json'
 login_path = os.path.join(os.getcwd(), login_file)
 
 
-#deliver = SeleniumAnkiBot(Firefox, 'login.txt')
+
 page_handler = AnkiEditPageHandler(re)
-deliver = SeleniumAnkiBot(Chrome, login_path, deck_name='my deck')
+deliver = SeleniumAnkiBot(Chrome, login_path, deck_name='Default', web_edit_page_handler=page_handler)
 writer = DictBasedCardWriter()
 sourceAdmin = TextSourceAdmin(file_path, writer)
 dbAdmin = MyCardShelveAdmin('db', 'cards')
