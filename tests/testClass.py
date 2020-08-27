@@ -19,14 +19,15 @@ from src.funcs.resetSamplesFuncs import text_source_reset, db_cards_reset
 
 from . import SAMPLE_FOLDER, IMG_FOLDER
 
-
+FILLED_TEXT = 'frasesTestePreenchidaWriter.txt'
+EMPTY_TEXT = 'frasesTesteVazia.txt'
 imgs_path = os.path.join(SAMPLE_FOLDER, IMG_FOLDER)
+
 
 
 class TestDictBasedCardWriter(TestCase):
     def setUp(self):
-        file = 'frasesTestePreenchidaWriter.txt'
-        self.source = os.path.join(SAMPLE_FOLDER, file)
+        self.source = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
         self.src_before = get_from_txt(self.source)
         self.writer = DictBasedCardWriter()
 
@@ -64,9 +65,8 @@ class TestDictBasedCardWriter(TestCase):
 
 
 class TestTextSourceAdmin(TestCase):
-    def setUp(self):
-        file = 'frasesTestePreenchidaWriter.txt'
-        self.source = os.path.join(SAMPLE_FOLDER, file)        
+    def setUp(self):        
+        self.source = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
         self.src_before = get_from_txt(self.source)
         self.writer = DictBasedCardWriter()
         self.sourceAdmin = TextSourceAdmin(self.source, self. writer)
@@ -86,16 +86,14 @@ class TestTextSourceAdmin(TestCase):
         self.assertEqual(expected, len(self.src_before))
 
     def test__return_sources_returns_empty_list_if_empty_texts_src(self):
-        file = 'frasesTesteVazia.txt'
-        source = os.path.join(SAMPLE_FOLDER, file)        
+        source = os.path.join(SAMPLE_FOLDER, EMPTY_TEXT)        
         sourceAdmin = TextSourceAdmin(source, self.writer)
         expected = sourceAdmin.return_sources()
         text_source_reset(source, [])
         self.assertEqual(expected, [])
         
     def test__update_sources_returns_None_if_empty_text_src(self):
-        file = 'frasesTesteVazia.txt'
-        source = os.path.join(SAMPLE_FOLDER, file)        
+        source = os.path.join(SAMPLE_FOLDER, EMPTY_TEXT)
         sourceAdmin = TextSourceAdmin(source, self.writer)
         expected = sourceAdmin.update_sources()
         text_source_reset(source, [])
@@ -108,8 +106,7 @@ class TestMyCardShelveAdmin(TestCase):
         self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
         self.db_key = "test_key"
         self.db_source_before = []
-        file = 'frasesTestePreenchidaWriter.txt'
-        self.text_src = os.path.join(SAMPLE_FOLDER, file)
+        self.text_src = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
         self.text_src_before = get_from_txt(self.text_src)
         writer = DictBasedCardWriter()
         self.textAdmin = TextSourceAdmin(self.text_src, writer)
@@ -153,25 +150,24 @@ class TestMyCardShelveAdmin(TestCase):
         expected = db_return[0].representation
         self.assertEqual(expected, last_card)
 
-    def test__update_source_returns_None_when_no_cards(self):
+    def test__update_source_returns_None_when_no_given_cards(self):
+        EMPTY_LIST = []
         db = MyCardShelveAdmin(self.db_source, self.db_key)
-        expected = db.update_sources([])
+        expected = db.update_sources(EMPTY_LIST)
         self.assertEqual(expected, None)
 
 
 
 class TestSeleniumAnkiBot(TestCase):
     def setUp(self):
-        file = 'frasesTestePreenchidaWriter.txt'
-        self.text_src = os.path.join(SAMPLE_FOLDER, file)
+        self.text_src = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
         self.text_src_before = get_from_txt(self.text_src)
         writer = DictBasedCardWriter()
         self.sourceAdmin = TextSourceAdmin(self.text_src, writer)
 
     def tearDown(self):
         text_source_reset(self.text_src, self.text_src_before)
-        
-        
+                
     def test__update_card_update_card_inserted_status(self):
         card = MyCard('_', '_')
         deliverer = SeleniumAnkiBot('_', '_')        
@@ -184,8 +180,7 @@ class TestSeleniumAnkiBot(TestCase):
 
 class TestAutoFlashCards(TestCase):
     def setUp(self):
-        file = 'frasesTestePreenchidaWriter.txt'
-        self.text_src = os.path.join(SAMPLE_FOLDER, file)
+        self.text_src = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
         self.text_src_before = get_from_txt(self.text_src)
         writer = DictBasedCardWriter()
         self.textAdmin = TextSourceAdmin(self.text_src, writer)
@@ -234,15 +229,13 @@ class TestAutoFlashCards(TestCase):
         
     @mock.patch('src.clss.cardDeliverers.SeleniumAnkiBot.deliver')
     def test__run_task_returns_None_if_no_text_phrases(self, mocked):
-        file = 'frasesTesteVazia.txt'
-        src = os.path.join(SAMPLE_FOLDER, file)
+        src = os.path.join(SAMPLE_FOLDER, EMPTY_TEXT)
         writer = DictBasedCardWriter()
         textAdm = TextSourceAdmin(src, writer)
         ac = AutoFlashCards('_', textAdm, self.db_admin)
         ac.run_task()
-        mocked.assert_not_called()
+        mocked.assert_not_called()    
 
-    #TODO: testar se o deliver será chamado com a lista de cards passado
 
 
 class TestGoogleVision(TestCase):

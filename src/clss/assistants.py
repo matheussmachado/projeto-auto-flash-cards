@@ -1,5 +1,5 @@
 import re
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Dict
 
 from .abstractClasses import AbstractWebPageContentHandler
 
@@ -9,7 +9,7 @@ class AnkiEditPageHandler(AbstractWebPageContentHandler):
         super().__init__()
         self.regex_agent = regex_agent
     
-    def return_resources(self):
+    def return_resources(self) -> Dict[str]:
         deck_names = self._return_deck_names()
         longest_name = len(deck_names[0])
         for name in deck_names:

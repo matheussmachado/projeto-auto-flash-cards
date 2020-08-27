@@ -11,9 +11,6 @@ from .interfaces import (SourceAdminInterface,
 from src.funcs.textFunc import get_from_txt
 
 
-
-
-
 class MyCardShelveAdmin(AbstractShelveKeyAdmin):
     def __init__(self, db_cards: str, db_key: str) -> None:
         super().__init__(db_cards, db_key)
