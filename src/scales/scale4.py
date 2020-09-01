@@ -1,5 +1,4 @@
 #!venv/bin/python3
-
 import os
 import re
 
@@ -29,9 +28,10 @@ text_extractor = GoogleVision()
 
 #driver = Firefox
 driver = Chrome
-driver_options = Options()
+#driver_options = Options()
+driver_options = None
 #driver_options.headless = True
-driver_options.headless = False
+#driver_options.headless = False
 handler = AnkiEditPageHandler(re)
 deck_name = 'Teste'
 new_deck = True
