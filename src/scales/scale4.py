@@ -3,7 +3,8 @@
 import os
 import re
 
-from selenium.webdriver import Chrome
+from selenium.webdriver import Firefox
+from selenium.webdriver.firefox.options import Options
 
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.assistants import AnkiEditPageHandler
@@ -24,14 +25,19 @@ writer = DictBasedCardWriter()
 id_admin = DriveFileIdShelveAdmin('db', 'drive_file_id')
 img_source = GoogleDriveSource(drive_folder_target, id_admin)
 text_extractor = GoogleVision()
+
+driver = Firefox
+driver_options = Options()
+driver_options.headless = True
 handler = AnkiEditPageHandler(re)
 
 deliver = SeleniumAnkiBot(
-                            Chrome, 
+                            driver, 
                             login_path,
                             "my deck",
-                            handler
-                             )
+                            handler,
+                            driver_options)
+
 img_admin = ImageSourceAdmin(img_source, writer, text_extractor)
 db = MyCardShelveAdmin('db', 'cards')
 

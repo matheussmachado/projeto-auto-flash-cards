@@ -14,11 +14,13 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
     def __init__(self, web_driver: WebDriver, 
                     login_path: str,
                     deck_name=None,
-                    web_edit_page_handler=None):
+                    web_edit_page_handler=None,
+                    web_driver_options=None):
         super().__init__()
         self.driver = web_driver
         self.login_path = login_path
         self.page_handler = web_edit_page_handler
+        self.driver_options = web_driver_options
         self.deck_name = deck_name
         self._URL = 'https://ankiweb.net/account/login'
         self._bot = None
@@ -27,7 +29,12 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
         self._card_list.extend(card_list)
         em, pw = get_from_json(self.login_path, 'login').values()
         try:
-            self._bot = self.driver.__call__()
+            '''self._bot = self.driver.__call__(
+                options=self.driver_options
+                )'''
+            self._bot = self.driver(
+                options=self.driver_options
+                )
             self._bot.implicitly_wait(30)
             self._bot.get(self._URL)
         except Exception as err:
@@ -36,6 +43,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             print("UNABLE TO CONNECT.\n", err)            
         else:
             # LOGIN PAGE
+            print('Login')
             self._bot.find_element_by_css_selector(
                 'input[id="email"]').send_keys(em)
             self._bot.find_element_by_css_selector(
@@ -44,10 +52,12 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
                 'input[type="submit"]').click()
             sleep(1)
             # DECKS PAGE
+            print('deck page')
             self._bot.find_elements_by_css_selector(
                 'a[class="nav-link"]')[1].click()
             sleep(1)
             # EDIT PAGE
+            print('edit')
             if self.deck_name: 
                 if not self.page_handler:
                     print('Was not given the web page content handler.')
