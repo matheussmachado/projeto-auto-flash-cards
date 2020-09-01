@@ -11,17 +11,21 @@ from src.funcs.textFunc import get_from_json
 WebDriver = TypeVar('WebDriver')
 
 class SeleniumAnkiBot(AbstractCardDeliverer):
-    def __init__(self, web_driver: WebDriver, 
+    def __init__(
+                    self, web_driver: WebDriver, 
                     login_path: str,
                     deck_name=None,
                     web_edit_page_handler=None,
-                    web_driver_options=None):
+                    web_driver_options=None,
+                    new_deck=False
+                    ):
         super().__init__()
         self.driver = web_driver
         self.login_path = login_path
         self.page_handler = web_edit_page_handler
         self.driver_options = web_driver_options
         self.deck_name = deck_name
+        self.new_deck = new_deck
         self._URL = 'https://ankiweb.net/account/login'
         self._bot = None
 
@@ -29,9 +33,6 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
         self._card_list.extend(card_list)
         em, pw = get_from_json(self.login_path, 'login').values()
         try:
-            '''self._bot = self.driver.__call__(
-                options=self.driver_options
-                )'''
             self._bot = self.driver(
                 options=self.driver_options
                 )
@@ -64,13 +65,12 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
                     return
                 self.page_handler.page_source = self._bot.page_source
                 r = self.page_handler.return_resources()
-                if self.deck_name in r["deck_names"]:
+                if self.deck_name in r["deck_names"] or self.new_deck:
                     self._insert_given_deck_name(
                         r["backspace_times"])
                 else:
                     print('The given deck name does not exist.')
                     return
-            # INSERTTING FLASHCARDS
             for card in card_list:
                 self._insert_card(card)
         finally:

@@ -17,13 +17,23 @@ file_path = os.path.join(os.getcwd(), phrases_file)
 login_file = 'data.json'
 login_path = os.path.join(os.getcwd(), login_file)
 
-
-
-page_handler = AnkiEditPageHandler(re)
-deliver = SeleniumAnkiBot(Chrome, login_path, deck_name='Default', web_edit_page_handler=page_handler)
 writer = DictBasedCardWriter()
 sourceAdmin = TextSourceAdmin(file_path, writer)
 dbAdmin = MyCardShelveAdmin('db', 'cards')
+
+driver = Chrome
+deck_name = 'Teste'
+driver_options = None
+new_deck = True
+page_handler = AnkiEditPageHandler(re)
+deliver = SeleniumAnkiBot(
+                            web_driver=driver, 
+                            login_path=login_path, 
+                            deck_name=deck_name, 
+                            web_edit_page_handler=page_handler,
+                            web_driver_options=driver_options,
+                            new_deck=new_deck
+    )
 
 automaton = AutoFlashCards(deliver, sourceAdmin, dbAdmin)
 
