@@ -12,20 +12,20 @@ WebDriver = TypeVar('WebDriver')
 
 class SeleniumAnkiBot(AbstractCardDeliverer):
     def __init__(
-                    self, web_driver: WebDriver, 
-                    login_path: str,
-                    deck_name=None,
-                    web_edit_page_handler=None,
-                    web_driver_options=None,
-                    new_deck=False
-                    ):
+            self, web_driver: WebDriver,
+            login_path: str,
+            deck_name=None,
+            web_edit_page_handler=None,
+            new_deck=False,
+            **web_driver_args
+    ):
         super().__init__()
         self.driver = web_driver
         self.login_path = login_path
         self.page_handler = web_edit_page_handler
-        self.driver_options = web_driver_options
         self.deck_name = deck_name
         self.new_deck = new_deck
+        self.web_driver_args = web_driver_args
         self._URL = 'https://ankiweb.net/account/login'
         self._bot = None
 
@@ -34,7 +34,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
         em, pw = get_from_json(self.login_path, 'login').values()
         try:
             self._bot = self.driver(
-                options=self.driver_options
+                **self.web_driver_args                
                 )
             self._bot.implicitly_wait(30)
             self._bot.get(self._URL)
@@ -44,7 +44,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             print("UNABLE TO CONNECT.\n", err)            
         else:
             # LOGIN PAGE
-            print('Login')
+            print('LOGIN PAGE')
             self._bot.find_element_by_css_selector(
                 'input[id="email"]').send_keys(em)
             self._bot.find_element_by_css_selector(
@@ -53,12 +53,12 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
                 'input[type="submit"]').click()
             sleep(1)
             # DECKS PAGE
-            print('deck page')
+            print('DECK PAGE')
             self._bot.find_elements_by_css_selector(
                 'a[class="nav-link"]')[1].click()
             sleep(1)
             # EDIT PAGE
-            print('edit')
+            print('EDIT PAGE')
             if self.deck_name: 
                 if not self.page_handler:
                     print('Was not given the web page content handler.')

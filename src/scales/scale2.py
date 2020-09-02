@@ -22,18 +22,18 @@ sourceAdmin = TextSourceAdmin(file_path, writer)
 dbAdmin = MyCardShelveAdmin('db', 'cards')
 
 driver = Chrome
-deck_name = 'Teste'
-driver_options = None
-new_deck = True
+deck_name = 'Default'
+web_driver_args = {}
+new_deck = False
 page_handler = AnkiEditPageHandler(re)
 deliver = SeleniumAnkiBot(
-                            web_driver=driver, 
-                            login_path=login_path, 
-                            deck_name=deck_name, 
-                            web_edit_page_handler=page_handler,
-                            web_driver_options=driver_options,
-                            new_deck=new_deck
-    )
+                web_driver=driver, 
+                login_path=login_path, 
+                deck_name=deck_name, 
+                web_edit_page_handler=page_handler,
+                new_deck=new_deck,
+                **web_driver_args
+            )
 
 automaton = AutoFlashCards(deliver, sourceAdmin, dbAdmin)
 

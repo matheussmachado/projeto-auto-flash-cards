@@ -26,23 +26,24 @@ id_admin = DriveFileIdShelveAdmin('db', 'drive_file_id')
 img_source = GoogleDriveSource(drive_folder_target, id_admin)
 text_extractor = GoogleVision()
 
-#driver = Firefox
-driver = Chrome
-#driver_options = Options()
-driver_options = None
-#driver_options.headless = True
-#driver_options.headless = False
+driver = Firefox
+#driver = Chrome
+web_driver_options = Options()
+web_driver_options.headless = True
+web_driver_args = {
+	"options": web_driver_options
+}
 handler = AnkiEditPageHandler(re)
-deck_name = 'Teste'
-new_deck = True
+deck_name = 'my deck'
+new_deck = False
 deliver = SeleniumAnkiBot(
-                            web_driver=driver, 
-                            login_path=login_path,
-                            deck_name=deck_name,
-                            web_edit_page_handler=handler,
-                            web_driver_options=driver_options,
-                            new_deck=new_deck
-                            )
+	          web_driver=driver, 
+	          login_path=login_path,
+	          deck_name=deck_name,
+	          web_edit_page_handler=handler,
+	          new_deck=new_deck,
+	          **web_driver_args
+	          )
 
 img_admin = ImageSourceAdmin(img_source, writer, text_extractor)
 db = MyCardShelveAdmin('db', 'cards')
