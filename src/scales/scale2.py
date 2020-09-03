@@ -1,7 +1,11 @@
 import os
 import re
 
-from selenium.webdriver import Firefox, Chrome
+from selenium.webdriver import Firefox, Chrome, Opera
+#from selenium.webdriver.opera.options import Options
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.opera import OperaDriverManager
 
 from src.clss.assistants import AnkiEditPageHandler
 from src.clss.autoFlashCards import AutoFlashCards
@@ -21,19 +25,30 @@ writer = DictBasedCardWriter()
 sourceAdmin = TextSourceAdmin(file_path, writer)
 dbAdmin = MyCardShelveAdmin('db', 'cards')
 
+
+
 driver = Chrome
+#driver = Firefox
+#driver = Opera
+#wbm = GeckoDriverManager()
+#wdm = OperaDriverManager()
+options = Options()
+options.headless = True
+web_driver_args = {
+    'executable_path': 'chromedriver',
+    'options': options
+}
 deck_name = 'Default'
-web_driver_args = {}
 new_deck = False
-page_handler = AnkiEditPageHandler(re)
-deliver = SeleniumAnkiBot(
-                web_driver=driver, 
-                login_path=login_path, 
-                deck_name=deck_name, 
-                web_edit_page_handler=page_handler,
-                new_deck=new_deck,
-                **web_driver_args
-            )
+web_edit_page_handler = AnkiEditPageHandler(re)
+selenium_anki_bot_args = {
+    'web_driver': driver, 
+    'login_path': login_path, 
+    'deck_name': deck_name, 
+    'web_edit_page_handler': web_edit_page_handler, 
+    'new_deck': new_deck 
+}
+deliver = SeleniumAnkiBot(**selenium_anki_bot_args, **web_driver_args)
 
 automaton = AutoFlashCards(deliver, sourceAdmin, dbAdmin)
 

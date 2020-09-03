@@ -34,10 +34,11 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
         em, pw = get_from_json(self.login_path, 'login').values()
         try:
             self._bot = self.driver(
-                **self.web_driver_args                
+                **self.web_driver_args
                 )
             self._bot.implicitly_wait(30)
             self._bot.get(self._URL)
+            self._bot.set_window_size(width=1366, height=747)
         except Exception as err:
             if self._bot:
                 self._bot.close()
