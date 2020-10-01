@@ -30,7 +30,7 @@ text_extractor = GoogleVision()
 #driver = Firefox
 driver = Chrome
 web_driver_options = Options()
-web_driver_options.headless = True
+web_driver_options.headless = False
 web_driver_args = {
 	"options": web_driver_options
 }

@@ -3,7 +3,8 @@ import re
 
 from selenium.webdriver import Firefox, Chrome, Opera
 #from selenium.webdriver.opera.options import Options
-from selenium.webdriver.chrome.options import Options
+#from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from webdriver_manager.firefox import GeckoDriverManager
 from webdriver_manager.opera import OperaDriverManager
 
@@ -27,15 +28,15 @@ dbAdmin = MyCardShelveAdmin('db', 'cards')
 
 
 
-driver = Chrome
-#driver = Firefox
+#driver = Chrome
+driver = Firefox
 #driver = Opera
-#wbm = GeckoDriverManager()
+wdm = GeckoDriverManager()
 #wdm = OperaDriverManager()
 options = Options()
 options.headless = True
 web_driver_args = {
-    'executable_path': 'chromedriver',
+    'executable_path': 'geckodriver',
     'options': options
 }
 deck_name = 'Default'

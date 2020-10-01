@@ -83,7 +83,7 @@ def get_id_by_folder_name(folder_name: str) -> str:
             spaces='drive',
             fields='nextPageToken, files(id, name)',
             pageToken=page_token,
-            ).execute()        
+            ).execute()
         result = response.get('files', [])        
         file_names = [f['name'] for f in result]
         if folder_name in file_names:
@@ -91,7 +91,7 @@ def get_id_by_folder_name(folder_name: str) -> str:
                 f['id'] for f in result if f['name'] == folder_name
             ]
             _id = filtr[0]
-        page_token = response.get('nextPageToken', None)                
+        page_token = response.get('nextPageToken', None)
         if page_token is None:
             break
     return _id
@@ -126,6 +126,8 @@ def create_service(client_secret_file, api_name, api_version, *scopes):
 
 
 service = create_service(KEY, API_NAME, API_VERSION, SCOPES)
+if not service:
+    raise Exception('Unable to create the Google Drive service')
 
 if __name__ == "__main__":
     #get_drive_folder_id('Legendas')

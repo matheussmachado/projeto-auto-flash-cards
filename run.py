@@ -37,4 +37,5 @@ Total inserted cards: {automaton.card_deliverer.total_inserted}""")
     
 
 if __name__ == "__main__":
-    main()
+    main()	
+	
