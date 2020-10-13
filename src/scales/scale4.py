@@ -3,7 +3,6 @@ import os
 import re
 
 from selenium.webdriver import Firefox, Chrome
-#from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.chrome.options import Options
 
 
@@ -19,7 +18,7 @@ from src.clss.sourceAdmins import DriveFileIdShelveAdmin
 
 
 path = os.path.join(os.getcwd(), 'data.json')
-folder_path = login_path = path
+login_path = path
 drive_folder_target = 'Legendas'
 
 writer = DictBasedCardWriter()
