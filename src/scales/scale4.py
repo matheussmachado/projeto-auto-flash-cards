@@ -5,7 +5,6 @@ import re
 from selenium.webdriver import Firefox, Chrome
 from selenium.webdriver.chrome.options import Options
 
-
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.assistants import AnkiEditPageHandler
 from src.clss.cardDeliverers import SeleniumAnkiBot
@@ -17,8 +16,7 @@ from src.clss.sourceAdmins import MyCardShelveAdmin
 from src.clss.sourceAdmins import DriveFileIdShelveAdmin
 
 
-path = os.path.join(os.getcwd(), 'data.json')
-login_path = path
+user_data_file = os.path.join(os.getcwd(), 'data.json')
 drive_folder_target = 'Legendas'
 
 writer = DictBasedCardWriter()
@@ -34,14 +32,10 @@ web_driver_args = {
 	"options": web_driver_options
 }
 web_edit_page_handler = AnkiEditPageHandler(re)
-deck_name = 'my deck'
-new_deck = False
 selenium_anki_bot_args = {
     'web_driver': driver, 
-    'login_path': login_path, 
-    'deck_name': deck_name, 
-    'web_edit_page_handler': web_edit_page_handler, 
-    'new_deck': new_deck 
+    'user_data': user_data_file,
+    'web_edit_page_handler': web_edit_page_handler,
 }
 deliver = SeleniumAnkiBot(**selenium_anki_bot_args, **web_driver_args)
 

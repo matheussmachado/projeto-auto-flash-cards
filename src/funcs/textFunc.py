@@ -35,13 +35,17 @@ def get_from_json(path: str, query: str) -> str:
 
 
 
-def create_json_data_settings() -> None:
-    with open('data1.json', 'w') as f:
+def create_json_data_settings(file_name: str) -> None:
+    with open(file_name, 'w') as f:
         f.write(
 '''{
     "login": {
         "email": "",
         "password":""
+    },
+    "deck": {
+        "name": "",
+        "new_deck": false
     },
     "imgPath": "imgFolder"
 }

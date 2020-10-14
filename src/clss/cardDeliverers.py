@@ -13,25 +13,22 @@ WebDriver = TypeVar('WebDriver')
 class SeleniumAnkiBot(AbstractCardDeliverer):
     def __init__(
             self, web_driver: WebDriver,
-            login_path: str,
-            deck_name=None,
+            user_data: str,
             web_edit_page_handler=None,
-            new_deck=False,
             **web_driver_args
     ):
         super().__init__()
         self.driver = web_driver
-        self.login_path = login_path
+        self.user_data = user_data
         self.page_handler = web_edit_page_handler
-        self.deck_name = deck_name
-        self.new_deck = new_deck
         self.web_driver_args = web_driver_args
         self._URL = 'https://ankiweb.net/account/login'
         self._bot = None
 
     def deliver(self, card_list: list) -> list:
         self._card_list.extend(card_list)
-        em, pw = get_from_json(self.login_path, 'login').values()
+        em, pw = get_from_json(self.user_data, 'login').values()
+        deck = get_from_json(self.user_data, 'deck')
         try:
             self._bot = self.driver(
                 **self.web_driver_args
@@ -60,15 +57,15 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             sleep(1)
             # EDIT PAGE
             print('EDIT PAGE')
-            if self.deck_name: 
+            if deck["name"]:
                 if not self.page_handler:
                     print('Was not given the web page content handler.')
                     return
                 self.page_handler.page_source = self._bot.page_source
                 r = self.page_handler.return_resources()
-                if self.deck_name in r["deck_names"] or self.new_deck:
+                if deck["name"] in r["deck_names"] or deck["new_deck"]:
                     self._insert_given_deck_name(
-                        r["backspace_times"])
+                        r["backspace_times"], deck["name"])
                 else:
                     print('The given deck name does not exist.')
                     return
@@ -79,7 +76,8 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
                 self._bot.quit()            
 
     def _insert_given_deck_name(self, 
-                                backspace_times: int) -> None:
+                                backspace_times: str,
+                                deck_name) -> None:
         deck_field = self._bot.find_element_by_css_selector('input[id="deck"]')
         ac = ActionChains(self._bot)
         ac.move_to_element(deck_field).click()
@@ -87,7 +85,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             ac.key_down(Keys.BACK_SPACE)
             ac.key_up(Keys.BACK_SPACE)
         ac.perform()
-        deck_field.send_keys(self.deck_name)
+        deck_field.send_keys(deck_name)
 
     def _insert_card(self, card: MyCard) -> None:
         try:

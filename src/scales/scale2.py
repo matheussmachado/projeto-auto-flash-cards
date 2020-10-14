@@ -3,10 +3,8 @@ import re
 
 from selenium.webdriver import Firefox, Chrome, Opera
 #from selenium.webdriver.opera.options import Options
-#from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.firefox.options import Options
-from webdriver_manager.firefox import GeckoDriverManager
-from webdriver_manager.opera import OperaDriverManager
+from selenium.webdriver.chrome.options import Options
+#from selenium.webdriver.firefox.options import Options
 
 from src.clss.assistants import AnkiEditPageHandler
 from src.clss.autoFlashCards import AutoFlashCards
@@ -19,8 +17,8 @@ from src.clss.sourceAdmins import (
 phrases_file = 'frases.txt'
 file_path = os.path.join(os.getcwd(), phrases_file)
 
-login_file = 'data.json'
-login_path = os.path.join(os.getcwd(), login_file)
+user_data_file = 'data.json'
+user_data = os.path.join(os.getcwd(), user_data_file)
 
 writer = DictBasedCardWriter()
 sourceAdmin = TextSourceAdmin(file_path, writer)
@@ -28,26 +26,21 @@ dbAdmin = MyCardShelveAdmin('db', 'cards')
 
 
 
-#driver = Chrome
-driver = Firefox
+driver = Chrome
+#driver = Firefox
 #driver = Opera
-wdm = GeckoDriverManager()
+#wdm = GeckoDriverManager()
 #wdm = OperaDriverManager()
 options = Options()
-options.headless = True
+options.headless = False
 web_driver_args = {
-    'executable_path': 'geckodriver',
     'options': options
 }
-deck_name = 'Default'
-new_deck = False
 web_edit_page_handler = AnkiEditPageHandler(re)
 selenium_anki_bot_args = {
     'web_driver': driver, 
-    'login_path': login_path, 
-    'deck_name': deck_name, 
-    'web_edit_page_handler': web_edit_page_handler, 
-    'new_deck': new_deck 
+    'user_data': user_data,
+    'web_edit_page_handler': web_edit_page_handler,
 }
 deliver = SeleniumAnkiBot(**selenium_anki_bot_args, **web_driver_args)
 

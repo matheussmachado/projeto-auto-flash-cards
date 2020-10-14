@@ -15,10 +15,7 @@ def verify_settings() -> None:
     DATA_SETTINGS_FILE = 'data.json'
     if not DATA_SETTINGS_FILE in files:
         valid = False
-        set_json_file(DATA_SETTINGS_FILE,
-                      {
-                          'login': {'email': '', 'password': ''}
-                      })
+        create_json_data_settings(DATA_SETTINGS_FILE)
     return valid
 
 
