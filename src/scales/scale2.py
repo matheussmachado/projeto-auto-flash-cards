@@ -45,8 +45,3 @@ selenium_anki_bot_args = {
 deliver = SeleniumAnkiBot(**selenium_anki_bot_args, **web_driver_args)
 
 automaton = AutoFlashCards(deliver, sourceAdmin, dbAdmin)
-
-if __name__ == "__main__":
-    automaton.run_task()
-    if len(automaton.card_list) == 0:
-        print('No cards to create.')

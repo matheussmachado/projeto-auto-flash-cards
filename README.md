@@ -1,8 +1,8 @@
-# Auto Flashcards
+# Auto Anki Flashcards
 
 ## Sobre o projeto
 
-O projeto consiste em automatizar a tarefa de criar flash cards na aplicação web do Anki. O processo de automatização visa desde a extração de textos base para o front side, sejam estes em arquivos .txt ou imagens, até a inserção do flash card no seu deck escolhido.
+O projeto consiste em automatizar a tarefa de criar flash cards na aplicação web do Anki. O processo de automatização visa desde a extração de textos base para o front side do flashcard, sejam estes em arquivos .txt ou imagens, até a inserção do flashcard no seu deck escolhido.
 
 ## Por que?
 

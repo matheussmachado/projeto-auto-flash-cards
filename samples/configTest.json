@@ -1,0 +1,21 @@
+{
+    "login": {
+        "email": "email",
+        "password": "pw"
+    },
+    "deck": {
+    	"deck_name": "",
+    	"new_deck": false,
+    },
+    "web_driver_user_settings": {
+		"browser": "chrome",
+		"web_driver_args": {
+			"timeout": 60
+		},
+		"web_driver_options": {
+			"headless": true
+		},
+		"auto_executable_path": true
+	},
+    "imgPath": "samples/imgFolder"
+}

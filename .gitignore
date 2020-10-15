@@ -17,3 +17,4 @@ frases
 *.pickle
 !img1.jpg
 !img2.jpg
+!configTest.json
