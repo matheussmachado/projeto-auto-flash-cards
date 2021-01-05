@@ -1,10 +1,10 @@
-#!venv/bin/python3
 import os
 import re
 
 from selenium.webdriver import Firefox, Chrome
 from selenium.webdriver.chrome.options import Options
 
+from src.clss.webDriverConfigurator import WebDriverConfigurator
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.assistants import AnkiEditPageHandler
 from src.clss.cardDeliverers import SeleniumAnkiBot
@@ -19,25 +19,19 @@ from src.clss.sourceAdmins import DriveFileIdShelveAdmin
 user_data_file = os.path.join(os.getcwd(), 'data.json')
 drive_folder_target = 'Legendas'
 
+wdconfig = WebDriverConfigurator(user_data_file)
 writer = DictBasedCardWriter()
 id_admin = DriveFileIdShelveAdmin('db', 'drive_file_id')
 img_source = GoogleDriveSource(drive_folder_target, id_admin)
 text_extractor = GoogleVision()
 
-#driver = Firefox
-driver = Chrome
-web_driver_options = Options()
-web_driver_options.headless = False
-web_driver_args = {
-	"options": web_driver_options
-}
 web_edit_page_handler = AnkiEditPageHandler(re)
 selenium_anki_bot_args = {
-    'web_driver': driver, 
+    'web_driver_settings': wdconfig.config_settings(), 
     'user_data': user_data_file,
     'web_edit_page_handler': web_edit_page_handler,
 }
-deliver = SeleniumAnkiBot(**selenium_anki_bot_args, **web_driver_args)
+deliver = SeleniumAnkiBot(**selenium_anki_bot_args)
 
 img_admin = ImageSourceAdmin(img_source, writer, text_extractor)
 db = MyCardShelveAdmin('db', 'cards')

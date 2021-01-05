@@ -27,7 +27,7 @@ class WebDriverConfigurator:
 	def _browser_import_handler(self):
 		drive_import = self._user_settings["browser"].capitalize()
 		exec(f"from selenium.webdriver import {drive_import}")
-		exec(f"self.web_driver_settings.update(drive={drive_import})")
+		exec(f"self.web_driver_settings.update(driver={drive_import})")
 
 	def _web_driver_options_handler(self):
 		browser = self._user_settings["browser"]
@@ -65,6 +65,9 @@ class WebDriverConfigurator:
 			)'''
 		)
 
+	@property
+	def install_path(self):
+		yield _install_driver_handler()
 
 	def config_settings(self):
 		str_methods = [
@@ -74,17 +77,4 @@ class WebDriverConfigurator:
 		for method in str_methods:
 			exec(f"self.{method}()")
 		return self.web_driver_settings
-
-
-
-"""
-def web_driver_options_import(self):
-					if not self.web_driver_options:
-						return
-					exec(f"from selenium.webdriver.{self.browser}.options import Options")
-					opt = Options()
-					for k, v in self.web_driver_options.items():
-						exec(f"opt.{k} = {v}")
-					self.web_driver_args.update(**self.web_driver_options)
-"""
 

@@ -284,7 +284,7 @@ class TestWebDriverConfigurator(TestCase):
 
     def test__browser_name_return_correct_driver(self):
         self.wdconfig._browser_import_handler()
-        expected = self.wdconfig.web_driver_settings["drive"]
+        expected = self.wdconfig.web_driver_settings["driver"]
         self.assertEqual(
             str(expected), "<class 'selenium.webdriver.chrome.webdriver.WebDriver'>"
             )
@@ -301,8 +301,8 @@ class TestWebDriverConfigurator(TestCase):
     def test_web_driver_args_timeout_60(self):
         self.wdconfig._set_web_drive_args_handler()
         expected = self.wdconfig.web_driver_settings\
-                    ["web_driver_args"]["timeout"]
-        self.assertEqual(expected, 60)
+                    ["web_driver_args"]["keep_alive"]
+        self.assertEqual(expected, False)
 
     def test_web_driver_manager_install(self):
         self.wdconfig._install_driver_handler =\
