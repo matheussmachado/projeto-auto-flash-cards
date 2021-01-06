@@ -13,9 +13,8 @@ class GoogleVision(TextExtractorInterface):
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = _AUTH_FILE
 
     def __init__(self):
-        self._client = vision.ImageAnnotatorClient()        
-
-    #def img_to_str(self, img_path: str) -> List[str]:
+        self._client = vision.ImageAnnotatorClient()
+    
     def img_to_str(self, img: bytes) -> List[str]:
         image = vision.types.Image(content=img)
         response = self._client.text_detection(image=image)

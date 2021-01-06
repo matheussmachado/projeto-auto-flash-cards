@@ -8,8 +8,10 @@ from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.cardWriter import DictBasedCardWriter
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.TextExtractors import GoogleVision
-from src.clss.mocks import MockImageSource
 from src.clss.assistants import AnkiEditPageHandler
+from src.clss.webDriverConfigurator import WebDriverConfigurator
+from src.clss.mocks import (MockImageSource, 
+                            MockWebDriverConfigurator)
 from src.clss.sourceAdmins import (MyCardShelveAdmin, 
                                     TextSourceAdmin, 
                                     ImageSourceAdmin)
@@ -234,7 +236,7 @@ class TestAutoFlashCards(TestCase):
         textAdm = TextSourceAdmin(src, writer)
         ac = AutoFlashCards('_', textAdm, self.db_admin)
         ac.run_task()
-        mocked.assert_not_called()    
+        mocked.assert_not_called()
 
 
 
@@ -252,7 +254,7 @@ class TestGoogleVision(TestCase):
 
 class TestImageSourceAdmin(TestCase):
     def setUp(self):
-        path = os.path.join(SAMPLE_FOLDER, 'data.json')
+        path = os.path.join(SAMPLE_FOLDER, 'configTest.json')
         self.mockImgSource = MockImageSource(path)
         self.writer = DictBasedCardWriter()
 
@@ -274,6 +276,61 @@ class TestImageSourceAdmin(TestCase):
         imgAdmin.update_sources()
         mocked.assert_called_once_with(imgs_list)
 
+
+class TestWebDriverConfigurator(TestCase):
+    def setUp(self):
+        path = os.path.join(SAMPLE_FOLDER, 'configTest.json')
+        self.wdconfig = WebDriverConfigurator(path)    
+
+    def test__browser_name_return_correct_driver(self):
+        self.wdconfig._browser_import_handler()
+        expected = self.wdconfig.web_driver_settings["driver"]
+        self.assertEqual(
+            str(expected), "<class 'selenium.webdriver.chrome.webdriver.WebDriver'>"
+            )
+    
+    def test_web_drvr_options_setted_returns_Options_instance(self):
+        self.wdconfig._web_driver_options_handler()
+        expected = self.wdconfig.web_driver_settings\
+                    ["web_driver_args"]["options"]
+        self.assertEqual(
+                str(type(expected)), "<class 'selenium.webdriver.chrome.options.Options'>"
+            )
+        self.assertEqual(expected.headless, True)
+
+    def test_web_driver_args_timeout_60(self):
+        self.wdconfig._set_web_drive_args_handler()
+        expected = self.wdconfig.web_driver_settings\
+                    ["web_driver_args"]["keep_alive"]
+        self.assertEqual(expected, False)
+
+    def test_web_driver_manager_install(self):
+        self.wdconfig._install_driver_handler =\
+        MockWebDriverConfigurator._mock_install_driver_handler
+        manager = self.wdconfig._install_driver_handler(self.wdconfig)
+        expected = self.wdconfig.web_driver_settings\
+        ["web_driver_args"]["executable_path"]
+        self.assertEqual(os.path.basename(expected), 'chromedriver')
+        self.assertEqual(
+            str(manager), 
+            "<class 'webdriver_manager.chrome.ChromeDriverManager'>"
+        )
+
+    @mock.patch('src.clss.webDriverConfigurator.WebDriverConfigurator._browser_import_handler')
+    @mock.patch('src.clss.webDriverConfigurator.WebDriverConfigurator._install_driver_handler')
+    @mock.patch('src.clss.webDriverConfigurator.WebDriverConfigurator._set_web_drive_args_handler')
+    @mock.patch('src.clss.webDriverConfigurator.WebDriverConfigurator._web_driver_options_handler')
+    def test_handlers_are_called_when_config_settings_running(self, mocked1, mocked2, mocked3, mocked4):
+        self.wdconfig.config_settings()
+        mocked1.assert_called_once()
+        mocked2.assert_called_once()
+        mocked3.assert_called_once()
+        mocked4.assert_called_once()
+
+    def test_browser_import_error_when_wrong_browser_name(self):
+        self.wdconfig._user_settings["browser"] = "err"
+        with self.assertRaises(ImportError):
+            self.wdconfig._browser_import_handler()
 
 
 if __name__ == "__main__":
