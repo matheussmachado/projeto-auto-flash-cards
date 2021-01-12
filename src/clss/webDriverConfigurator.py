@@ -1,16 +1,3 @@
-"""
-web_driver_config: {
-	browser: "",
-	web_driver_args: {
-		
-	},
-	web_driver_options: {
-	
-	},
-	auto_executable_path: true,
-}
-
-"""
 from src.funcs.textFunc import get_from_json
 
 

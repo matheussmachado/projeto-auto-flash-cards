@@ -53,7 +53,33 @@ def create_json_data_settings(file_name: str) -> None:
         )
 
 
-
+def create_json_config_file(file_name: str) -> None:
+    with open(file_name, 'w') as file:
+        file.write(
+'''{
+    "login": {
+        "email": "",
+        "password": ""
+    },
+    "deck": {
+    	"deck_name": "",
+    	"new_deck": false
+    },
+    "application_file_name": null
+    "web_driver_user_settings": {
+		"browser": "",
+		"web_driver_args": {
+			"keep_alive": false
+		},
+		"web_driver_options": {
+			"headless": true
+		},
+		"auto_executable_path": true
+	},
+	"imgPath": "",
+	"phrasesFile": "frases.txt"
+}'''
+        )
 
 def get_json(file) -> dict:
     with open(file, 'r') as f:

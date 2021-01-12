@@ -10,11 +10,11 @@ imgPath.txt
 *.json
 venv
 .vscode
-db_cards
-db
+*db*
 frases
 *.html
 *.pickle
 !img1.jpg
 !img2.jpg
-!configTest.json
+!config(sample).json
+

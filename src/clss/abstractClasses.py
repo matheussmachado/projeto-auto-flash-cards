@@ -72,3 +72,10 @@ class AbstractShelveKeyAdmin(ABC):
     def _insert(self, this: Any) -> None:
         with self._database.open(self.db_cards) as db:
             db[self.db_key] = this
+
+
+class AbstractConfigurator(ABC):
+    """
+    tentar inserir o nome das funções como parametro de uma função que irá realizar o try except
+    """
+    ...

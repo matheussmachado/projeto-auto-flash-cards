@@ -43,3 +43,9 @@ class MockWebDriverConfigurator:
         path = '/home/user/.wdm/drivers/chromedriver/plataform/chromedriver_version/chromedriver'
         self.web_driver_settings["web_driver_args"].update(executable_path=path)
         return mock_driver_manager["manager"]
+
+
+class MockGoogleVision:
+    def img_to_str(self, img: bytes) -> None:
+        ...
+    

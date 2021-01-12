@@ -20,7 +20,7 @@ class MyCardShelveAdmin(AbstractShelveKeyAdmin):
             Método resposável pela atualização da estrutura de persistência, de acordo com o status de inserido do objeto MyCard.
 
             Args:
-                cards (list): lista e objetos MyCard a serem submetido por avaliação e comparação com objetos MyCard eventualmente estocados na estrutura de db."""
+                cards (list): lista de objetos MyCard a serem submetido por avaliação e comparação com objetos MyCard eventualmente estocados na estrutura de db."""
         if len(cards) == 0:
             return
         self._verify_key()        

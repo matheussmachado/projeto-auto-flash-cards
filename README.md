@@ -76,7 +76,7 @@ Após obter este repositório. No diretório do Projeto:
 - instale as dependencias do projeto:
 `pip install -r requirements.txt`;
 - execute o programa pela primeira vez: `python run.py`;
-- no arquivo **data.json** criado após a etapa acima, insira os dados da sua conta do Anki, seu deck e se ele será um novo deck. Essa informação do deck poderá  sempre ser alterada neste arquivo;
+- no arquivo **config.json** criado após a etapa acima, insira os dados da sua conta do Anki, seu deck e se ele será um novo deck. Essa informação do deck poderá sempre ser alterada neste arquivo;
 
 #### Para utilizar as funcionalidades da Escala 2:
 

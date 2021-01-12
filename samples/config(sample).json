@@ -6,7 +6,8 @@
     "deck": {
     	"deck_name": "",
     	"new_deck": false
-    },
+	},
+	"application_file_name": "app_test",
     "web_driver_user_settings": {
 		"browser": "chrome",
 		"web_driver_args": {
@@ -17,5 +18,6 @@
 		},
 		"auto_executable_path": true
 	},
-    "imgPath": "samples/imgFolder"
+	"imgPath": "samples/imgFolder",
+	"phrasesFile": "frases.txt"
 }
