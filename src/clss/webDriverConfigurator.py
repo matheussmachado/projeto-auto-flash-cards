@@ -1,4 +1,6 @@
+from importlib import import_module
 from src.funcs.textFunc import get_from_json
+from src.clss.error import DataConfigError
 
 
 class WebDriverConfigurator:
@@ -12,20 +14,23 @@ class WebDriverConfigurator:
 		}
 
 	def _browser_import_handler(self):
-		drive_import = self._user_settings["browser"].capitalize()
-		exec(f"from selenium.webdriver import {drive_import}")
-		exec(f"self.web_driver_settings.update(driver={drive_import})")
+		browser = self._user_settings["browser"].lower()
+		try:
+			module = import_module(f'selenium.webdriver.{browser}.webdriver')
+		except ModuleNotFoundError:
+			raise DataConfigError(browser)
+		else:
+			driver = module.WebDriver
+			self.web_driver_settings.update(driver=driver)
 
 	def _web_driver_options_handler(self):
 		browser = self._user_settings["browser"]
-		exec(f"from selenium.webdriver.{browser}.options import Options")
-		exec("opt = Options()")
+		module = import_module(f'selenium.webdriver.{browser}.options')
+		opt = module.Options()
 		user_options = self._user_settings["web_driver_options"]
 		for k, v in user_options.items():
-			exec(f"opt.{k} = {v}")
-		exec(
-			f'self.web_driver_settings["web_driver_args"].update(options=opt)'
-		)
+			setattr(opt, k, v)
+		self.web_driver_settings["web_driver_args"].update(options=opt)
 
 	def _set_web_drive_args_handler(self):
 		web_driver_args = self._user_settings["web_driver_args"]
@@ -43,14 +48,16 @@ class WebDriverConfigurator:
 			"opera": "OperaDriverManager"
 		}
 		browser = self._user_settings["browser"]
-		driver_manager = driver_collections.get(browser)
-		exec(f"from webdriver_manager.{browser} import {driver_manager}")
-		exec(f"exe_path_installed = {driver_manager}().install()")
-		exec(
-			f'''self.web_driver_settings["web_driver_args"].update(
-					executable_path=exe_path_installed
-			)'''
-		)
+		driver_manager_name = driver_collections.get(browser)
+		try:
+			module = import_module(f'webdriver_manager.{browser}')
+		except ModuleNotFoundError:
+			raise DataConfigError(browser)
+		else:
+			driver_manager = getattr(module, driver_manager_name)
+			exe_path_installed = driver_manager().install()	
+			self.web_driver_settings["web_driver_args"].\
+				update(executable_path=exe_path_installed)
 
 	@property
 	def install_path(self):

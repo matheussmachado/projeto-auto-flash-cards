@@ -23,7 +23,7 @@ class MockImageSource:
 
 class MockWebDriverConfigurator:
     def __init__(self):
-        self._user_settings = None
+        #self._user_settings = None # Não é necessário
         self.web_driver_settings = {
             "web_driver_args": {}
         }
@@ -36,12 +36,10 @@ class MockWebDriverConfigurator:
             "chrome": "ChromeDriverManager"
         }
         browser = self._user_settings["browser"]
-        driver_manager = driver_collections.get(browser)
+        driver_manager = "ChromeDriverManager"
         exec(f"from webdriver_manager.{browser} import {driver_manager}")
         mock_driver_manager = {"manager": None}
         exec(f"mock_driver_manager['manager'] = {driver_manager}")
-        path = '/home/user/.wdm/drivers/chromedriver/plataform/chromedriver_version/chromedriver'
-        self.web_driver_settings["web_driver_args"].update(executable_path=path)
         return mock_driver_manager["manager"]
 
 

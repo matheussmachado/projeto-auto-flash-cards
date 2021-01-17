@@ -275,18 +275,16 @@ class TestWebDriverConfigurator(TestCase):
     def test__browser_name_return_correct_driver(self):
         self.wdconfig._browser_import_handler()
         expected = self.wdconfig.web_driver_settings["driver"]
-        self.assertEqual(
-            str(expected), "<class 'selenium.webdriver.chrome.webdriver.WebDriver'>"
-            )
-    
+        from selenium.webdriver import Chrome
+        self.assertEqual(expected, Chrome)
+
     def test_web_drvr_options_setted_returns_Options_instance(self):
         self.wdconfig._web_driver_options_handler()
         expected = self.wdconfig.web_driver_settings\
                     ["web_driver_args"]["options"]
-        self.assertEqual(
-                str(type(expected)), "<class 'selenium.webdriver.chrome.options.Options'>"
-            )
-        self.assertEqual(expected.headless, True)
+        self.assertTrue(expected.headless)
+        from selenium.webdriver.chrome.options import Options
+        self.assertEqual(type(expected), Options)
 
     def test_web_driver_args_timeout_60(self):
         self.wdconfig._set_web_drive_args_handler()
@@ -294,17 +292,12 @@ class TestWebDriverConfigurator(TestCase):
                     ["web_driver_args"]["keep_alive"]
         self.assertEqual(expected, False)
 
-    def test_web_driver_manager_install(self):
+    def test_web_driver_manager_install_imports_manager(self):
         self.wdconfig._install_driver_handler =\
         MockWebDriverConfigurator._mock_install_driver_handler
-        manager = self.wdconfig._install_driver_handler(self.wdconfig)
-        expected = self.wdconfig.web_driver_settings\
-        ["web_driver_args"]["executable_path"]
-        self.assertEqual(os.path.basename(expected), 'chromedriver')
-        self.assertEqual(
-            str(manager), 
-            "<class 'webdriver_manager.chrome.ChromeDriverManager'>"
-        )
+        expected = self.wdconfig._install_driver_handler(self.wdconfig)
+        from webdriver_manager.chrome import ChromeDriverManager
+        self.assertEqual(expected, ChromeDriverManager)
 
     @mock.patch('src.clss.webDriverConfigurator.WebDriverConfigurator._browser_import_handler')
     @mock.patch('src.clss.webDriverConfigurator.WebDriverConfigurator._install_driver_handler')
@@ -317,9 +310,9 @@ class TestWebDriverConfigurator(TestCase):
         mocked3.assert_called_once()
         mocked4.assert_called_once()
 
-    def test_browser_import_error_when_wrong_browser_name(self):
+    def test_raise_error_when_wrong_browser_name(self):
         self.wdconfig._user_settings["browser"] = "err"
-        with self.assertRaises(ImportError):
+        with self.assertRaises(DataConfigError):
             self.wdconfig._browser_import_handler()
 
 

@@ -65,14 +65,14 @@ def create_json_config_file(file_name: str) -> None:
     	"deck_name": "",
     	"new_deck": false
     },
-    "application_file_name": null
+    "application_file_name": "",
     "web_driver_user_settings": {
 		"browser": "",
 		"web_driver_args": {
 			"keep_alive": false
 		},
 		"web_driver_options": {
-			"headless": true
+			"headless": false
 		},
 		"auto_executable_path": true
 	},

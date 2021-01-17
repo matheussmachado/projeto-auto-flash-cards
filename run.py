@@ -25,7 +25,7 @@ def main() -> None:
         print('Insert the data into the created "config.json" file. Then, run this again!')
         return
     CONFIG_FILE = 'config.json'
-    PACKAGE_PATH = os.path.join('src', 'scales')
+    PACKAGE_PATH = os.path.join('src', 'apps')
     app_conf = appConfigurator(CONFIG_FILE)
     app_module = app_conf.import_app(PACKAGE_PATH)
     automaton = app_module.automaton

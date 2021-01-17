@@ -6,7 +6,7 @@ from src.clss.error import DataConfigError
 
 
 class appConfigurator:
-    def __init__(self, configurated_file_path: str):
+    def __init__(self, configurated_file_path: 'JSON File'):
         self.config_file = configurated_file_path
         self.key = "application_file_name"
         self.app_config = get_from_json(self.config_file, self.key)
@@ -19,5 +19,5 @@ class appConfigurator:
         try:
             app = import_module(f'{module_name}.{self.app_config}')
         except ModuleNotFoundError:
-            raise DataConfigError
+            raise DataConfigError(self.app_config)
         return app
