@@ -28,5 +28,5 @@ class DictBasedCardWriter:
             for c in self.contents:
                 self._card_list.append(
                     MyCard(c['phrase'], c['source'])
-                    )
+                )
         return self.card_list

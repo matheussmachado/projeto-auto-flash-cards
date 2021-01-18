@@ -20,7 +20,7 @@ class MyCardShelveAdmin(AbstractShelveKeyAdmin):
             Método resposável pela atualização da estrutura de persistência, de acordo com o status de inserido do objeto MyCard.
 
             Args:
-                cards (list): lista e objetos MyCard a serem submetido por avaliação e comparação com objetos MyCard eventualmente estocados na estrutura de db."""
+                cards (list): lista de objetos MyCard a serem submetido por avaliação e comparação com objetos MyCard eventualmente estocados na estrutura de db."""
         if len(cards) == 0:
             return
         self._verify_key()        
@@ -54,7 +54,7 @@ class DriveFileIdShelveAdmin(AbstractShelveKeyAdmin):
 class TextSourceAdmin(SourceAdminInterface):
     """
         Classe que implementa os contratos de retorno e atualização de fontes de conteúdo para a criação de cartões, no contexto de criação através de um arquivo de texto."""
-    def __init__(self, text_source: str, writer: DictBasedCardWriter) -> None:
+    def __init__(self, text_source: str, writer: DictBasedCardWriter):
         self.source = text_source
         self.writer = writer
         self._card_list = []

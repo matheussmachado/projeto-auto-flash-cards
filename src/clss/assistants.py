@@ -3,7 +3,7 @@ from typing import List, Tuple, Union, Dict
 
 from .abstractClasses import AbstractWebPageContentHandler
 
-
+#CRASHED HANDLER
 class AnkiEditPageHandler(AbstractWebPageContentHandler):    
     def __init__(self, regex_agent: re):
         super().__init__()

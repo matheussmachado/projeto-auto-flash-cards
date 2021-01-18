@@ -7,11 +7,13 @@ from src.clss.cards import MyCard
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.cardWriter import DictBasedCardWriter
 from src.clss.cardDeliverers import SeleniumAnkiBot
-from src.clss.TextExtractors import GoogleVision
 from src.clss.assistants import AnkiEditPageHandler
 from src.clss.webDriverConfigurator import WebDriverConfigurator
+from src.clss.error import DataConfigError
+from src.clss.applicationConfigurator import appConfigurator
 from src.clss.mocks import (MockImageSource, 
-                            MockWebDriverConfigurator)
+                            MockWebDriverConfigurator,
+                            MockGoogleVision)
 from src.clss.sourceAdmins import (MyCardShelveAdmin, 
                                     TextSourceAdmin, 
                                     ImageSourceAdmin)
@@ -23,6 +25,7 @@ from . import SAMPLE_FOLDER, IMG_FOLDER
 
 FILLED_TEXT = 'frasesTestePreenchidaWriter.txt'
 EMPTY_TEXT = 'frasesTesteVazia.txt'
+CONFIG_FILE = 'config(sample).json'
 imgs_path = os.path.join(SAMPLE_FOLDER, IMG_FOLDER)
 
 
@@ -240,28 +243,15 @@ class TestAutoFlashCards(TestCase):
 
 
 
-class TestGoogleVision(TestCase):
-    @mock.patch('src.clss.TextExtractors.vision.ImageAnnotatorClient.text_detection')
-    def test_text_detection_of_vision_api_was_called(self, mocked):
-        img = os.path.join(imgs_path, 'img1.jpg')
-        extractor = GoogleVision()
-        with io.open(img, 'rb') as f:
-            content = f.read()
-        extractor.img_to_str(content)
-        mocked.assert_called_once()
-        
-
-
 class TestImageSourceAdmin(TestCase):
     def setUp(self):
-        path = os.path.join(SAMPLE_FOLDER, 'configTest.json')
+        path = os.path.join(SAMPLE_FOLDER, CONFIG_FILE)
         self.mockImgSource = MockImageSource(path)
         self.writer = DictBasedCardWriter()
 
-
-    @mock.patch('src.clss.TextExtractors.vision.ImageAnnotatorClient.text_detection')    
+    @mock.patch('src.clss.mocks.MockGoogleVision.img_to_str')
     def test__return_source_method_call_img_to_str_method(self, mocked):
-        extractor = GoogleVision()
+        extractor = MockGoogleVision()
         imgAdmin = ImageSourceAdmin(self.mockImgSource, self.writer, extractor)
         imgAdmin.return_sources()
         expected = mocked.call_count
@@ -279,24 +269,22 @@ class TestImageSourceAdmin(TestCase):
 
 class TestWebDriverConfigurator(TestCase):
     def setUp(self):
-        path = os.path.join(SAMPLE_FOLDER, 'configTest.json')
+        path = os.path.join(SAMPLE_FOLDER, CONFIG_FILE)
         self.wdconfig = WebDriverConfigurator(path)    
 
     def test__browser_name_return_correct_driver(self):
         self.wdconfig._browser_import_handler()
         expected = self.wdconfig.web_driver_settings["driver"]
-        self.assertEqual(
-            str(expected), "<class 'selenium.webdriver.chrome.webdriver.WebDriver'>"
-            )
-    
+        from selenium.webdriver import Chrome
+        self.assertEqual(expected, Chrome)
+
     def test_web_drvr_options_setted_returns_Options_instance(self):
         self.wdconfig._web_driver_options_handler()
         expected = self.wdconfig.web_driver_settings\
                     ["web_driver_args"]["options"]
-        self.assertEqual(
-                str(type(expected)), "<class 'selenium.webdriver.chrome.options.Options'>"
-            )
-        self.assertEqual(expected.headless, True)
+        self.assertTrue(expected.headless)
+        from selenium.webdriver.chrome.options import Options
+        self.assertEqual(type(expected), Options)
 
     def test_web_driver_args_timeout_60(self):
         self.wdconfig._set_web_drive_args_handler()
@@ -304,17 +292,12 @@ class TestWebDriverConfigurator(TestCase):
                     ["web_driver_args"]["keep_alive"]
         self.assertEqual(expected, False)
 
-    def test_web_driver_manager_install(self):
+    def test_web_driver_manager_install_imports_manager(self):
         self.wdconfig._install_driver_handler =\
         MockWebDriverConfigurator._mock_install_driver_handler
-        manager = self.wdconfig._install_driver_handler(self.wdconfig)
-        expected = self.wdconfig.web_driver_settings\
-        ["web_driver_args"]["executable_path"]
-        self.assertEqual(os.path.basename(expected), 'chromedriver')
-        self.assertEqual(
-            str(manager), 
-            "<class 'webdriver_manager.chrome.ChromeDriverManager'>"
-        )
+        expected = self.wdconfig._install_driver_handler(self.wdconfig)
+        from webdriver_manager.chrome import ChromeDriverManager
+        self.assertEqual(expected, ChromeDriverManager)
 
     @mock.patch('src.clss.webDriverConfigurator.WebDriverConfigurator._browser_import_handler')
     @mock.patch('src.clss.webDriverConfigurator.WebDriverConfigurator._install_driver_handler')
@@ -327,11 +310,37 @@ class TestWebDriverConfigurator(TestCase):
         mocked3.assert_called_once()
         mocked4.assert_called_once()
 
-    def test_browser_import_error_when_wrong_browser_name(self):
+    def test_raise_error_when_wrong_browser_name(self):
         self.wdconfig._user_settings["browser"] = "err"
-        with self.assertRaises(ImportError):
+        with self.assertRaises(DataConfigError):
             self.wdconfig._browser_import_handler()
 
 
+
+class TestAppConfigurator(TestCase):
+    def setUp(self):
+        self.path = os.path.join(SAMPLE_FOLDER, CONFIG_FILE)
+        self.appConfig = appConfigurator(self.path)
+    
+    def test_returns_configured_application(self):
+        app = self.appConfig.import_app(SAMPLE_FOLDER)
+        file = app.__file__
+        expected = os.path.join(SAMPLE_FOLDER, 'app_test.py')
+        self.assertTrue(file.endswith(expected))
+
+    def test_AutoFlashCard_assignment(self):
+        app = self.appConfig.import_app(SAMPLE_FOLDER)
+        expected = type(app.automaton)
+        self.assertEqual(expected, AutoFlashCards)
+
+    def test_raise_error_if_not_given_name(self):
+        file = 'config_with_no_app_name.json'
+        path = os.path.join(SAMPLE_FOLDER, file)
+        self.appConfig.app_config = "err"
+        with self.assertRaises(DataConfigError):
+            self.appConfig.import_app(SAMPLE_FOLDER)
+        
+
 if __name__ == "__main__":
     main()
+
