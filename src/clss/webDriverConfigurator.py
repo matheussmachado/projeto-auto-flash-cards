@@ -25,19 +25,23 @@ class WebDriverConfigurator:
 
 	def _web_driver_options_handler(self):
 		browser = self._user_settings["browser"]
-		module = import_module(f'selenium.webdriver.{browser}.options')
-		opt = module.Options()
-		user_options = self._user_settings["web_driver_options"]
-		for k, v in user_options.items():
-			setattr(opt, k, v)
-		self.web_driver_settings["web_driver_args"].update(options=opt)
-
+		try:
+			module = import_module(f'selenium.webdriver.{browser}.options')
+		except ModuleNotFoundError:
+			raise DataConfigError(browser)
+		else:
+			opt = module.Options()
+			user_options = self._user_settings["web_driver_options"]
+			for k, v in user_options.items():
+				setattr(opt, k, v)
+			self.web_driver_settings["web_driver_args"].update(options=opt)
+	
 	def _set_web_drive_args_handler(self):
 		web_driver_args = self._user_settings["web_driver_args"]
 		self.web_driver_settings["web_driver_args"].update(
 			web_driver_args
 		)
-
+		
 	def _install_driver_handler(self):
 		install = self._user_settings["auto_executable_path"]
 		if not install:
@@ -64,11 +68,9 @@ class WebDriverConfigurator:
 		yield _install_driver_handler()
 
 	def config_settings(self):
-		str_methods = [
-			method for method in dir(self) 
-			if 'handler' in method
-		]
-		for method in str_methods:
-			exec(f"self.{method}()")
+		for attr in dir(self):
+			if 'handler' in attr:
+				method = getattr(self, attr)
+				method.__call__()
 		return self.web_driver_settings
 

@@ -54,7 +54,7 @@ class DriveFileIdShelveAdmin(AbstractShelveKeyAdmin):
 class TextSourceAdmin(SourceAdminInterface):
     """
         Classe que implementa os contratos de retorno e atualização de fontes de conteúdo para a criação de cartões, no contexto de criação através de um arquivo de texto."""
-    def __init__(self, text_source: str, writer: DictBasedCardWriter) -> None:
+    def __init__(self, text_source: str, writer: DictBasedCardWriter):
         self.source = text_source
         self.writer = writer
         self._card_list = []
