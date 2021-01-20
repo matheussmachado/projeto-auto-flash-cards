@@ -6,12 +6,10 @@ from src.clss.error import DataConfigError
 
 
 class appConfigurator:
-    def __init__(self, configurated_file_path: 'JSON File'):
-        self.config_file = configurated_file_path
-        self.key = "application_file_name"
-        self.app_config = get_from_json(self.config_file, self.key)
+    def __init__(self, config_file_path: str):
+        self.app_config = get_from_json(config_file_path, "application_file_name")
     
-    def import_app(self, package_name_path: str) -> 'Module':
+    def import_app(self, package_name_path: str) -> 'Python Module':
         """
         package_name: deve ser obtido como os.path.join('pkg', 'supkg')
         """

@@ -4,9 +4,9 @@ from src.clss.error import DataConfigError
 
 
 class WebDriverConfigurator:
-	def __init__(self, web_driver_user_settings: 'JSON File'):
+	def __init__(self, config_file_path: str):
 		self._user_settings = get_from_json(
-			web_driver_user_settings, 
+			config_file_path, 
 			"web_driver_user_settings"
 			)
 		self.web_driver_settings = {

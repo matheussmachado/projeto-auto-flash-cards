@@ -8,7 +8,7 @@ from .interfaces import (SourceAdminInterface,
                             ImageSourceInterface, 
                             TextExtractorInterface)
 
-from src.funcs.textFunc import get_from_txt
+from src.funcs.textFunc import get_from_txt, get_from_json
 
 
 class MyCardShelveAdmin(AbstractShelveKeyAdmin):
@@ -54,8 +54,8 @@ class DriveFileIdShelveAdmin(AbstractShelveKeyAdmin):
 class TextSourceAdmin(SourceAdminInterface):
     """
         Classe que implementa os contratos de retorno e atualização de fontes de conteúdo para a criação de cartões, no contexto de criação através de um arquivo de texto."""
-    def __init__(self, text_source: str, writer: DictBasedCardWriter):
-        self.source = text_source
+    def __init__(self, config_file_path: str, writer: DictBasedCardWriter):
+        self.source = get_from_json(config_file_path, "phrasesFile")
         self.writer = writer
         self._card_list = []
         
@@ -67,7 +67,7 @@ class TextSourceAdmin(SourceAdminInterface):
         """
             Obtém o conteúdo, organiza e retorna os cards gerados."""        
         phrases = get_from_txt(self.source)
-        if len(phrases) == 0:            
+        if len(phrases) == 0:
             return phrases
         for phrase in phrases:
            self.writer.update_contents(phrase, self.source)        

@@ -4,20 +4,20 @@
         "password": "pw"
     },
     "deck": {
-    	"deck_name": "",
-    	"new_deck": false
-	},
-	"application_file_name": "app_test",
+        "deck_name": "",
+        "new_deck": false
+    },
+    "application_file_name": "app_test",
     "web_driver_user_settings": {
-		"browser": "chrome",
-		"web_driver_args": {
-			"keep_alive": false
-		},
-		"web_driver_options": {
-			"headless": true
-		},
-		"auto_executable_path": true
-	},
-	"imgPath": "samples/imgFolder",
-	"phrasesFile": "frases.txt"
+        "browser": "chrome",
+        "web_driver_args": {
+            "keep_alive": false
+        },
+        "web_driver_options": {
+            "headless": true
+        },
+        "auto_executable_path": true
+    },
+    "imgPath": "samples/imgFolder",
+    "phrasesFile": "samples/frasesTestePreenchidaWriter.txt"
 }

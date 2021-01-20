@@ -21,18 +21,13 @@ from src.clss.sourceAdmins import (MyCardShelveAdmin,
 from src.funcs.textFunc import get_from_txt
 from src.funcs.resetSamplesFuncs import text_source_reset, db_cards_reset
 
-from . import SAMPLE_FOLDER, IMG_FOLDER
-
-FILLED_TEXT = 'frasesTestePreenchidaWriter.txt'
-EMPTY_TEXT = 'frasesTesteVazia.txt'
-CONFIG_FILE = 'config(sample).json'
-imgs_path = os.path.join(SAMPLE_FOLDER, IMG_FOLDER)
+from . import SAMPLE_FOLDER, config_file_path, filled_text_path, empty_text_path, img_folder_path
 
 
 
 class TestDictBasedCardWriter(TestCase):
     def setUp(self):
-        self.source = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
+        self.source = filled_text_path
         self.src_before = get_from_txt(self.source)
         self.writer = DictBasedCardWriter()
 
@@ -48,7 +43,6 @@ class TestDictBasedCardWriter(TestCase):
         expected = [
             {'phrase': phrase, 'source': self.source} for phrase in phrases
         ]
-        
         self.assertEqual(expected, self.writer.contents)
     
     def test__return_written_cards_returns_equal_amount_src(self):
@@ -70,16 +64,16 @@ class TestDictBasedCardWriter(TestCase):
 
 
 class TestTextSourceAdmin(TestCase):
-    def setUp(self):        
-        self.source = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
+    def setUp(self):
+        self.source = filled_text_path
         self.src_before = get_from_txt(self.source)
         self.writer = DictBasedCardWriter()
-        self.sourceAdmin = TextSourceAdmin(self.source, self. writer)
+        self.sourceAdmin = TextSourceAdmin(config_file_path, self.writer)
 
     def tearDown(self):
         text_source_reset(self.source, self.src_before)        
     
-    def test__update_cards_clear_all_phrases_in_file(self):        
+    def test__update_cards_clear_all_phrases_in_file(self):
         self.sourceAdmin.return_sources()        
         self.sourceAdmin.update_sources()
         expected = get_from_txt(self.source)
@@ -90,18 +84,16 @@ class TestTextSourceAdmin(TestCase):
         expected = len(card_list)        
         self.assertEqual(expected, len(self.src_before))
 
-    def test__return_sources_returns_empty_list_if_empty_texts_src(self):
-        source = os.path.join(SAMPLE_FOLDER, EMPTY_TEXT)        
-        sourceAdmin = TextSourceAdmin(source, self.writer)
-        expected = sourceAdmin.return_sources()
-        text_source_reset(source, [])
+    def test_return_sources_returns_empty_list_if_empty_texts_src(self):
+        self.sourceAdmin.source = empty_text_path
+        expected = self.sourceAdmin.return_sources()
+        text_source_reset(empty_text_path, [])
         self.assertEqual(expected, [])
         
     def test__update_sources_returns_None_if_empty_text_src(self):
-        source = os.path.join(SAMPLE_FOLDER, EMPTY_TEXT)
-        sourceAdmin = TextSourceAdmin(source, self.writer)
-        expected = sourceAdmin.update_sources()
-        text_source_reset(source, [])
+        self.sourceAdmin.source = empty_text_path
+        expected = self.sourceAdmin.update_sources()
+        text_source_reset(empty_text_path, [])
         self.assertEqual(expected, None)
 
 
@@ -111,10 +103,10 @@ class TestMyCardShelveAdmin(TestCase):
         self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
         self.db_key = "test_key"
         self.db_source_before = []
-        self.text_src = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
+        self.text_src = filled_text_path
         self.text_src_before = get_from_txt(self.text_src)
         writer = DictBasedCardWriter()
-        self.textAdmin = TextSourceAdmin(self.text_src, writer)
+        self.textAdmin = TextSourceAdmin(config_file_path, writer)
     
     def tearDown(self):
         db_cards_reset(
@@ -165,10 +157,10 @@ class TestMyCardShelveAdmin(TestCase):
 
 class TestSeleniumAnkiBot(TestCase):
     def setUp(self):
-        self.text_src = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
+        self.text_src = filled_text_path
         self.text_src_before = get_from_txt(self.text_src)
         writer = DictBasedCardWriter()
-        self.sourceAdmin = TextSourceAdmin(self.text_src, writer)
+        self.sourceAdmin = TextSourceAdmin(config_file_path, writer)
 
     def tearDown(self):
         text_source_reset(self.text_src, self.text_src_before)
@@ -185,11 +177,10 @@ class TestSeleniumAnkiBot(TestCase):
 
 class TestAutoFlashCards(TestCase):
     def setUp(self):
-        self.text_src = os.path.join(SAMPLE_FOLDER, FILLED_TEXT)
+        self.text_src = filled_text_path
         self.text_src_before = get_from_txt(self.text_src)
         writer = DictBasedCardWriter()
-        self.textAdmin = TextSourceAdmin(self.text_src, writer)
-
+        self.textAdmin = TextSourceAdmin(config_file_path, writer)
         self.db_source = os.path.join(SAMPLE_FOLDER, "db_cards_test")
         self.db_key = "test_key"
         self.db_source_before = []
@@ -234,9 +225,9 @@ class TestAutoFlashCards(TestCase):
         
     @mock.patch('src.clss.cardDeliverers.SeleniumAnkiBot.deliver')
     def test__run_task_returns_None_if_no_text_phrases(self, mocked):
-        src = os.path.join(SAMPLE_FOLDER, EMPTY_TEXT)
         writer = DictBasedCardWriter()
-        textAdm = TextSourceAdmin(src, writer)
+        textAdm = TextSourceAdmin(config_file_path, writer)
+        textAdm.source = empty_text_path
         ac = AutoFlashCards('_', textAdm, self.db_admin)
         ac.run_task()
         mocked.assert_not_called()
@@ -245,7 +236,7 @@ class TestAutoFlashCards(TestCase):
 
 class TestImageSourceAdmin(TestCase):
     def setUp(self):
-        path = os.path.join(SAMPLE_FOLDER, CONFIG_FILE)
+        path = config_file_path
         self.mockImgSource = MockImageSource(path)
         self.writer = DictBasedCardWriter()
 
@@ -269,8 +260,7 @@ class TestImageSourceAdmin(TestCase):
 
 class TestWebDriverConfigurator(TestCase):
     def setUp(self):
-        path = os.path.join(SAMPLE_FOLDER, CONFIG_FILE)
-        self.wdconfig = WebDriverConfigurator(path)    
+        self.wdconfig = WebDriverConfigurator(config_file_path)
 
     def test__browser_name_return_correct_driver(self):
         self.wdconfig._browser_import_handler()
@@ -319,8 +309,7 @@ class TestWebDriverConfigurator(TestCase):
 
 class TestAppConfigurator(TestCase):
     def setUp(self):
-        self.path = os.path.join(SAMPLE_FOLDER, CONFIG_FILE)
-        self.appConfig = appConfigurator(self.path)
+        self.appConfig = appConfigurator(config_file_path)
     
     def test_returns_configured_application(self):
         app = self.appConfig.import_app(SAMPLE_FOLDER)
