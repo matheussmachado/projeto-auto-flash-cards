@@ -12,9 +12,7 @@ WebDriver = TypeVar('WebDriver')
 
 class SeleniumAnkiBot(AbstractCardDeliverer):
 
-    def __init__(
-            self, web_driver_settings, user_data: str
-            ):
+    def __init__(self, web_driver_settings, user_data: str):
         super().__init__()
         self.user_data = user_data
         self.web_driver_settings = web_driver_settings
@@ -31,7 +29,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
                 )
             self._bot.implicitly_wait(30)
             self._bot.get(self._URL)
-            self._bot.set_window_size(width=1366, height=747)
+            self._bot.set_window_size(width=9999, height=9999)
         except Exception as err:
             if self._bot:
                 self._bot.close()

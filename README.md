@@ -106,7 +106,7 @@ Após obter este repositório. No diretório do Projeto:
 
 - obtenha a chave secreta da Vision API. Certifique-se de que o arquivo desta chave esteja no mesmo diretório raiz dessa aplicação, com o nome de **serviceAccountToken.json**;
 
-- crie um diretório a qual ficarão as imagens. Em seguida, no arquivo **config.json**, insira o caminho deste diretório local no campo **imgPath**
+- em seguida, no arquivo **config.json**, insira o caminho deste diretório local no campo **imgPath**. É conveniente criar um diretório a qual será usado para obter as imagens. 
 
 #### Para utilizar as funcionalidades da Escala 4:
 
