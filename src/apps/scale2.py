@@ -9,15 +9,11 @@ from src.clss.sourceAdmins import (
                 DictBasedCardWriter
     )
 
-from src.funcs.textFunc import get_from_json
-
 from . import CONFIG_FILE
-
-file_path = get_from_json(CONFIG_FILE, "phrasesFile")
 
 wdconfig = WebDriverConfigurator(CONFIG_FILE)
 writer = DictBasedCardWriter()
-sourceAdmin = TextSourceAdmin(file_path, writer)
+sourceAdmin = TextSourceAdmin(CONFIG_FILE, writer)
 dbAdmin = MyCardShelveAdmin('db', 'cards')
 
 selenium_anki_bot_args = {

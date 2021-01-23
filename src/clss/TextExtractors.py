@@ -10,14 +10,14 @@ from .interfaces import TextExtractorInterface
 
 class GoogleVision(TextExtractorInterface):
     _AUTH_FILE = 'serviceAccountToken.json'
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = _AUTH_FILE
     
 
     def __init__(self):
-        self._client = vision.ImageAnnotatorClient
+        self._client = vision.ImageAnnotatorClient()
     
     def img_to_str(self, img: bytes) -> List[str]:
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = _AUTH_FILE 
-        self._client.__call__()
+        #self._client.__call__(self)
         image = vision.types.Image(content=img)
         response = self._client.text_detection(image=image)
         texts = response.text_annotations

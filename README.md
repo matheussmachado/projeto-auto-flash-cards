@@ -100,11 +100,17 @@ Após obter este repositório. No diretório do Projeto:
 
 *Lembre-se que cada frase é contabilizada pela quebra de linha no arquivo .txt.*
 
-#### Para utilizar as funcionalidades da Escala 4:
+#### Para utilizar as funcionalidades da Escala 3:
 
 - Crie um projeto no Google Cloud Plataform utilizando a Vision API. Ative a cobrança do projeto para liberar a utilização;
 
-- obtenha a chave secreta da Vision API. Certifique-se de que o arquivo desta chave terá o nome de **serviceAccountToken.json** e que este esteja no mesmo diretório raiz dessa aplicação;
+- obtenha a chave secreta da Vision API. Certifique-se de que o arquivo desta chave esteja no mesmo diretório raiz dessa aplicação, com o nome de **serviceAccountToken.json**;
+
+- crie um diretório a qual ficarão as imagens. Em seguida, no arquivo **config.json**, insira o caminho deste diretório local no campo **imgPath**
+
+#### Para utilizar as funcionalidades da Escala 4:
+
+- Obtenha a chave secreta da Vision API conforme mencionado acima, para utilização da Escala 3;
 
 - crie um projeto no Google Cloud Plaraform para o Drive API;
 

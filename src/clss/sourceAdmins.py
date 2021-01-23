@@ -100,15 +100,15 @@ class ImageSourceAdmin(SourceAdminInterface):
         imgs_data = self.source.get_images()
         for data in imgs_data:
             try:
-                phrase = self.extractor.img_to_str(data['bytes'])
+                phrase = self.extractor.img_to_str(data.bytes)
             except Exception as err:
                 print(err)
             else:
                 if phrase:
-                    self.writer.update_contents(phrase, data['source'])
+                    self.writer.update_contents(phrase, data.source)
         return self.writer.return_written_cards()
     
     def update_sources(self):
-        imgs_src = [src['source'] for src in self.writer.contents]
+        imgs_src = [data['source'] for data in self.writer.contents]
         self.source.remove_images(imgs_src)
         

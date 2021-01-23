@@ -124,10 +124,12 @@ def create_service(client_secret_file, api_name, api_version, *scopes):
         print(e)
         return None
 
-
+#ENCAPSULAR ISSO DENTRO DE UMA FUNÇÃO E TRATAR A CHAMADA
+'''
 service = create_service(KEY, API_NAME, API_VERSION, SCOPES)
 if not service:
     raise Exception('Unable to create the Google Drive service')
+'''
 
 if __name__ == "__main__":
     #get_drive_folder_id('Legendas')

@@ -23,7 +23,12 @@ class ImageSourceInterface(ABC):
     def get_images(self):
         ...
     
+    @abstractmethod
     def remove_images(self):
+        ...
+    
+    @abstractmethod
+    def accumulate_image_data(self):
         ...
 
 

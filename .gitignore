@@ -14,6 +14,7 @@ venv
 frases
 *.html
 *.pickle
+imgs
 !img1.jpg
 !img2.jpg
 !config(sample).json

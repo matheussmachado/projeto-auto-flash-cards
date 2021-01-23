@@ -4,6 +4,8 @@ from typing import List
 
 from .interfaces import ImageSourceInterface
 from .sourceAdmins import DriveFileIdShelveAdmin
+from .error import DataConfigError
+from .myImageData import MyImageData
 from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
 from src.funcs.textFunc import get_from_json
 from src.funcs.google_drive_interface import (
@@ -80,8 +82,8 @@ class GoogleDriveSource(ImageSourceInterface):
             _bytes = get_images_byte(data_id)
             if _bytes:
                 imgs_data.append(
-                {'bytes': _bytes, 'source': data_id}
-            )
+                    MyImageData(_bytes, source=data_id)
+                )
         return imgs_data
     
     def remove_images(self, data_list: list) -> None:
@@ -92,3 +94,33 @@ class GoogleDriveSource(ImageSourceInterface):
             if not removed:
                 failed.append(_id)
         self.id_admin.update_sources(failed)
+
+
+
+class LocalFolderSource(ImageSourceInterface):
+    def __init__(self, config_file_path):
+        self.folder_source = get_from_json(config_file_path, "imgPath")
+        self._my_images = []
+    
+    @property
+    def my_images(self) -> list:
+        return self._my_images.copy()
+
+    def accumulate_image_data(self, source):
+        with io.open(source, 'rb') as image_file:
+            _bytes = image_file.read()
+        my_image_data = MyImageData(_bytes, source=source)
+        self._my_images.append(my_image_data)
+
+    def get_images(self) -> list:
+        if not os.path.isdir(self.folder_source):
+            raise DataConfigError(self.folder_source)
+        for file in os.listdir(self.folder_source):
+            if file.endswith(".png") or file.endswith(".jpg"):
+                path = os.path.abspath(os.path.join(self.folder_source,file))
+                self.accumulate_image_data(source=path)
+        return self.my_images
+    
+    def remove_images(self, imgs_list: list) -> None:
+        for img in imgs_list:
+            os.remove(img)

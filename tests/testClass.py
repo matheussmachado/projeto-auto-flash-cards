@@ -11,6 +11,7 @@ from src.clss.assistants import AnkiEditPageHandler
 from src.clss.webDriverConfigurator import WebDriverConfigurator
 from src.clss.error import DataConfigError
 from src.clss.applicationConfigurator import appConfigurator
+from src.clss.imageSources import LocalFolderSource
 from src.clss.mocks import (MockImageSource, 
                             MockWebDriverConfigurator,
                             MockGoogleVision)
@@ -329,6 +330,33 @@ class TestAppConfigurator(TestCase):
         with self.assertRaises(DataConfigError):
             self.appConfig.import_app(SAMPLE_FOLDER)
         
+
+
+class TestLocalFolderSource(TestCase):
+    def setUp(self):
+        self.source = LocalFolderSource(config_file_path)
+    
+    def test_get_images(self):
+        imgs_name = [
+            os.path.basename(i.source) 
+            for i in self.source.get_images()
+            ]
+        self.assertIn('img1.jpg', imgs_name)
+        self.assertIn('img2.jpg', imgs_name)
+    
+    def test_wrong_folder_raises_error(self):
+        self.source.folder_source = 'err'
+        with self.assertRaises(DataConfigError):
+            self.source.get_images()
+
+    @mock.patch('src.clss.imageSources.os.remove')
+    def test__remove_all_two_imgs(self, mocked):
+        img_list = self.source.get_images()
+        self.source.remove_images(img_list)
+        expected = mocked.call_count
+        self.assertEqual(expected, 2)
+        
+
 
 if __name__ == "__main__":
     main()

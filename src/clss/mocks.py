@@ -2,6 +2,7 @@ from typing import List
 from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
 from src.funcs.textFunc import get_from_json
 
+from .myImageData import MyImageData
 
 class MockImageSource:
     def __init__(self, img_path_file: str):
@@ -13,7 +14,7 @@ class MockImageSource:
         for path in paths:            
             _bytes = bytes(path, encoding='utf-8')
             imgs_data.append(
-                {'bytes': _bytes, 'source': path}
+                MyImageData(_bytes, source=path)
             )
         return imgs_data
 
