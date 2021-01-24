@@ -1,5 +1,3 @@
-import os
-
 from src.clss.webDriverConfigurator import WebDriverConfigurator
 from src.clss.assistants import AnkiEditPageHandler
 from src.clss.autoFlashCards import AutoFlashCards

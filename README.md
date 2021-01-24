@@ -118,7 +118,7 @@ Após obter este repositório. No diretório do Projeto:
 
 - crie um diretório no seu Drive e envie as imagens que gostaria de extrair as legendas. Certifique-se que estará na pasta raíz do Drive;
 
-- assim como no arquivo da aplicação **src/apps/scale4.py**, configure o nome do diretório do Drive que foram enviadas as imagens, o nome do deck do Anki e se ele será um novo deck;
+- no arquivo **config.json**, insira no campo **drive_folder_name** o nome do respectivo diretório do Drive a qual ficará as imagens;
 
 - execute o programa: `python run.py`
 

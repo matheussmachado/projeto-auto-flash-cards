@@ -9,7 +9,7 @@ from .myImageData import MyImageData
 from src.funcs.imgFuncs import get_imgs_path, remove_imgs_list
 from src.funcs.textFunc import get_from_json
 from src.funcs.google_drive_interface import (
-    create_drive_folder, delete_file_by_id, get_data_files_from_folder, get_id_by_folder_name, get_images_byte
+    create_service, create_drive_folder, delete_file_by_id, get_data_files_from_folder, get_id_by_folder_name, get_images_byte
     )
 
 
@@ -58,11 +58,14 @@ class OcamlfuseSource(ImageSourceInterface):
 
 
 class GoogleDriveSource(ImageSourceInterface):
-    def __init__(self, drive_folder_name, 
+    def __init__(self, config_file_path, 
     id_admin: DriveFileIdShelveAdmin):
-        self.folder = drive_folder_name
+        self.folder = get_from_json(config_file_path, "drive_folder_name")
         self.id_admin = id_admin
         self._failed_rm_id = None
+        self._my_images = []
+        self.service = create_service()
+
     
     @property
     def failed_rm_id(self):
@@ -70,27 +73,33 @@ class GoogleDriveSource(ImageSourceInterface):
             self._failed_rm_id = self.id_admin.return_sources()
         return self._failed_rm_id
 
+    @property
+    def my_images(self):
+        return self._my_images.copy()
+
+    def accumulate_image_data(self, data_id):
+        _bytes = get_images_byte(self.service, data_id)
+        if _bytes:
+            self._my_images.append(
+                MyImageData(_bytes, source=data_id)
+            )
+
     def get_images(self):
-        imgs_data = []
-        _id = get_id_by_folder_name(self.folder)
+        _id = get_id_by_folder_name(self.service, self.folder)
         if not _id:
             raise Exception(f'{self.folder} folders not exists.')
-        imgs_id = get_data_files_from_folder(_id)
+        imgs_id = get_data_files_from_folder(self.service, _id)
         for data_id in imgs_id:
             if data_id in self.failed_rm_id:
                 continue
-            _bytes = get_images_byte(data_id)
-            if _bytes:
-                imgs_data.append(
-                    MyImageData(_bytes, source=data_id)
-                )
-        return imgs_data
+            self.accumulate_image_data(data_id)        
+        return self.my_images
     
     def remove_images(self, data_list: list) -> None:
         data_list.extend(self.failed_rm_id)
         failed = []
         for _id in data_list:
-            removed = delete_file_by_id(_id)
+            removed = delete_file_by_id(self.service, _id)
             if not removed:
                 failed.append(_id)
         self.id_admin.update_sources(failed)

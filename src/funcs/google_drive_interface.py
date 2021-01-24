@@ -9,17 +9,12 @@ from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from google.auth.transport.requests import Request
 from googleapiclient.errors import HttpError
 
-#from src.funcs.imgFuncs import Create_Service
-
 
 #---------------------- GOOGLE DRIVE ----------------------
-SCOPES = ['https://www.googleapis.com/auth/drive']
-KEY = 'client_drive_key.json'
-API_NAME = 'drive'
-API_VERSION = 'v3'
+
 
 #DOWNLOAD DAS IMAGENS
-def get_images_byte(file_id):    
+def get_images_byte(service, file_id):    
     try:
         request = service.files().get_media(fileId=file_id)
     except HttpError as err:
@@ -36,7 +31,7 @@ def get_images_byte(file_id):
 
 
 #REMOVER id EM UM DIRETÓRIO
-def delete_file_by_id(file_id):
+def delete_file_by_id(service, file_id):
     try:
         service.files().delete(fileId=file_id).execute()
     except HttpError as error:
@@ -46,7 +41,7 @@ def delete_file_by_id(file_id):
 
 
 #TODO: OBTER TODOS OS id's DAS IMAGENS DE UM DIRETÓRIO
-def get_data_files_from_folder(folder_id):
+def get_data_files_from_folder(service, folder_id):
     page_token = None
     while True:
         response = service.files().list(
@@ -65,7 +60,7 @@ def get_data_files_from_folder(folder_id):
 
 
 #CRIAR O DIRETÓRIO
-def create_drive_folder(folder_name: str) -> None:
+def create_drive_folder(service, folder_name: str) -> None:
     file_metadata = {
         'name': folder_name,
         'mimeType': 'application/vnd.google-apps.folder'
@@ -74,7 +69,7 @@ def create_drive_folder(folder_name: str) -> None:
 
 
 #VALIDAÇÃO DA PASTA
-def get_id_by_folder_name(folder_name: str) -> str:
+def get_id_by_folder_name(service, folder_name: str) -> str:
     _id = ''
     page_token = None
     while True:
@@ -98,11 +93,11 @@ def get_id_by_folder_name(folder_name: str) -> str:
 
 
 
-def create_service(client_secret_file, api_name, api_version, *scopes):    
-    CLIENT_SECRET_FILE = client_secret_file
-    API_SERVICE_NAME = api_name
-    API_VERSION = api_version
-    SCOPES = [scope for scope in scopes[0]]
+def create_service():    
+    CLIENT_SECRET_FILE = 'client_drive_key.json'
+    API_SERVICE_NAME = 'drive'
+    API_VERSION = 'v3'
+    SCOPES = ['https://www.googleapis.com/auth/drive']
     cred = None
     pickle_file = f'token_{API_SERVICE_NAME}_{API_VERSION}.pickle'
     if os.path.exists(pickle_file):
@@ -123,17 +118,3 @@ def create_service(client_secret_file, api_name, api_version, *scopes):
         print('Unable to connect.')
         print(e)
         return None
-
-#ENCAPSULAR ISSO DENTRO DE UMA FUNÇÃO E TRATAR A CHAMADA
-'''
-service = create_service(KEY, API_NAME, API_VERSION, SCOPES)
-if not service:
-    raise Exception('Unable to create the Google Drive service')
-'''
-
-if __name__ == "__main__":
-    #get_drive_folder_id('Legendas')
-    #create_drive_folder('Teste')
-    img = get_data_files_from_folder(get_id_by_folder_name('Legendas'))
-    print(img)
-    

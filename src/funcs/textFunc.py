@@ -74,8 +74,9 @@ def create_json_config_file(file_name: str) -> None:
 		},
 		"auto_executable_path": true
 	},
+	"phrasesFile": "frases.txt",
 	"imgPath": "",
-	"phrasesFile": "frases.txt"
+    "drive_folder_name": ""
 }'''
         )
 
