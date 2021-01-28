@@ -1,5 +1,4 @@
 class MyImageData:
-    def __init__(self, bytes , **kwargs):
+    def __init__(self, bytes , source):
         self.bytes = bytes
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+        self.source = source

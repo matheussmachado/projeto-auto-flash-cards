@@ -10,7 +10,7 @@ from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.assistants import AnkiEditPageHandler
 from src.clss.webDriverConfigurator import WebDriverConfigurator
 from src.clss.error import DataConfigError
-from src.clss.applicationConfigurator import appConfigurator
+from src.clss.configurators import AppConfigurator
 from src.clss.imageSources import LocalFolderSource
 from src.clss.mocks import (MockImageSource, 
                             MockWebDriverConfigurator,
@@ -277,7 +277,7 @@ class TestWebDriverConfigurator(TestCase):
         from selenium.webdriver.chrome.options import Options
         self.assertEqual(type(expected), Options)
 
-    def test_web_driver_args_timeout_60(self):
+    def test_web_driver_args_keep_alive(self):
         self.wdconfig._set_web_drive_args_handler()
         expected = self.wdconfig.web_driver_settings\
                     ["web_driver_args"]["keep_alive"]
@@ -310,16 +310,16 @@ class TestWebDriverConfigurator(TestCase):
 
 class TestAppConfigurator(TestCase):
     def setUp(self):
-        self.appConfig = appConfigurator(config_file_path)
+        self.appConfig = AppConfigurator(config_file_path)
     
     def test_returns_configured_application(self):
-        app = self.appConfig.import_app(SAMPLE_FOLDER)
+        app = self.appConfig.configure(SAMPLE_FOLDER)
         file = app.__file__
         expected = os.path.join(SAMPLE_FOLDER, 'app_test.py')
         self.assertTrue(file.endswith(expected))
 
     def test_AutoFlashCard_assignment(self):
-        app = self.appConfig.import_app(SAMPLE_FOLDER)
+        app = self.appConfig.configure(SAMPLE_FOLDER)
         expected = type(app.automaton)
         self.assertEqual(expected, AutoFlashCards)
 
@@ -328,7 +328,7 @@ class TestAppConfigurator(TestCase):
         path = os.path.join(SAMPLE_FOLDER, file)
         self.appConfig.app_config = "err"
         with self.assertRaises(DataConfigError):
-            self.appConfig.import_app(SAMPLE_FOLDER)
+            self.appConfig.configure(SAMPLE_FOLDER)
         
 
 

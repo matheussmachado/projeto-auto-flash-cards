@@ -40,7 +40,7 @@ def delete_file_by_id(service, file_id):
         return True
 
 
-#TODO: OBTER TODOS OS id's DAS IMAGENS DE UM DIRETÓRIO
+#OBTER TODOS OS id's DAS IMAGENS DE UM DIRETÓRIO
 def get_data_files_from_folder(service, folder_id):
     page_token = None
     while True:

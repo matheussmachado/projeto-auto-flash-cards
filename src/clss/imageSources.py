@@ -87,7 +87,7 @@ class GoogleDriveSource(ImageSourceInterface):
     def get_images(self):
         _id = get_id_by_folder_name(self.service, self.folder)
         if not _id:
-            raise Exception(f'{self.folder} folders not exists.')
+            raise DataConfigError(self.folder)
         imgs_id = get_data_files_from_folder(self.service, _id)
         for data_id in imgs_id:
             if data_id in self.failed_rm_id:
@@ -118,7 +118,7 @@ class LocalFolderSource(ImageSourceInterface):
     def accumulate_image_data(self, source):
         with io.open(source, 'rb') as image_file:
             _bytes = image_file.read()
-        my_image_data = MyImageData(_bytes, source=source)
+        my_image_data = MyImageData(_bytes, source)
         self._my_images.append(my_image_data)
 
     def get_images(self) -> list:

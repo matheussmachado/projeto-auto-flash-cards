@@ -11,22 +11,27 @@ from src.funcs.textFunc import get_from_json
 WebDriver = TypeVar('WebDriver')
 
 class SeleniumAnkiBot(AbstractCardDeliverer):
-
-    def __init__(self, web_driver_settings, user_data: str):
+    def __init__(self, webdriver_configurator, user_data: str):
         super().__init__()
         self.user_data = user_data
-        self.web_driver_settings = web_driver_settings
+        self.webdriver_configurator = webdriver_configurator
         self._URL = 'https://ankiweb.net/account/login'
         self._bot = None
+    
+    @property
+    def bot(self):
+        return self._bot
+    
+    @bot.setter
+    def bot(self, webdriver):
+        self._bot = webdriver
 
     def deliver(self, card_list: list) -> list:
         self._card_list.extend(card_list)
         em, pw = get_from_json(self.user_data, 'login').values()
         deck = get_from_json(self.user_data, 'deck')
         try:
-            self._bot = self.web_driver_settings["driver"](
-                    **self.web_driver_settings["web_driver_args"]
-                )
+            self._bot = self.webdriver_configurator.configure()
             self._bot.implicitly_wait(30)
             self._bot.get(self._URL)
             self._bot.set_window_size(width=9999, height=9999)

@@ -1,5 +1,4 @@
-from src.clss.webDriverConfigurator import WebDriverConfigurator
-from src.clss.assistants import AnkiEditPageHandler
+from src.clss.configurators import WebDriverConfigurator
 from src.clss.autoFlashCards import AutoFlashCards
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.sourceAdmins import (
@@ -15,7 +14,7 @@ sourceAdmin = TextSourceAdmin(CONFIG_FILE, writer)
 dbAdmin = MyCardShelveAdmin('db', 'cards')
 
 selenium_anki_bot_args = {
-    'web_driver_settings': wdconfig.config_settings(), 
+    'webdriver_configurator': wdconfig, 
     'user_data': CONFIG_FILE
 }
 

@@ -83,11 +83,11 @@ Após obter este repositório. No diretório do Projeto:
 - execute o programa pela primeira vez: `python run.py`;
 
 - no arquivo **config.json** criado após a etapa acima, obrigatoriamente, insira:
--- **login**: sua conta do Anki ;
--- **deck[name]**: o nome do baralho a ser criado novos cartões;
--- **application_file_name**: o nome da escala ou aplicação que deseja executar;
+ -- **login**: sua conta do Anki ;
+ -- **deck[name]**: o nome do baralho a ser criado novos cartões;
+ -- **application_file_name**: o nome da escala ou aplicação que deseja executar;
 *O arquivo desta aplicação deverá estar contido na pasta **src/apps**, no diretório raíz deste projeto.*
--- **web_driver_user_settings[browser]** o nome do navegador instalado na sua máquina para a finalidade;
+ -- **web_driver_user_settings[browser]** o nome do navegador instalado na sua máquina para a finalidade;
 
 #### Notas sobre o arquivo config.json: 
 -- o parâmetro **auto_executable_path** é por padrão configurado como **true**, utilizando a fantástica aplicação [webdriver manager](https://github.com/SergeyPirogov/webdriver_manager), facilitando a configuração do webdriver. Você pode configurar como **false** esse parâmetro e configurar manualmente o webdriver no seu sistema.
@@ -106,7 +106,9 @@ Após obter este repositório. No diretório do Projeto:
 
 - obtenha a chave secreta da Vision API. Certifique-se de que o arquivo desta chave esteja no mesmo diretório raiz dessa aplicação, com o nome de **serviceAccountToken.json**;
 
-- em seguida, no arquivo **config.json**, insira o caminho deste diretório local no campo **imgPath**. É conveniente criar um diretório a qual será usado para obter as imagens. 
+- em seguida, no arquivo **config.json**, insira o caminho deste diretório local no campo **imgPath**. 
+
+*É conveniente criar um diretório a parte a qual será usado para servir as imagens para a aplicação pois estas serão removidas no processo*. 
 
 #### Para utilizar as funcionalidades da Escala 4:
 
@@ -128,13 +130,13 @@ Após obter este repositório. No diretório do Projeto:
 
 - A aplicação foi projetada de modo a ser aberta para modificações, desde que as suas implementações implementem as abstrações e/ou interfaces que as originais implementam;
 
-- a partir da observação acima, você é livre para substituir as implementações como o Vision API e Drive API, bem qualquer outra implementação parte da lógica do processo desta aplicação;
+- a partir da observação acima, é possível substituir as implementações como o Vision API e Drive API, bem qualquer outra implementação parte da lógica do processo desta aplicação;
 
-- no diretório **src/apps** é possível ver os arquivos dos programas corespondentes a cada escala. Para criar suas próprias implementações, é conveniente que todas elas estejam nesse diretório e seguindo as configurações dos programas das escalas existentes;
+- no diretório **src/apps** é possível ver os arquivos dos programas corespondentes a cada escala. Para criar suas próprias implementações, é necessário que todas elas estejam nesse diretório e seguindo as configurações dos programas das escalas existentes;
 
 - para inserir o back side do flash card deve-se alterar manualmente no arquivo **src/clss/cardWriter.py** no método **return_written_cards** da classe **DictBasedCardWriter**, ou substituir essa implementação;
 
-- a parte do back side foi atribuida um valor padrão pois a finalidade inicial não a necessitava;
+- a parte do back side foi atribuida um valor padrão pois a finalidade inicial (revisão de novas palavras em inglês) não a necessitava, uma vez em que é utilizado uma aplicação de tradução a parte no conteúdo do front side do flash card;
 
 - o autor e esta aplicação não possuem quaisquer vínculo com o Anki e sua aplicação padrão, nem com os representantes das ferramentas utilizadas para a finalidade desse projeto.
 

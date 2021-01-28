@@ -3,7 +3,7 @@
 import os
 
 from src.clss.autoFlashCards import AutoFlashCards
-from src.clss.webDriverConfigurator import WebDriverConfigurator
+from src.clss.configurators import WebDriverConfigurator
 from src.clss.cardDeliverers import SeleniumAnkiBot
 from src.clss.cardWriter import DictBasedCardWriter
 from src.clss.imageSources import LocalFolderSource
@@ -24,7 +24,7 @@ text_extractor = GoogleVision()
 
 wdconfig = WebDriverConfigurator(CONFIG_FILE)
 selenium_anki_bot_args = {
-    'web_driver_settings': wdconfig.config_settings(), 
+    'web_driver_settings': wdconfig, 
     'user_data': CONFIG_FILE
 }
 deliver = SeleniumAnkiBot(**selenium_anki_bot_args)

@@ -37,3 +37,10 @@ class TextExtractorInterface(ABC):
     @abstractmethod
     def img_to_str(self):
         ...
+
+
+
+class ConfiguratorInterface(ABC):
+    @abstractmethod
+    def configure(self):
+        ...
