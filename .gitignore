@@ -14,6 +14,7 @@ venv
 frases
 *.html
 *.pickle
+*.pkl
 imgs
 !img1.jpg
 !img2.jpg

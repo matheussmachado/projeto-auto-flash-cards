@@ -67,7 +67,7 @@ def create_json_config_file(file_name: str) -> None:
     "web_driver_user_settings": {
 		"browser": "",
 		"web_driver_args": {
-			"keep_alive": false
+			
 		},
 		"web_driver_options": {
 			"headless": false

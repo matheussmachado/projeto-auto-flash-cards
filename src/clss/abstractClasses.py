@@ -30,11 +30,7 @@ class AbstractCardDeliverer(ABC):
 
     @abstractmethod
     def deliver(self):
-        ...
-    
-    @abstractmethod
-    def _insert_card(self):
-        ...
+        ...    
 
     @abstractmethod
     def _update_card(self):
@@ -74,8 +70,16 @@ class AbstractShelveKeyAdmin(ABC):
             db[self.db_key] = this
 
 
-class AbstractConfigurator(ABC):
-    """
-    tentar inserir o nome das funções como parametro de uma função que irá realizar o try except
-    """
-    ...
+
+class AbstractSeleniumObject(ABC):
+    def find_element(self, *locator):
+        return self.webdriver.find_element(*locator)
+    
+    def find_elements(self, *locator):
+        return self.webdriver.find_elements(*locator)
+
+
+
+class AbstractPageObject(AbstractSeleniumObject, ABC):
+    def __init__(self, webdriver=None):
+        self.webdriver = webdriver

@@ -3,7 +3,7 @@ import os
 
 from src.funcs.textFunc import create_json_config_file, get_from_json
 
-from src.clss.applicationConfigurator import appConfigurator
+from src.clss.configurators import AppConfigurator
 
 
 
@@ -26,8 +26,8 @@ def main() -> None:
         return
     CONFIG_FILE = 'config.json'
     PACKAGE_PATH = os.path.join('src', 'apps')
-    app_conf = appConfigurator(CONFIG_FILE)
-    app_module = app_conf.import_app(PACKAGE_PATH)
+    app_conf = AppConfigurator(CONFIG_FILE)
+    app_module = app_conf.configure(PACKAGE_PATH)
     automaton = app_module.automaton
     automaton.run_task()
     print(f"""

@@ -5,7 +5,7 @@ from src.clss.sourceAdmins import (
                 MyCardShelveAdmin, TextSourceAdmin, 
                 DictBasedCardWriter
     )
-
+from selenium.webdriver import Firefox
 from . import CONFIG_FILE
 
 wdconfig = WebDriverConfigurator(CONFIG_FILE)
