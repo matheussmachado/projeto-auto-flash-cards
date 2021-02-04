@@ -1,44 +1,21 @@
+import os
 from time import sleep
 from typing import List, TypeVar
 
 from .abstractClasses import AbstractCardDeliverer, AbstractPageObject
 from .cards import MyCard
-from .pageObjects import EditPage, DecksPage, LoginPage
+from .pageObjects import EditPage, DecksPage, LoginHandler
 from .error import DataConfigError
 from src.funcs.textFunc import get_from_json
-"""
-LOGAR:
-- verifica se há arquivo de cookies
-- se houver:
-    - obtem e realiza a tentativa
-    - se conseguir:
-        - salva um novo
-    - se não:
-        - remove o cookie atual*
-        - printa na tela que não conseguiu entrar
-- se não:
-    - mostra no terminal que é logar manualmente no anki e pede pra apertar enter para avançar
-    - tentar logar
-    - se conseguir:
-        - salva um novo
-    - se não:
-        - remove o cookie atual*
-        - printa na tela que não conseguiu entrar
 
------> TENTAR:
-- verificação de arquivo cookie e tentativa de remoção deste caso der errado*
-- verificar se no drive a url atual for a dos decks, salvar os cookies
-
-
-"""
 
 class SeleniumAnkiBot(AbstractCardDeliverer):
     _driver = None
-    login_page = LoginPage()
+    _LOCAL_COOKIES = 'login_cookie.pickle'
+    login_handler = LoginHandler(_LOCAL_COOKIES)
     decks_page = DecksPage()
     edit_page = EditPage()
 
-    _URL_LOGIN = 'https://ankiweb.net/account/login'
     _URL_EDIT = 'https://ankiuser.net/edit/'
 
     def __init__(self, webdriver_configurator, user_data: str):
@@ -51,60 +28,29 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             a = getattr(self, attr)
             if isinstance(a, AbstractPageObject):
                 a.webdriver = self._driver
-    """
-    TRATAR: COMO FINALIZAR O WEBDRIVER AO FINAL, MESMO SE DER RUIM
-    - receber os dados(cards, user_data)
-    - configurar o webdriver
-        - configurar a espera
-        - configurar a janela
-    - acessar a url login
-    - logar
-    AQUI
-    - obter os decks
-    - tratar o deck passado
-        - se houver a opção de segurança:
-            - se o deck passado estiver entre os decks
-                - obter o comprimento do maior deck
-                - atualizar o dicionário com o comprimento do maior deck
-    - escrever o deck passado(utilizado o dicionário com o nome e o ?tamanho)
-    - escrever o cartão
-    - atualizar o cartão
-    - finalizar fechar o webdriver
-    """
-    '''
-    from contextlib import contextmanager
-
-    @contextmanager
-    def _deliver_this(self):
-        self._driver = self.webdriver_configurator.configure()
-        try:
-            yield self._driver
-        finally:
-            if self._driver:
-                self._driver.quit()
-    
-    with _deliver_this() as d:...
-
-    '''
-    
 
     def deliver(self, card_list) -> list:
         self._card_list.extend(card_list)
-        em, pw = get_from_json(self.user_data, 'login').values()
         deck_data = get_from_json(self.user_data, 'deck')
+        cookies_exists = True
+        if not self._LOCAL_COOKIES in os.listdir():
+            input('Please manually access your account on the page that will open in your browser. \nPRESS ENTER FOR LOGIN.')
+            cookies_exists = False
         try:
             #TODO: melhorar essa parte
             self._driver = self.webdriver_configurator.configure()
             self._driver.implicitly_wait(30)
             self._driver.set_window_size(width=9999, height=9999)
-            self._driver.get(self._URL_LOGIN)
         except Exception as err:
+            #TODO: TENTAR JOGAR ESSA EXCEÇÃO PARA O LOGIN_HANDLER
             if self._driver:
                 self._driver.close()
             print("UNABLE TO CONNECT.\n", err)            
         else:
             self.init_anki_page_webdriver()
-            self.login_page.login(em, pw)
+            self.login_handler.access(cookies_exists)
+            #-------------------------------------------------
+            #TODO: VERIFICAR MODULARIZAÇÃO DESSA PARTE INDEPENDENTE
             decks_name = self.decks_page.get_decks_name()
             self._driver.get(self._URL_EDIT)
             deck_name_kwargs = {"deck_name": deck_data.get('name')}
@@ -113,6 +59,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
                 self.edit_page.insert_given_deck_name(**deck_name_kwargs)
             elif deck_data.get('name'):
                 self.edit_page.insert_given_deck_name(**deck_name_kwargs)
+            #-------------------------------------------------
             for card in self.card_list:
                 try:
                     self.edit_page.insert_card(card)
@@ -143,6 +90,21 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
                 break
         self._card_list[i].inserted = True
                 
+    '''
+    from contextlib import contextmanager
+
+    @contextmanager
+    def _deliver_this(self):
+        self._driver = self.webdriver_configurator.configure()
+        try:
+            yield self._driver
+        finally:
+            if self._driver:
+                self._driver.quit()
+    
+    with _deliver_this() as d:...
+
+    '''
 
 
 class SeleniumAnkiBotDeprecated(AbstractCardDeliverer):

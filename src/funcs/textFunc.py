@@ -55,13 +55,9 @@ def create_json_config_file(file_name: str) -> None:
     with open(file_name, 'w') as file:
         file.write(
 '''{
-    "login": {
-        "email": "",
-        "password": ""
-    },
     "deck": {
     	"deck_name": "",
-    	"new_deck": false
+    	"new_deck": true
     },
     "application_file_name": "",
     "web_driver_user_settings": {

@@ -83,7 +83,6 @@ Após obter este repositório. No diretório do Projeto:
 - execute o programa pela primeira vez: `python run.py`;
 
 - no arquivo **config.json** criado após a etapa acima, obrigatoriamente, insira:
- -- **login**: sua conta do Anki ;
  -- **deck[name]**: o nome do baralho a ser criado novos cartões;
  -- **application_file_name**: o nome da escala ou aplicação que deseja executar;
 *O arquivo desta aplicação deverá estar contido na pasta **src/apps**, no diretório raíz deste projeto.*

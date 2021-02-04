@@ -71,7 +71,12 @@ class AbstractShelveKeyAdmin(ABC):
 
 
 
-class AbstractSeleniumObject(ABC):
+class AbstractPageObject(ABC):
+    def __init__(self, webdriver=None):
+        self.webdriver = webdriver
+
+
+class AbstractElementFinder(AbstractPageObject, ABC):
     def find_element(self, *locator):
         return self.webdriver.find_element(*locator)
     
@@ -79,7 +84,3 @@ class AbstractSeleniumObject(ABC):
         return self.webdriver.find_elements(*locator)
 
 
-
-class AbstractPageObject(AbstractSeleniumObject, ABC):
-    def __init__(self, webdriver=None):
-        self.webdriver = webdriver
