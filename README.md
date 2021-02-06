@@ -82,14 +82,14 @@ Após obter este repositório. No diretório do Projeto:
 
 - execute o programa pela primeira vez: `python run.py`;
 
-- no arquivo **config.json** criado após a etapa acima, obrigatoriamente, insira:
- -- **deck[name]**: o nome do baralho a ser criado novos cartões;
- -- **application_file_name**: o nome da escala ou aplicação que deseja executar;
+no arquivo **config.json** criado após a etapa acima, obrigatoriamente, insira:
+- **deck[name]**: o nome do baralho a ser criado novos cartões;
+- **application_file_name**: o nome da escala ou aplicação que deseja executar;
 *O arquivo desta aplicação deverá estar contido na pasta **src/apps**, no diretório raíz deste projeto.*
- -- **web_driver_user_settings[browser]** o nome do navegador instalado na sua máquina para a finalidade;
+- **web_driver_user_settings[browser]** o nome do navegador instalado na sua máquina para a finalidade;
 
 #### Notas sobre o arquivo config.json: 
--- o parâmetro **auto_executable_path** é por padrão configurado como **true**, utilizando a fantástica aplicação [webdriver manager](https://github.com/SergeyPirogov/webdriver_manager), facilitando a configuração do webdriver. Você pode configurar como **false** esse parâmetro e configurar manualmente o webdriver no seu sistema.
+- O parâmetro **auto_executable_path** é por padrão configurado como **true**, utilizando a fantástica aplicação [webdriver manager](https://github.com/SergeyPirogov/webdriver_manager), facilitando a configuração do webdriver. Você pode configurar como **false** esse parâmetro e configurar manualmente o webdriver no seu sistema.
 
 #### Para utilizar as funcionalidades da Escala 2:
 
