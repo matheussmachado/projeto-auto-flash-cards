@@ -31,8 +31,8 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
 
     def deliver(self, card_list) -> list:
         self._card_list.extend(card_list)
-        deck_data = get_from_json(self.user_data, 'deck')
         cookies_exists = True
+        deck_data = get_from_json(self.user_data, 'deck')   
         if not self._LOCAL_COOKIES in os.listdir():
             input('Please manually access your account on the page that will open in your browser. \nPRESS ENTER FOR LOGIN.')
             cookies_exists = False
@@ -52,6 +52,7 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             #-------------------------------------------------
             #TODO: VERIFICAR MODULARIZAÇÃO DESSA PARTE INDEPENDENTE
             decks_name = self.decks_page.get_decks_name()
+            
             self._driver.get(self._URL_EDIT)
             deck_name_kwargs = {"deck_name": deck_data.get('name')}
             if deck_data.get('name') and deck_data.get('new_deck') == False:
@@ -81,7 +82,6 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
         for name in decks_name:
             if name_length < len(name):
                 name_length = len(name)
-                break
         deck_name_kwargs.update(backspace_times=name_length)
 
     def _update_card(self, card: MyCard) -> None:

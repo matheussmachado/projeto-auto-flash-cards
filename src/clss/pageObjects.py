@@ -53,7 +53,7 @@ class LoginPage(AbstractElementFinder):
 class DecksPage(AbstractElementFinder):
     decks_name = (By.CLASS_NAME, "pl-0")
 
-    def get_decks_name(self):
+    def get_decks_name(self) -> list:
         elements = self.find_elements(*self.decks_name)
         return [element.text.strip() for element in elements]
     
@@ -87,14 +87,8 @@ class LoginHandler(AbstractPageObject):
         cookies = pickle.load(open(self.local_cookies_path, "rb"))
         for cookie in cookies:
             self.webdriver.add_cookie(cookie)
-        try:
-            self.webdriver.get(self._URL_DECK)
-            wdw = WebDriverWait(self.webdriver, timeout=10)    
-            wdw.until(url_to_be(self._URL_DECK))
-        except TimeoutException:
-            #AGUARDANDO LOGAR MANUALMENTE, CASO O COOKIE ESTEJA INVÁLIDO
+        #AGUARDANDO LOGAR MANUALMENTE, CASO O COOKIE ESTEJA INVÁLIDO 
+        self.webdriver.get(self._URL_DECK)
+        if not self.webdriver.current_url == self._URL_DECK:
+            os.remove(self.local_cookies_path)
             self._wait_for_manual_login()
-        else:
-            self._save_login_cookie()
-
-        

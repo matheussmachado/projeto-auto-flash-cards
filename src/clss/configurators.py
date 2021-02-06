@@ -94,6 +94,5 @@ class WebDriverConfigurator(ConfiguratorInterface):
 		settings = self.config_settings()
 		driver = settings.get('driver')
 		args = settings.get('web_driver_args')
-		webdriver = driver(**args)
-		bot = driver(**args)
-		return bot
+		my_driver = driver(**args)
+		return my_driver
