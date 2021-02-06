@@ -24,18 +24,6 @@ class EditPage(AbstractElementFinder):
         deck_field = self.find_element(*self.deck)
         deck_field.clear()
         deck_field.send_keys(deck_name)
-        
-
-
-class LoginPage(AbstractElementFinder):
-    email = (By.CSS_SELECTOR, 'input[id="email"]')
-    password = (By.CSS_SELECTOR, 'input[type="password"]')
-    log_in = (By.CSS_SELECTOR, 'input[type="submit"]')
-
-    def login(self, em, pw):
-        self.find_element(*self.email).send_keys(em)
-        self.find_element(*self.password).send_keys(pw)
-        self.find_element(*self.log_in).click()
 
 
 
@@ -66,8 +54,6 @@ class LoginHandler(AbstractPageObject):
         self._save_login_cookie()
 
     def access(self, cookies_exists: bool) -> None:
-        _URL_LOGIN = 'https://ankiweb.net/account/login'
-        self.webdriver.get(_URL_LOGIN)
         #SE NÃO HOUVER O COOKIE GUARDADO -> PRIMEIRO ACESSO
         if not cookies_exists:
             self._wait_for_manual_login()
@@ -78,6 +64,7 @@ class LoginHandler(AbstractPageObject):
             self.webdriver.add_cookie(cookie)
         #AGUARDANDO LOGAR MANUALMENTE, CASO O COOKIE ESTEJA INVÁLIDO 
         self.webdriver.get(self._URL_DECK)
+        sleep(1)
         if not self.webdriver.current_url == self._URL_DECK:
             os.remove(self.local_cookies_path)
             self._wait_for_manual_login()
