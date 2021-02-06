@@ -10,13 +10,13 @@ from src.funcs.textFunc import get_from_json
 
 
 class SeleniumAnkiBot(AbstractCardDeliverer):
-    _driver = None
+    _URL_EDIT = 'https://ankiuser.net/edit/'
     _LOCAL_COOKIES = 'login_cookie.pickle'
+    _driver = None
     login_handler = LoginHandler(_LOCAL_COOKIES)
     decks_page = DecksPage()
     edit_page = EditPage()
 
-    _URL_EDIT = 'https://ankiuser.net/edit/'
 
     def __init__(self, webdriver_configurator, user_data: str):
         super().__init__()
@@ -32,7 +32,6 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
     def deliver(self, card_list) -> list:
         self._card_list.extend(card_list)
         cookies_exists = True
-        deck_data = get_from_json(self.user_data, 'deck')   
         if not self._LOCAL_COOKIES in os.listdir():
             input('Please manually access your account on the page that will open in your browser. \nPRESS ENTER FOR LOGIN.')
             cookies_exists = False
@@ -50,16 +49,9 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             self.init_anki_page_webdriver()
             self.login_handler.access(cookies_exists)
             #-------------------------------------------------
-            #TODO: VERIFICAR MODULARIZAÇÃO DESSA PARTE INDEPENDENTE
             decks_name = self.decks_page.get_decks_name()
-            
             self._driver.get(self._URL_EDIT)
-            deck_name_kwargs = {"deck_name": deck_data.get('name')}
-            if deck_data.get('name') and deck_data.get('new_deck') == False:
-                self.dealing_with_deck_name_input(deck_name_kwargs, decks_name)
-                self.edit_page.insert_given_deck_name(**deck_name_kwargs)
-            elif deck_data.get('name'):
-                self.edit_page.insert_given_deck_name(**deck_name_kwargs)
+            self.deck_name_input(decks_name)        
             #-------------------------------------------------
             for card in self.card_list:
                 try:
@@ -73,17 +65,16 @@ class SeleniumAnkiBot(AbstractCardDeliverer):
             if self._driver:
                 self._driver.quit()
     
-    def dealing_with_deck_name_input(self, deck_name_kwargs: dict, decks_name: list) -> None:
-        given_deck_name = deck_name_kwargs.get("deck_name")
-        if not given_deck_name in decks_name:
-            print(f"{given_deck_name} name does not exist in the deck collection.")
-            raise DataConfigError(given_deck_name)
-        name_length = len(decks_name[0])
-        for name in decks_name:
-            if name_length < len(name):
-                name_length = len(name)
-        deck_name_kwargs.update(backspace_times=name_length)
-
+    def deck_name_input(self, decks_name):
+            deck_data = get_from_json(self.user_data, 'deck')
+            if deck_data.get('name') and deck_data.get('new_deck') == False:
+                if not deck_data.get('name') in decks_name:
+                    print(f"{deck_data.get('name')} name does not exist in the deck collection.")
+                    raise DataConfigError(deck_data.get('name'))
+                self.edit_page.insert_given_deck_name(deck_data.get('name'))
+            elif deck_data.get('name'):
+                self.edit_page.insert_given_deck_name(deck_data.get('name'))
+        
     def _update_card(self, card: MyCard) -> None:
         for i, c in enumerate(self.card_list):
             if c.representation == card.representation:

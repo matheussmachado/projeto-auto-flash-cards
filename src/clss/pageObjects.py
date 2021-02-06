@@ -2,12 +2,7 @@ import os
 import pickle
 from time import sleep
 
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support.expected_conditions import url_to_be
 
 from .abstractClasses import AbstractPageObject, AbstractElementFinder
 from .cards import MyCard
@@ -25,14 +20,9 @@ class EditPage(AbstractElementFinder):
         self.find_element(*self.save).click()
         sleep(1)
     
-    def insert_given_deck_name(self, deck_name, backspace_times=100):
+    def insert_given_deck_name(self, deck_name):
         deck_field = self.find_element(*self.deck)
-        ac = ActionChains(self.webdriver)
-        ac.move_to_element(deck_field).click()
-        for _ in range(backspace_times):
-            ac.key_down(Keys.BACK_SPACE)
-            ac.key_up(Keys.BACK_SPACE)
-        ac.perform()
+        deck_field.clear()
         deck_field.send_keys(deck_name)
         
 
@@ -46,7 +36,6 @@ class LoginPage(AbstractElementFinder):
         self.find_element(*self.email).send_keys(em)
         self.find_element(*self.password).send_keys(pw)
         self.find_element(*self.log_in).click()
-        sleep(1)
 
 
 
