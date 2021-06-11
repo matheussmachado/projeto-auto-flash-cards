@@ -17,7 +17,7 @@ img_source = GoogleDriveSource(CONFIG_FILE, id_admin)
 text_extractor = GoogleVision()
 
 selenium_anki_bot_args = {
-    'web_driver_settings': wdconfig, 
+    'webdriver_configurator': wdconfig, 
     'user_data': CONFIG_FILE
 }
 deliver = SeleniumAnkiBot(**selenium_anki_bot_args)
